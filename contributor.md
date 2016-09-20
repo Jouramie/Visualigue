@@ -1,2 +1,0 @@
-blablabla
-Émile Grégoire
