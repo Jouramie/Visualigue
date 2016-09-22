@@ -1,0 +1,65 @@
+
+
+Ouverture de la réunion à 13h30. 
+Émile, Simon-Pierre, Alexandre et Jérémie
+
+
+Section à mettre dans l'ordre dans le rapport
+ - Vision                            Émile
+ - Use-case Model                    Fait
+ - Diagramme de séquence système     ?
+ - Spécification supplémentaire      Mc Cune
+ - Domain Model                      ?
+ - Glossaire                         Jérémie
+ - Mockup                            Jérémie
+ 
+ 
+Les acteurs : 
+ - Primaire : 
+    + Coach
+ - Secondaire : 
+    + Joueurs
+    + Parents des joueurs
+ 
+ 
+Les uses-cases :
+ - Créer une stratégie                                              SPDES
+ - Sauvegarder une stratégie                                        SPDES
+ - Charger une stratégie                                            SPDES
+ - Visualiser la stratégie                                          Jérémie
+    + Zoom
+    + Afficher/Cacher les rôles
+ - Placer les éléments                                              Émile
+ - Modifier les trajectoires des éléments mobiles                   Émile
+    (pluguer un extend)
+ - Configurer les sports                                            Mc Cune
+ - Configurer les obstacles (include dans Configurer les sports)    Mc Cune
+ - Exporter une stratégie en format image                           Jérémie
+    (spécifier les technologies png, jpeg)
+ 
+ 
+Les spécifications supplémentaires :
+ - Undo/Redo
+ - Gestion d'erreur 
+ - Afficher les coordonnées de la sourie
+
+ 
+Section +++
+ - Partager cette stratégie sur facebook
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
