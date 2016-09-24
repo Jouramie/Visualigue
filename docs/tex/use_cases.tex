@@ -1,2 +1,186 @@
 \chapter{Modèle des cas d'utilisation}
 \label{s:use_cases}
+\newpage
+\begin{flushleft}
+	\textbf{Cas d'utilisation 1 : Créer une stratégie}\\
+\end{flushleft}
+\begin{tabular}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} Visualigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir créer des fichiers qui contiendront éventuellement des stratégies.\\
+	\\
+	\textbf{Postconditions :} L'entraineur aura un fichier qui pourra être utilisé pour élaborer une stratégie.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur démarre le processus de création d'une stratégie.\\
+	2. Système demande les informations en lien avec la nouvelle stratégie.\\
+	3. Entraineur fourni à Système les informations nécessaires.\\
+	4. Système demande l'endroit où le fichier devra être enregistré ainsi que le nom de ce dernier.\\
+	5. Entraineur choisi l'endroit où le fichier devra être enregistré ainsi que son nom.\\
+	6. Système crée le fichier et il est possible de le modifier.\\
+	\\
+	\textbf{Extensions :}\\
+	*a. Entraineur annule le processus de création d'une stratégie.\\
+	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler la création d'une stratégie.\\
+	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler la création d'une stratégie.\\
+	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler la création d'une stratégie.\\
+	\hspace{3cm}1. Système revient où il était dans le processus de création d'une stratégie.\\
+	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de création d'une stratégie ne soit démarré.\\
+	1a. Entraineur était au milieu de l'édition d'un fichier.\\
+	\hspace{1cm}1. Système demande à Entraineur s'il veut sauvegarder le fichier dont l'édition était en cours.\\
+	\hspace{1cm}2. Entraineur choisi s'il veut sauvegarder ou non le fichier dont l'édition était en cours.\\
+	5a. Entraineur entre un nom de fichier invalide.\\
+	\hspace{1cm}1. Système informe Entraineur que le nom entré est invalide.\\
+	\hspace{1cm}2. Entraineur entre un nom valide pour le fichier.\\
+	5b. Entraineur choisi un emplacement invalide pour le fichier.\\
+	\hspace{1cm}1. Système informe Entraineur que l'emplacement choisi est invalide.\\
+	\hspace{1cm}2. Entraineur choisi un emplacement valide pour le fichier.\\
+	\\
+	\textbf{Fréquence d'occurrence :} Régulièrement\\
+	\\
+	\textbf{Questions ouvertes :} Quelles seront les informations en lien avec la nouvelle stratégie que l'entraineur devra entrer?\\
+	\\
+	\hline
+\end{tabular}
+\newpage
+\begin{flushleft}
+	\textbf{Cas d'utilisation 2 : Sauvegarder une stratégie}\\
+\end{flushleft}
+\begin{tabular}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} Visualigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir sauvegarder une stratégie qu'il a élaborée.\\
+	\\
+	\textbf{Postconditions :} La stratégie est sauvegardée et peut être chargée lors d'une prochaine utilisation du logiciel.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur démarre le processus de sauvegarde de la stratégie.\\
+	2. Système sauvegarde la stratégie dans le fichier de stratégie.\\
+	\\
+	\textbf{Extensions :}\\
+	*a. Entraineur annule le processus de sauvegarde d'une stratégie.\\
+	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler la sauvegarde d'une stratégie.\\
+	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler la sauvegarde d'une stratégie.\\
+	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler la sauvegarde d'une stratégie.\\
+	\hspace{3cm}1. Système revient où il était dans le processus de sauvegarde d'une stratégie.\\
+	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de sauvegarde d'une stratégie soit démarré.\\
+	\\
+	\textbf{Fréquence d'occurrence :} Régulièrement\\
+	\\
+	\hline
+\end{tabular}
+\newpage
+\begin{flushleft}
+	\textbf{Cas d'utilisation 3 : Charger une stratégie}\\
+\end{flushleft}
+\begin{tabular}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} Visualigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur et Joueur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir charger une stratégie qu'il a élaborée.\\
+	- Joueur: Veut pouvoir charger une stratégie élaborée par l'entraineur.\\
+	\\
+	\textbf{Postconditions :} La stratégie est chargée et elle peut être modifiée ou visualisée.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur ou Joueur démarre le processus de chargement de la stratégie.\\
+	2. Système demande lequel des fichiers de stratégie charger.\\
+	3. Entraineur ou Joueur choisi lequel des fichiers de stratégie charger.\\
+	4. Système charge le fichier.\\
+	\\
+	\textbf{Extensions :}\\
+	*a. Entraineur ou Joueur annule le processus de chargement d'une stratégie.\\
+	\hspace{1cm}1. Système demande à Entraineur ou Joueur s'il est certain de vouloir annuler le chargement d'une stratégie.\\
+	\hspace{1cm}2. Entraineur ou Joueur confirme qu'il veut bien annuler le chargement d'une stratégie.\\
+	\hspace{2cm}2a. Entraineur ou Joueur indique qu'il ne veut plus annuler le chargement d'une stratégie.\\
+	\hspace{3cm}1. Système revient où il était dans le processus de chargement d'une stratégie.\\
+	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de chargement d'une stratégie ne soit démarré.\\
+	1a. Entraineur était au milieu de l'édition d'un fichier.\\
+	\hspace{1cm}1. Système demande à Entraineur s'il veut sauvegarder le fichier dont l'édition était en cours.\\
+	\hspace{1cm}2. Entraineur choisi s'il veut sauvegarder ou non le fichier dont l'édition était en cours.\\
+	3a. Entraineur ou Joueur choisi un fichier invalide.\\
+	\hspace{1cm}1. Système informe Entraineur ou Joueur que le fichier choisi est invalide.\\
+	\hspace{1cm}2. Entraineur ou Joueur choisi un fichier valide.\\
+	\\
+	\textbf{Fréquence d'occurrence :} Régulièrement\\
+	\\
+	\hline
+\end{tabular}
+
+\newpage
+\begin{flushleft}
+	\textbf{Cas d'utilisation 4 : Visualiser une stratégie}\\
+\end{flushleft}
+\begin{tabular}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} Visualigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur et Joueur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir visualiser une stratégie qu'il a créer.\\
+	- Joueur: Veut pouvoir visualiser une stratégie à apprendre.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur ou Joueur démarre le processus de visualisation de la stratégie.\\
+	2. Système calcul la position des éléments et les affiches.\\
+	\hspace{1cm} \em Système répète l'action 2 jusqu'à la fin de la stratégie.
+	\\
+	\textbf{Extensions :}\\
+	\\
+	\textbf{Fréquence d'occurrence :} Régulièrement\\
+	\\
+	\hline
+\end{tabular}
+
+\newpage
+\begin{flushleft}
+	\textbf{Cas d'utilisation 9 : Exporter une stratégie en format image}\\
+\end{flushleft}
+\begin{tabular}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} Visualigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir exporter les fichiers de l'applications en image.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur démarre le processus d'exportation.\\
+	2. Système demande en quel format les fichiers doivent être exporter.\\
+	3. Entraineur sélectionne un format d'image.\\
+	4. Système enregistre la stratégie sous forme d'image.\\
+	\\
+	\textbf{Extensions :}\\
+	\\
+	\textbf{Fréquence d'occurrence :} Parfois\\
+	\\
+	\hline
+\end{tabular}

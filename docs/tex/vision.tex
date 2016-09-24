@@ -1,6 +1,58 @@
 \chapter{Vision}
 \label{s:vision}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur odio nisl, feugiat quis quam non, consectetur tempus leo. Etiam nec enim lacus. In porta tempor nisi. Aenean fermentum, sapien at tincidunt pharetra, nibh nunc vehicula urna, sed scelerisque elit risus at ex. Donec egestas, turpis a pellentesque posuere, nibh tellus malesuada elit, sit amet porttitor enim eros a felis. Integer non congue enim. Donec bibendum ex id elementum rutrum. Donec porta nunc et odio gravida, vel vehicula orci aliquet.
+Cette section présente la vision du projet VisuaLigue, un outil de communication de stratégies sportives numériques. La lecture de cette partie est fortement recommandé pour un néophyte du projet, car elle présente le positionnement du produit, une description générale du logiciel et un sommaire des fonctionnalités. Ainsi, la lecture de cette section permet une compréhension globale du projet et une meilleure orientation dans son développement.
 
-Pellentesque gravida fermentum lectus, in laoreet sapien facilisis laoreet. Nunc sit amet leo volutpat, ornare lorem ut, hendrerit ex. Donec lectus augue, interdum in placerat in, dignissim dictum diam. Mauris tincidunt leo nisl, eu convallis odio consectetur id. Vestibulum placerat sem non mattis convallis. Etiam quis lorem imperdiet, gravida felis a, venenatis justo. Praesent eu lorem diam. Phasellus purus mi, tincidunt quis sapien iaculis, eleifend hendrerit est. Sed in justo efficitur, vulputate massa nec, rhoncus tortor. Cras risus nisl, finibus non felis vitae, malesuada sollicitudin ex. Donec finibus sit amet nisi at condimentum. Vivamus vitae libero semper, iaculis orci eget, porttitor sem. Phasellus eget hendrerit mi. Ut feugiat, nulla eu pretium egestas, dui est pretium eros, et tristique ligula magna sed purus
+\section{Positionnement}
+\subsection{Énoncé du problème}
+Présentement, la majorité des entraîneurs utilisent un tableau blanc avec un arrière-plan de patinoire pour dessiner et expliquer les stratégies. Or, les esquisses sont perdues après chaque entraînement et la visualisation des dessins n'est pas toujours simple.
+
+De plus, le partage des stratégies et le répertoriage des stratégies et actuellement difficile. Généralement, la façon de faire est de photographier le tableau blanc, puis d'envoyer l'image par courriel au membres intéressés, ou encore de refaire le dessin sur papier ou sur une tablette graphique pour la répertorier.
+
+L'autre problème majeure est la visualisation des stratégies. Souvent, lorsque quelqu'un joueur est présent à une partie, il assiste à l'élaboration de la stratégie et comprend mieux le dessin. Généralement, le mouvement des joueurs est dessiné en temps réel et la gestuelle de l'entraîneur est primordiale pour la compréhension. De plus, les trajectoires des joueurs sont souvent effacées pour libérer de l'espace. Or, pour un joueur qui était absent à l'entraînement ou pour un parent qui n'était pas sur la glace lors de l'élaboration de la stratégie, il est souvent difficile de comprendre la stratégie seulement avec le dessin.
+
+\subsection{Opportunité}
+Le produit est né d'une demande d'un entraîneur de hockey junior qui se plaignait des méthodes traditionnelles d'esquisses de stratégies.
+
+Non seulement un entraîneur a manifesté un enthousiasme pour le produit, mais l'Association des entraîneurs mineurs du Québec (AEMQ) est aussi intéressée par le produit. D'ailleurs, les spécifications actuelles ont été établies en collaboration avec le président de l'AEMQ.
+
+Outre le milieu du hockey junior, le produit est facilement extensible au milieu professionnel. On remarque notamment l'usage des tableaux blancs dans le domaine professionnel du hockey. De plus, en rendant le logiciel suffisamment flexible, il serait possible d'étendre l'idée pour d'autres sports, notamment le soccer, le football, le volleyball, l'ultimate Frisbee, le handball, le Kin-Ball, le curling et bien d'autres.
+
+Ce projet pourrait donc avoir des répercussions sur un vaste éventail de sports, dont certaines ligues professionnelles qui engrangent des quantités impressionnantes d'argent. Plusieurs de ces sports sont présents un peu partout dans le monde, tant au niveau amateur que professionnel. La démarcation du produit pourrait d'ailleurs ce faire à de nombreux événements sportifs tels que des tournois, des championnats internationaux et même les Jeux Olympiques.
+
+\subsection{Alternatives et compétition}
+Les alternatives présentement sur le marché représentent davantage des outils de dessin sur ordinateur. Notamment, le logiciel ConceptDraw PRO\footnote{\url{http://www.conceptdraw.com/How-To-Guide/ice-hockey-diagram-defensive-strategy-neutral-zone-trap}} offre des extensions pour le dessin de stratégies de hockey.
+
+De nombreux logiciels sont disponibles sur les tablettes pour le dessin. Certains de ces logiciels permettent la projection simultanées pour une meilleure visualisation par les joueurs.
+
+Or, ces solutions permettent seulement de réaliser des images statiques. Celles-ci sont plus faciles à répertorier considérant leur support numérique. Toutefois, le problème de visualisation est toujours présent. Il est difficile de visualiser la stratégie à partir d'une image fixe.
+
+\subsection{Résumé du produit}
+VisuaLigue est une application qui permet la création et la visualisation de stratégies sportives. Un entraîneur peut donc facilement placer les joueurs, les obstacles et les objets sur un terrain virtuel. Ces éléments peuvent ensuite être modifiés facilement grâce à un interface utilisateur convivial. Le logiciel permet aussi de visualiser la stratégie de manière dynamique. Ainsi, l'entraîneur peut démarrer la visualisation et montrer à tout le monde le déplacement des joueurs en temps réel. Il peut aussi mettre la visualisation sur pause, avancer, reculer et regarder image par image. Finalement, l'application permet la sauvegarde des jeux pour permettre le partage et le répertoriage.
+
+Le tableau \ref{t:fonctionnalites} présente un sommaire non exhaustif des fonctionnalités du logiciel ainsi que les avantages offerts pour les parties prenantes.
+
+\begin{table}
+\caption{Fonctionnalités et avantages pour les parties prenantes}
+\label{t:fonctionnalites}
+\begin{tabular}{|p{6cm}|p{8cm}|}
+	\hline
+	\bfseries{Fonctionnalité}              & \bfseries{Avantage pour les parties prenantes} \\\hline
+	Création de stratégies numériquement   & Facile à partager, schéma plus clair, notation standardisée \\\hline
+	Visualisation des stratégies (lecture, pause, avancer, reculer, image par image, etc) & Meilleure compréhension des joueurs, surtout s'ils n'étaient pas présents lors de l'élaboration de la stratégie \\\hline
+	Création de nouveaux types de sports   & Plus grande flexibilité pour les entraîneurs. Extension du projet vers des sports autres que le hockey. \\\hline
+	Création de nouveaux types d'obstacles & Flexibilité du logiciel pour différents types d'entraînement \\
+	\hline
+\end{tabular}
+\end{table}
+
+D'autres fonctionnalités plus techniques ont été énoncées durant les discussions. Les points suivant ont notamment été soulevés:
+\begin{itemize}
+	\item Fonctionnalité d'annuler/rétablier
+	\item Exporter les stratégies sous un format d'image (PNG, JPEG, etc.)
+	\item Zoom
+	\item Affichage des coordonnées de la souris lors du déplacement sur l'aire de jeu
+	\item Option pour montrer/cacher le rôle des joueurs
+\end{itemize}
+
+Une liste exhaustive des fonctionnalités sera détaillée plus loin dans ce rapport.
