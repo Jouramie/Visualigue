@@ -158,6 +158,60 @@
 
 \newpage
 \begin{flushleft}
+	\textbf{Cas d'utilisation 6 : Placer les éléments}\\
+\end{flushleft}
+\begin{tabular}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} Visualigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir placer les éléments sur la stratégie et les modifier à sa guise.\\
+	\\
+	\textbf{Postconditions :} Les éléments sont placés selon ce que l'entraineur souhaite.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur sélectionne un élément de la liste d'éléments disponibles.\\
+	2. Système crée un élément selon les spécifications définies dans le sport.\\
+	3. Entraineur clique dans l'aire de jeu à l'endroit où l'élément doit être placé.\\
+	4. Système place l'élément sur l'aire de jeu et affiche l'élément.\\
+	5. Système met à jour la disponibilité de l'élément dans la liste d'éléments disponibles (si nécessaire)\\
+	\\
+	\textbf{Extensions :}\\
+	*a. Entraineur annule le placement de l'élément.\\
+	\hspace{0.5cm}1. Système demande à Entraineur s'il est certain de vouloir annuler le placement de l'élément.\\
+	\hspace{0.5cm}2. Entraineur confirme qu'il veut bien annuler le placement de l'élément.\\
+	\hspace{1cm}2a. Entraineur indique qu'il ne veut plus annuler le placement de l'élément.\\
+	\hspace{1.5cm}1. Système revient où il était dans le processus de placement d'un élément.\\
+	\hspace{0.5cm}3. Système supprime l'élément créé et réinitialise sa disponibilité (si nécessaire) dans la liste des éléments.\\
+	5a. Entraineur souhaite modifier la position de l'élément après l'avoir placé.\\
+	\hspace{0.5cm}1. Entraineur clique sur l'élément à modifier.\\
+	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et charge la fenêtre Propriétés avec les paramètres associés.\\
+	\hspace{0.5cm}3. Entraineur déplace avec la souris l'élément en question ou modifie la propriété "Position" des paramètres.\\
+	\hspace{0.5cm}4. Système déplace l'élément selon les spécifications de l'Entraineur.\\
+	5b. Entraineur souhaite modifier la rotation de l'élément.\\
+	\hspace{0.5cm}1. Entraineur clique sur l'élément à modifier.\\
+	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et charge la fenêtre Propriétés avec les paramètres associés.\\
+	\hspace{0.5cm}3. Système affiche une flèche de rotation près de l'élément sélectionné.\\
+	\hspace{0.5cm}4. Entraineur déplace la flèche de rotation jusqu'à l'angle souhaité ou modifie la propriété "Rotation" des paramètres.\\
+	\hspace{0.5cm}5. Système oriente l'élément selon les spécifications de l'Entraineur.\\
+	5c. Entraineur souhaite modifier le rôle d'un l'élément de type "Joueur".\\
+	\hspace{0.5cm}1. Entraineur clique sur l'élément à modifier.\\
+	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et charge la fenêtre Propriétés avec les paramètres associés.\\
+	\hspace{0.5cm}3. Entraineur sélectionne le rôle du joueur à partir d'une liste déroulante dans la fenêtre Propriétés.\\
+	\hspace{0.5cm}4. Système modifie l'élément pour correspondre aux spécifications du rôle du joueur.\\
+	\\
+	\textbf{Fréquence d'occurrence :} Régulièrement\\
+	\\
+	\hline
+\end{tabular}
+
+\newpage
+\begin{flushleft}
 	\textbf{Cas d'utilisation 9 : Exporter une stratégie en format image}\\
 \end{flushleft}
 \begin{tabular}{|p{16cm}|}
