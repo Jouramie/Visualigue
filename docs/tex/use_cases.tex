@@ -238,3 +238,147 @@
 	\\
 	\hline
 \end{tabular}
+
+\newpage
+\begin{flushleft}
+	\textbf{Cas d'utilisation 2 : Sauvegarder une stratégie}\\
+\end{flushleft}
+\begin{tabular}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} Visualigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir sauvegarder une stratégie qu'il a élaborée.\\
+	\\
+	\textbf{Postconditions :} La stratégie est sauvegardée et peut être chargée lors d'une prochaine utilisation du logiciel.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur démarre le processus de sauvegarde de la stratégie.\\
+	2. Système sauvegarde la stratégie dans le fichier de stratégie.\\
+	\\
+	\textbf{Extensions :}\\
+	*a. Entraineur annule le processus de sauvegarde d'une stratégie.\\
+	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler la sauvegarde d'une stratégie.\\
+	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler la sauvegarde d'une stratégie.\\
+	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler la sauvegarde d'une stratégie.\\
+	\hspace{3cm}1. Système revient où il était dans le processus de sauvegarde d'une stratégie.\\
+	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de sauvegarde d'une stratégie soit démarré.\\
+	\\
+	\textbf{Fréquence d'occurrence :} Régulièrement\\
+	\\
+	\hline
+\end{tabular}
+
+
+\newpage
+\begin{flushleft}
+	\textbf{Cas d'utilisation 7 : Configurer les types de sports}\\
+\end{flushleft}
+\begin{tabular}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} Visualigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir créer et modifier les types de sports supporter par le logiciel.\\
+	\\
+	\textbf{Postconditions :} Une fois qu'un type de sport est créé, il est possible de créer une stratégie pour ce type de sport et de configurer les obstacles associés à ce type de sport.\\
+	\\
+	\textbf{Garanties en cas de succès :} Le type de sport a été enregistré.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur démarre le processus de configuration d'un  type de sport.\\
+	2. Système demande lequel des types de sport l'utilisateur veut configurer ou s'il veut en créer un nouveau type de sport.\\
+	3. Entraineur indique le type à configurer.\\
+	4. Système offre de modifier les spécifications du type de sport, telle que le nom du sport, l'imgae pour représenter le terrain, les dimensions réelles du terrain, le nombre de joueurs et les catégories de joueurs associées au sport.\\
+	5. Entraineur modifie des spécifications du type de sport.\\
+	6. Entraineur démarre le processus d'enregistrement.\\
+	7. Système valide et enregistre les modifications du type de sport.\\
+	\\
+	\textbf{Extensions :}\\
+	*a. Entraineur annule le processus de configuration du type de sport.\\
+	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler la configuration du type de sport.\\
+	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler la configuration du type de sport.\\
+	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler la configuration du type de sport.\\
+	\hspace{3cm}1. Système revient où il était dans le processus de configuration.\\
+	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de configuration ne soit démarré.\\
+	3a. Entraineur indique qu'il veut créer un nouveau type de sport.\\
+	\hspace{1cm}1. Système demande à Entraineur de remplir tout les champs de spécification du type de sport.\\
+	\hspace{1cm}2. Entraineur entre toutes les spécifications du type de sport.\\
+	\hspace{1cm}3. Entraineur démarre le processus d'enregistrement.\\
+	\hspace{1cm}4. Système valide et enregistre la création du type de sport.\\
+	7a. Système valide les modifications et constate des données invalides.\\
+	\hspace{1cm}1. Système affichae un message d'erreur à l'utlisateur et demande de corriger les données invalides.\\
+	\hspace{1cm}2. Entraineur corrige les données.\\
+	\\
+	\textbf{Fréquence d'occurrence :} Parfois\\
+	\\
+	\hline
+\end{tabular}
+
+\newpage
+\begin{flushleft}
+	\textbf{Cas d'utilisation 8 : Configurer les obstacles}\\
+\end{flushleft}
+\begin{tabular}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} Visualigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir créer et modifier les types de sports supporter par le logiciel.\\
+	\\
+	\textbf{Préconditions :} Un type de sport a été créé.\\
+	\\
+	\textbf{Garanties en cas de succès :} Les obstacles ont été enregistré.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur démarre le processus de configuration des obstacles.\\
+	2. Système demande pour lequel des types de sport l'utilisateur veut configurer les obstacles.\\
+	3. Entraineur indique le type désiré.\\
+	4. Système offre d'ajouter, de modifier ou de supprimer un obsatce.\\
+	5. Entraineur choisi de modifier les spécifications d'un obstacle.\\
+	6. Système offre de modifier les spécifications de l'obstacle, telle que le nom de l'obstacle, l'imgae pour représenter l'obstacle et les dimensions réelles de l'obstacle.\\
+	7. Entraineur modifie des spécifications de l'obstacle.\\
+	8. Entraineur démarre le processus d'enregistrement.\\
+	9. Système valide et enregistre les modifications de l'obstacle.\\
+	\\
+	\textbf{Extensions :}\\
+	*a. Entraineur annule le processus de configuration de l'obstacle.\\
+	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler la configuration de l'obstacle.\\
+	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler la configuration de l'obstacle.\\
+	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler la configuration de l'obstacle.\\
+	\hspace{3cm}1. Système revient où il était dans le processus de configuration.\\
+	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de configuration ne soit démarré.\\
+	5a. Entraineur indique qu'il veut créer un nouvelle obstacle.\\
+	\hspace{1cm}1. Système demande à Entraineur de remplir tout les champs de spécification de l'obstacle.\\
+	\hspace{1cm}2. Entraineur entre toutes les spécifications de l'obstacle.\\
+	\hspace{1cm}3. Entraineur démarre le processus d'enregistrement.\\
+	\hspace{1cm}4. Système valide et enregistre la création du type de sport.\\
+	5b. Entraineur indique qu'il veut supprimer un obstacle.\\
+	\hspace{1cm}1. Système demande à Entraineur de confimer son choix.\\
+	\hspace{1cm}2. Entraineur confirme qu'il veut bien supprimer l'obstacle.\\
+	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus supprimer l'obstacle.\\
+	\hspace{3cm}1. Système revient à l'interface d'ajout/modification/suppression.\\
+	\hspace{1cm}3. Système supprime l'obstacle et revient à l'interface d'ajout/modification/suppression.\\
+	9a. Système valide les modifications et constate des données invalides.\\
+	\hspace{1cm}1. Système affichae un message d'erreur à l'utlisateur et demande de corriger les données invalides.\\
+	\hspace{1cm}2. Entraineur corrige les données.\\
+	\\
+	\textbf{Fréquence d'occurrence :} Parfois\\
+	\\
+	\hline
+\end{tabular}

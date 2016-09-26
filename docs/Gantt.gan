@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2016-07-25" view-index="0" gantt-divider-location="353" resource-divider-location="300" version="2.8.1" locale="fr">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2016-08-15" view-index="0" gantt-divider-location="425" resource-divider-location="300" version="2.8.1" locale="fr">
     <description/>
-    <view zooming-state="default:7" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="199" order="0"/>
-        <field id="tpd4" name="Date de début" width="75" order="1"/>
-        <field id="tpd5" name="Date de fin" width="75" order="2"/>
+    <view zooming-state="default:5" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="275" order="0"/>
+        <field id="tpd4" name="Date de début" width="78" order="1"/>
+        <field id="tpd5" name="Date de fin" width="68" order="2"/>
         <option id="taskLabelUp" value="taskDates"/>
-        <option id="color.recent"><![CDATA[#00ff33 #0033ff]]></option>
+        <option id="color.recent"><![CDATA[#ff3300 #00ff33 #0033ff]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="Nom" width="210" order="0"/>
-        <field id="1" name="Rôle par défaut" width="86" order="1"/>
+        <field id="0" name="Nom" width="192" order="0"/>
+        <field id="1" name="Rôle par défaut" width="104" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -36,18 +36,84 @@
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
         <task id="11" name="Début du projet" color="#0033ff" meeting="true" start="2016-09-06" duration="0" complete="0" expand="true"/>
-        <task id="0" name="Livrable 1" color="#0033ff" meeting="true" start="2016-10-02" duration="0" complete="0" expand="true"/>
-        <task id="4" name="Livrable 2" color="#0033ff" meeting="true" start="2016-11-06" duration="0" complete="0" expand="true"/>
-        <task id="5" name="Livrable 3" color="#0033ff" meeting="true" start="2016-11-27" duration="0" complete="0" expand="true"/>
-        <task id="10" name="Livrable 4" color="#0033ff" meeting="true" start="2016-12-18" duration="0" complete="0" expand="true"/>
-        <task id="13" name="Rencontre d'équipe" color="#00ff33" meeting="true" start="2016-09-15" duration="0" complete="100" expand="true"/>
-        <task id="16" name="Rencontre d'équipe" color="#00ff33" meeting="true" start="2016-09-20" duration="0" complete="100" expand="true"/>
-        <task id="19" name="Rencontre d'équipe" color="#00ff33" meeting="true" start="2016-09-24" duration="0" complete="100" expand="true"/>
+        <task id="40" name="Livrable 1" meeting="false" start="2016-09-15" duration="17" complete="82" expand="false">
+            <task id="0" name="Fin Livrable 1" color="#0033ff" meeting="true" start="2016-10-02" duration="0" complete="0" expand="true"/>
+            <task id="49" name="Rencontre d'équipe" color="#000000" meeting="false" start="2016-09-15" duration="12" complete="75" expand="false">
+                <task id="13" name="Rencontre d'équipe 09/15" color="#00ff33" meeting="true" start="2016-09-15" duration="0" complete="100" expand="true"/>
+                <task id="16" name="Rencontre d'équipe 09/20" color="#00ff33" meeting="true" start="2016-09-20" duration="0" complete="100" expand="true">
+                    <depend id="23" type="2" difference="0" hardness="Strong"/>
+                    <depend id="24" type="2" difference="0" hardness="Strong"/>
+                    <depend id="28" type="2" difference="0" hardness="Strong"/>
+                    <depend id="30" type="2" difference="0" hardness="Strong"/>
+                    <depend id="33" type="2" difference="0" hardness="Strong"/>
+                    <depend id="35" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="19" name="Rencontre d'équipe 09/24" color="#00ff33" meeting="true" start="2016-09-24" duration="0" complete="100" expand="true"/>
+                <task id="20" name="Rencontre d'équipe 09/27" color="#00ff33" meeting="true" start="2016-09-27" duration="0" complete="0" expand="true"/>
+            </task>
+            <task id="23" name="Écriture des cas d'utilisation" color="#ff3300" meeting="false" start="2016-09-20" duration="7" complete="90" expand="true">
+                <notes><![CDATA[Simon-Pierre : 
+ - Créer une stratégie                                      
+ - Sauvegarder une stratégie                                   
+ - Charger une stratégie                                            
+
+Jérémie :
+ - Visualiser la stratégie  
+ - Exporter une stratégie en format image               
+
+Émile :
+ - Placer les éléments                                              
+ - Modifier les trajectoires des éléments mobiles                   
+    
+Alexandre :
+ - Configurer les types de sport
+ - Configurer les obstacles    
+]]></notes>
+                <depend id="20" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="24" name="Écriture des spécifications supplémentaires" color="#ff3300" meeting="false" start="2016-09-20" duration="7" complete="100" expand="true">
+                <depend id="20" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="28" name="Écriture de la vision" color="#ff3300" meeting="false" start="2016-09-20" duration="7" complete="100" expand="true">
+                <depend id="20" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="30" name="Mise au propre du MockUp" color="#ff3300" meeting="false" start="2016-09-20" duration="7" complete="60" expand="true">
+                <depend id="20" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="33" name="Mise a jour du diagramme Gantt" color="#ff3300" meeting="false" start="2016-09-20" duration="7" complete="92" expand="true">
+                <depend id="20" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="35" name="Écriture du glossaire" color="#ff3300" meeting="false" start="2016-09-20" duration="7" complete="80" expand="true">
+                <depend id="20" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="41" name="Livrable 2" color="#000000" meeting="false" project="true" start="2016-11-06" duration="1" complete="0" expand="false">
+            <task id="4" name="Fin Livrable 2" color="#0033ff" meeting="true" start="2016-11-06" duration="0" complete="0" expand="true"/>
+        </task>
+        <task id="42" name="Livrable 3" color="#000000" meeting="false" project="true" start="2016-11-27" duration="1" complete="0" expand="false">
+            <task id="5" name="Fin Livrable 3" color="#0033ff" meeting="true" start="2016-11-27" duration="0" complete="0" expand="true"/>
+        </task>
+        <task id="43" name="Livrable 4" color="#000000" meeting="false" project="true" start="2016-12-18" duration="1" complete="0" expand="false">
+            <task id="10" name="Fin Livrable 4" color="#0033ff" meeting="true" start="2016-12-18" duration="0" complete="0" expand="true"/>
+        </task>
     </tasks>
     <resources>
-        <resource id="0" name="Alexandre Mc Cune" function="Default:0" contacts="alexandre.mc-cune.1@ulaval.ca" phone="(581) 986-9340"/>
+        <resource id="0" name="Alexandre Mc Cune" function="SoftwareDevelopment:2" contacts="alexandre.mc-cune.1@ulaval.ca" phone="(581) 986-9340"/>
+        <resource id="1" name="Simon-Pierre Deschênes" function="SoftwareDevelopment:2" contacts="simon-pierre.deschenes.1@ulaval.ca" phone=""/>
+        <resource id="2" name="Émile Grégoire" function="SoftwareDevelopment:2" contacts="emile.gregoire.1@ulaval.ca" phone=""/>
+        <resource id="3" name="Jérémie Bolduc" function="SoftwareDevelopment:2" contacts="jeremie.bolduc.1@ulaval.ca" phone=""/>
     </resources>
-    <allocations/>
+    <allocations>
+        <allocation task-id="23" resource-id="0" function="SoftwareDevelopment:2" responsible="false" load="50.0"/>
+        <allocation task-id="24" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="25.0"/>
+        <allocation task-id="33" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="25.0"/>
+        <allocation task-id="23" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="23" resource-id="2" function="SoftwareDevelopment:2" responsible="false" load="66.0"/>
+        <allocation task-id="28" resource-id="2" function="SoftwareDevelopment:2" responsible="true" load="34.0"/>
+        <allocation task-id="23" resource-id="3" function="SoftwareDevelopment:2" responsible="false" load="50.0"/>
+        <allocation task-id="30" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="25.0"/>
+        <allocation task-id="35" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="25.0"/>
+    </allocations>
     <vacations>
         <vacation start="2016-10-01" end="2016-10-02" resourceid="0"/>
         <vacation start="2016-10-05" end="2016-10-06" resourceid="0"/>
