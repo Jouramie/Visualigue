@@ -1,13 +1,12 @@
 \chapter{Modèle des cas d'utilisation}
 \label{s:use_cases}
-\newpage
-\begin{flushleft}
-	\textbf{Cas d'utilisation 1 : Créer une stratégie}\\
-\end{flushleft}
-\begin{tabular}{|p{16cm}|}
+
+
+\section{Cas d'utilisation : Créer une stratégie}
+\begin{longtable}{|p{16cm}|}
 	\hline
 	\\
-	\textbf{Projet :} Visualigue\\
+	\textbf{Projet :} VisuaLigue\\
 	\\
 	\textbf{Niveau :} But d'utilisateur\\
 	\\
@@ -48,15 +47,13 @@
 	\textbf{Questions ouvertes :} Quelles seront les informations en lien avec la nouvelle stratégie que l'entraineur devra entrer?\\
 	\\
 	\hline
-\end{tabular}
-\newpage
-\begin{flushleft}
-	\textbf{Cas d'utilisation 2 : Sauvegarder une stratégie}\\
-\end{flushleft}
-\begin{tabular}{|p{16cm}|}
+\end{longtable}
+
+\section{Cas d'utilisation : Sauvegarder une stratégie}
+\begin{longtable}{|p{16cm}|}
 	\hline
 	\\
-	\textbf{Projet :} Visualigue\\
+	\textbf{Projet :} VisuaLigue\\
 	\\
 	\textbf{Niveau :} But d'utilisateur\\
 	\\
@@ -82,15 +79,13 @@
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
 	\hline
-\end{tabular}
-\newpage
-\begin{flushleft}
-	\textbf{Cas d'utilisation 3 : Charger une stratégie}\\
-\end{flushleft}
-\begin{tabular}{|p{16cm}|}
+\end{longtable}
+
+\section{Cas d'utilisation : Charger une stratégie}
+\begin{longtable}{|p{16cm}|}
 	\hline
 	\\
-	\textbf{Projet :} Visualigue\\
+	\textbf{Projet :} VisuaLigue\\
 	\\
 	\textbf{Niveau :} But d'utilisateur\\
 	\\
@@ -125,16 +120,13 @@
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
 	\hline
-\end{tabular}
+\end{longtable}
 
-\newpage
-\begin{flushleft}
-	\textbf{Cas d'utilisation 4 : Visualiser une stratégie}\\
-\end{flushleft}
-\begin{tabular}{|p{16cm}|}
+\section{Cas d'utilisation : Visualiser une stratégie}
+\begin{longtable}{|p{16cm}|}
 	\hline
 	\\
-	\textbf{Projet :} Visualigue\\
+	\textbf{Projet :} VisuaLigue\\
 	\\
 	\textbf{Niveau :} But d'utilisateur\\
 	\\
@@ -146,24 +138,33 @@
 	\\
 	\textbf{Principal scénario de succès :}\\
 	1. Entraineur ou Joueur démarre le processus de visualisation de la stratégie.\\
-	2. Système calcul la position des éléments et les affiches.\\
+	2. Système calcul la position des éléments et les affiches jusqu'à la fin de l'exécution de la stratégie.\\
 	\hspace{1cm} \em Système répète l'action 2 jusqu'à la fin de la stratégie.
 	\\
 	\textbf{Extensions :}\\
+	2a. Entraineur ou Joueur change la position du curseur sur une autre image.\\
+	\hspace{1cm}1. Système arrête l'exécution de la stratégie et affiche l'image sur laquelle le curseur est placé.\\
+	2b. Entraineur ou Joueur annule l'exécution de la stratégie.\\
+	\hspace{1cm}1. Système arrête l'exécution de la stratégie et affiche la dernière image sur laquelle le curseur est placé.\\
+	2c. Entraineur ou Joueur appui sur le bouton de retour au début.\\
+	\hspace{1cm}1. Système place sur curseur sur la première image et reprend l'exécution du la stratégie.\\
+	2d. Entraineur ou Joueur appui sur le bouton d'avance rapide.\\
+	\hspace{1cm}1. Système continu l'exécution de la stratégie mais deux fois plus rapidement.\\
+	2e. Entraineur ou Joueur appui sur le bouton de retour en arrière.\\
+	\hspace{1cm}1. Système exécute la stratégie à l'envers deux fois plus rapidement que la vitesse normale à partir de l'image à laquelle le curseur était positionné.\\
+	2f. Entraineur ou Joueur appui sur le bouton de fin de la stratégie.\\
+	\hspace{1cm}1. Système arrête la stratégie et place le curseur sur la dernière image.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
 	\hline
-\end{tabular}
+\end{longtable}
 
-\newpage
-\begin{flushleft}
-	\textbf{Cas d'utilisation 6 : Placer les éléments}\\
-\end{flushleft}
-\begin{tabular}{|p{16cm}|}
+\section{Cas d'utilisation : Placer les éléments}
+\begin{longtable}{|p{16cm}|}
 	\hline
 	\\
-	\textbf{Projet :} Visualigue\\
+	\textbf{Projet :} VisuaLigue\\
 	\\
 	\textbf{Niveau :} But d'utilisateur\\
 	\\
@@ -204,20 +205,105 @@
 	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et charge la fenêtre Propriétés avec les paramètres associés.\\
 	\hspace{0.5cm}3. Entraineur sélectionne le rôle du joueur à partir d'une liste déroulante dans la fenêtre Propriétés.\\
 	\hspace{0.5cm}4. Système modifie l'élément pour correspondre aux spécifications du rôle du joueur.\\
+	5c. Entraineur souhaite supprimer un élément.\\
+	\hspace{0.5cm}1. Entraineur clique sur l'élément à supprimer.\\
+	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et charge la fenêtre Propriétés avec les paramètres associés.\\
+	\hspace{0.5cm}3. Entraineur clique sur le bouton "Supprimer".\\
+	\hspace{0.5cm}4. Système demande à Entraineur s'il veut vraiment supprimer l'élément.\\
+	\hspace{0.5cm}5. Entraineur confirme la suppression de l'élément.\\
+	\hspace{1cm}5a. Entraineur annule la suppression de l'élément.\\
+	\hspace{1.5cm}1. Système revient où il était dans le processus de placement d'un élément.\\
+	\hspace{1cm}6. Système supprime l'élément.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
 	\hline
-\end{tabular}
+\end{longtable}
 
-\newpage
-\begin{flushleft}
-	\textbf{Cas d'utilisation 9 : Exporter une stratégie en format image}\\
-\end{flushleft}
-\begin{tabular}{|p{16cm}|}
+\section{Cas d'utilisation : Modifier les trajectoires des éléments mobiles image par image}
+\begin{longtable}{|p{16cm}|}
 	\hline
 	\\
-	\textbf{Projet :} Visualigue\\
+	\textbf{Projet :} VisuaLigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir modifier la trajectoire des éléments mobiles à sa guise.\\
+	\\
+	\textbf{Postconditions :} Les trajectoires des éléments mobiles correspondent à ce que l'entraineur souhaite.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur déplace le curseur sur la ligne du temps au début complètement de la séquence ou clique sur le bouton "Retour au début".\\
+	2. Système replace les éléments selon leurs positions et orientations d'origine.\\
+	3. Entraineur délace les éléments mobiles aux endroits désirés. Voir cas d'utilisation \underline{Placer les éléments}.\\
+	4. Entraineur clique sur le bouton "Prochaine image".\\
+	5. Système enregistre toutes les positions des éléments mobiles.\\
+	6. Système affiche sur la ligne du temps tous les éléments modifiés.\\
+	7. Système déplace le curseur de la ligne du temps d'une image.\\
+	\textit{Répéter les étapes 3 à 7 jusqu'à la fin de la stratégie.}\\
+	\\
+	\textbf{Extensions :}\\
+	3a. Entraineur souhaite retirer le déplacement d'un élément mobile.\\
+	\hspace{0.5cm}1. Entraineur clique sur l'élément mobile désiré.\\
+	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné.\\
+	\hspace{0.5cm}3. Entraineur clique sur le bouton "Supprimer image-clé".\\
+	\hspace{0.5cm}4. Système supprime l'image-clé de l'élément mobile et replace l'élément mobile à son ancien emplacement.\\
+	7a. Entraineur souhaite revenir à l'image précédente pour la modifier.\\
+	\hspace{0.5cm}1. Entraineur clique sur le bouton "Image précédente" ou clique sur la ligne du temps à l'endroit désiré.\\
+	\hspace{0.5cm}2. Système affiche les éléments mobiles à leur position lors de l'image sélectionnée.\\
+	\\
+	\textbf{Fréquence d'occurrence :} Régulièrement\\
+	\\
+	\hline
+\end{longtable}
+
+\section{Cas d'utilisation : Modifier les trajectoires des éléments mobiles en temps réel}
+\begin{longtable}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} VisuaLigue\\
+	\\
+	\textbf{Niveau :} But d'utilisateur\\
+	\\
+	\textbf{Acteurs primaires :} Entraineur\\
+	\\
+	\textbf{Figurants et intérêts :} \\
+	- Entraineur: Veut pouvoir modifier la trajectoire des éléments mobiles à sa guise et en temps réel.\\
+	\\
+	\textbf{Postconditions :} Les trajectoires des éléments mobiles correspondent à ce que l'entraineur souhaite.\\
+	\\
+	\textbf{Principal scénario de succès :}\\
+	1. Entraineur déplace le curseur sur la ligne du temps au début complètement de la séquence ou clique sur le bouton "Retour au début".\\
+	2. Système replace les éléments selon leurs positions et orientations d'origine.\\
+	3. Entraineur clique sur un élément mobile.\\
+	4. Système indique visuellement que l'élément est sélectionné.\\
+	5. Entraineur clique sur le bouton "Démarrer enregistrement en temps réel".\\
+	6. Système affiche un décompte de 3 secondes à l'écran.\\
+	7. Système joue la stratégie en temps réel et enregistre les positions de la souris pour chaque image.\\
+	8. Système génère une image-clé à chaque image et enregistrent celles-ci pour l'élément mobile sélectionné.\\
+	9. Entraineur visualise la stratégie ainsi obtenu selon le cas d'utilisation \underline{Visualiser une stratégie}.\\
+	\textit{Répéter les étapes 1 à 9 pour chaque élément mobile.}\\
+	\\
+	\textbf{Extensions :}\\
+	*a. Entraineur souhaite arrêter l'enregistrement.\\
+	\hspace{0.5cm}1. Entraineur clique sur le bouton "Annuler l'enregistrement".\\
+	\hspace{0.5cm}2. Système arrête l'enregistrement, supprime les images-clés générées et retourne les éléments mobiles à leurs positions initiales.\\
+	9a. Entraineur souhaite ré-enregistrer la trajectoire.\\
+	\hspace{0.5cm}1. Entraineur répète les étapes 1 à 9 en prenant soin de sélectionner le même élément mobile.\\
+	\\
+	\textbf{Fréquence d'occurrence :} Régulièrement\\
+	\\
+	\hline
+\end{longtable}
+
+\section{Cas d'utilisation : Exporter une stratégie en format image}
+\begin{longtable}{|p{16cm}|}
+	\hline
+	\\
+	\textbf{Projet :} VisuaLigue\\
 	\\
 	\textbf{Niveau :} But d'utilisateur\\
 	\\
@@ -230,13 +316,21 @@
 	1. Entraineur démarre le processus d'exportation.\\
 	2. Système demande en quel format les fichiers doivent être exporter.\\
 	3. Entraineur sélectionne un format d'image.\\
-	4. Système enregistre la stratégie sous forme d'image.\\
+	4. Entraineur indique l'endroit où il veut enregistrer l'image.\\
+	5. Système enregistre la stratégie sous forme d'image.\\
 	\\
 	\textbf{Extensions :}\\
+	*a. Entraineur annule le processus d'exportation d'une image.\\
+	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler l'exportation d'une image.\\
+	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler l'exportation d'une image.\\
+	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler l'exportation d'une image.\\
+	\hspace{3cm}1. Système revient où il était dans le processus d'exportation d'une image.\\
+	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus d'exportation d'une image soit démarré.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Parfois\\
 	\\
 	\hline
+<<<<<<< HEAD
 \end{tabular}
 
 \newpage
@@ -382,3 +476,6 @@
 	\\
 	\hline
 \end{tabular}
+=======
+\end{longtable}
+>>>>>>> 368c5d1a7482ee923cb8ec7838b754ecef1856df
