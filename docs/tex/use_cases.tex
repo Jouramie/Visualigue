@@ -15,32 +15,31 @@
 	\textbf{Figurants et intérêts :} \\
 	- Entraineur: Veut pouvoir créer des fichiers qui contiendront éventuellement des stratégies.\\
 	\\
-	\textbf{Postconditions :} L'entraineur aura un fichier qui pourra être utilisé pour élaborer une stratégie.\\
+	\textbf{Préconditions :} \\
+	Un type de sport doit déjà avoir été créé. \\
+	\\
+	\textbf{Garantie en cas de succès :} L'entraineur aura un fichier qui pourra être utilisé pour élaborer une stratégie.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
 	1. Entraineur démarre le processus de création d'une stratégie.\\
 	2. Système demande les informations en lien avec la nouvelle stratégie.\\
-	3. Entraineur fourni à Système les informations nécessaires.\\
+	3. Entraineur fournit à Système les informations nécessaires.\\
 	4. Système demande l'endroit où le fichier devra être enregistré ainsi que le nom de ce dernier.\\
 	5. Entraineur choisi l'endroit où le fichier devra être enregistré ainsi que son nom.\\
-	6. Système crée le fichier et il est possible de le modifier.\\
+	6. Système crée le fichier et Entraineur continue dans le cas d'utilisation \underline{Placer les éléments}.\\
 	\\
-	\textbf{Extensions :}\\
+	\textbf{Scénarios alternatifs :}\\
 	*a. Entraineur annule le processus de création d'une stratégie.\\
-	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler la création d'une stratégie.\\
-	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler la création d'une stratégie.\\
-	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler la création d'une stratégie.\\
-	\hspace{3cm}1. Système revient où il était dans le processus de création d'une stratégie.\\
-	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de création d'une stratégie ne soit démarré.\\
+	\hspace{1cm}1. Système retourne à la page où il se trouvait avant que le processus de création d'une stratégie ne soit démarré.\\
 	1a. Entraineur était au milieu de l'édition d'un fichier.\\
 	\hspace{1cm}1. Système demande à Entraineur s'il veut sauvegarder le fichier dont l'édition était en cours.\\
-	\hspace{1cm}2. Entraineur choisi s'il veut sauvegarder ou non le fichier dont l'édition était en cours.\\
+	\hspace{1cm}2. Entraineur choisit s'il veut sauvegarder ou non le fichier dont l'édition était en cours.\\
 	5a. Entraineur entre un nom de fichier invalide.\\
 	\hspace{1cm}1. Système informe Entraineur que le nom entré est invalide.\\
 	\hspace{1cm}2. Entraineur entre un nom valide pour le fichier.\\
-	5b. Entraineur choisi un emplacement invalide pour le fichier.\\
+	5b. Entraineur choisit un emplacement invalide pour le fichier.\\
 	\hspace{1cm}1. Système informe Entraineur que l'emplacement choisi est invalide.\\
-	\hspace{1cm}2. Entraineur choisi un emplacement valide pour le fichier.\\
+	\hspace{1cm}2. Entraineur choisit un emplacement valide pour le fichier.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
@@ -49,7 +48,7 @@
 	\hline
 \end{longtable}
 
-\section{Cas d'utilisation : Sauvegarder une stratégie}
+\section{Cas d'utilisation : Enregistrer une stratégie}
 \begin{longtable}{|p{16cm}|}
 	\hline
 	\\
@@ -60,21 +59,16 @@
 	\textbf{Acteurs primaires :} Entraineur\\
 	\\
 	\textbf{Figurants et intérêts :} \\
-	- Entraineur: Veut pouvoir sauvegarder une stratégie qu'il a élaborée.\\
+	- Entraineur: Veut pouvoir enregistrer une stratégie qu'il a élaborée.\\
 	\\
-	\textbf{Postconditions :} La stratégie est sauvegardée et peut être chargée lors d'une prochaine utilisation du logiciel.\\
+	\textbf{Préconditions :} \\
+	Un fichier de stratégie doit préalablement avoir été chargé. \\
+	\\
+	\textbf{Garantie en cas de succès :} La stratégie est enregistrée et peut être chargée lors d'une prochaine utilisation du logiciel.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
-	1. Entraineur démarre le processus de sauvegarde de la stratégie.\\
-	2. Système sauvegarde la stratégie dans le fichier de stratégie.\\
-	\\
-	\textbf{Extensions :}\\
-	*a. Entraineur annule le processus de sauvegarde d'une stratégie.\\
-	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler la sauvegarde d'une stratégie.\\
-	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler la sauvegarde d'une stratégie.\\
-	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler la sauvegarde d'une stratégie.\\
-	\hspace{3cm}1. Système revient où il était dans le processus de sauvegarde d'une stratégie.\\
-	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de sauvegarde d'une stratégie soit démarré.\\
+	1. Entraineur démarre le processus d'enregistrement de la stratégie.\\
+	2. Système enregistre la stratégie dans le fichier de stratégie.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
@@ -97,27 +91,23 @@
 	\\
 	\textbf{Préconditions :} Une stratégie doit préalablement avoir été créée.\\
 	\\
-	\textbf{Postconditions :} La stratégie est chargée et elle peut être modifiée ou visualisée.\\
+	\textbf{Garantie en cas de succès :} La stratégie est chargée et elle peut être modifiée ou visualisée.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
 	1. Entraineur ou Joueur démarre le processus de chargement de la stratégie.\\
-	2. Système demande lequel des fichiers de stratégie charger.\\
-	3. Entraineur ou Joueur choisi lequel des fichiers de stratégie charger.\\
+	2. Système demande le fichier de stratégie à charger.\\
+	3. Entraineur ou Joueur choisit le fichier de stratégie charger.\\
 	4. Système charge le fichier.\\
 	\\
-	\textbf{Extensions :}\\
+	\textbf{Scénarios alternatifs :}\\
 	*a. Entraineur ou Joueur annule le processus de chargement d'une stratégie.\\
-	\hspace{1cm}1. Système demande à Entraineur ou Joueur s'il est certain de vouloir annuler le chargement d'une stratégie.\\
-	\hspace{1cm}2. Entraineur ou Joueur confirme qu'il veut bien annuler le chargement d'une stratégie.\\
-	\hspace{2cm}2a. Entraineur ou Joueur indique qu'il ne veut plus annuler le chargement d'une stratégie.\\
-	\hspace{3cm}1. Système revient où il était dans le processus de chargement d'une stratégie.\\
-	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de chargement d'une stratégie ne soit démarré.\\
+	\hspace{1cm}1. Système retourne à la page où il se trouvait avant que le processus de chargement d'une stratégie ne soit démarré.\\
 	1a. Entraineur était au milieu de l'édition d'un fichier.\\
 	\hspace{1cm}1. Système demande à Entraineur s'il veut sauvegarder le fichier dont l'édition était en cours.\\
-	\hspace{1cm}2. Entraineur choisi s'il veut sauvegarder ou non le fichier dont l'édition était en cours.\\
-	3a. Entraineur ou Joueur choisi un fichier invalide.\\
+	\hspace{1cm}2. Entraineur choisit s'il veut sauvegarder ou non le fichier dont l'édition était en cours.\\
+	3a. Entraineur ou Joueur choisit un fichier invalide.\\
 	\hspace{1cm}1. Système informe Entraineur ou Joueur que le fichier choisi est invalide.\\
-	\hspace{1cm}2. Entraineur ou Joueur choisi un fichier valide.\\
+	\hspace{1cm}2. Entraineur ou Joueur choisit un fichier valide.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
@@ -135,26 +125,28 @@
 	\textbf{Acteurs primaires :} Entraineur et Joueur\\
 	\\
 	\textbf{Figurants et intérêts :} \\
-	- Entraineur: Veut pouvoir visualiser une stratégie qu'il a créer.\\
+	- Entraineur: Veut pouvoir visualiser une stratégie qu'il a créée.\\
 	- Joueur: Veut pouvoir visualiser une stratégie à apprendre.\\
+	\\
+	\textbf{Garantie en cas de succès :} La stratégie a été affichée à l'écran.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
 	1. Entraineur ou Joueur démarre le processus de visualisation de la stratégie.\\
-	2. Système calcul la position des éléments et les affiches jusqu'à la fin de l'exécution de la stratégie.\\
-	\hspace{1cm} \em Système répète l'action 2 jusqu'à la fin de la stratégie.
+	2. Système calcule la position des éléments et les affiche.\\
+	\hspace{1cm} \em Système répète l'action 2 jusqu'à la fin de la stratégie.\\
 	\\
-	\textbf{Extensions :}\\
-	2a. Entraineur ou Joueur change la position du curseur sur une autre image.\\
+	\textbf{Scénarios alternatifs :}\\
+	2a. Entraineur ou Joueur déplace le curseur sur la ligne du temps.\\
 	\hspace{1cm}1. Système arrête l'exécution de la stratégie et affiche l'image sur laquelle le curseur est placé.\\
 	2b. Entraineur ou Joueur annule l'exécution de la stratégie.\\
 	\hspace{1cm}1. Système arrête l'exécution de la stratégie et affiche la dernière image sur laquelle le curseur est placé.\\
-	2c. Entraineur ou Joueur appui sur le bouton de retour au début.\\
-	\hspace{1cm}1. Système place sur curseur sur la première image et reprend l'exécution du la stratégie.\\
-	2d. Entraineur ou Joueur appui sur le bouton d'avance rapide.\\
-	\hspace{1cm}1. Système continu l'exécution de la stratégie mais deux fois plus rapidement.\\
-	2e. Entraineur ou Joueur appui sur le bouton de retour en arrière.\\
-	\hspace{1cm}1. Système exécute la stratégie à l'envers deux fois plus rapidement que la vitesse normale à partir de l'image à laquelle le curseur était positionné.\\
-	2f. Entraineur ou Joueur appui sur le bouton de fin de la stratégie.\\
+	2c. Entraineur ou Joueur appuie sur le bouton de retour au début.\\
+	\hspace{1cm}1. Système place le curseur sur la première image et reprend l'exécution de la stratégie.\\
+	2d. Entraineur ou Joueur démarre le processus d'avance rapide.\\
+	\hspace{1cm}1. Système continue l'exécution de la stratégie plus rapidement.\\
+	2e. Entraineur ou Joueur démarre le processus de retour en arrière.\\
+	\hspace{1cm}1. Système exécute la stratégie à l'envers plus rapidement que la vitesse normale à partir de l'image à laquelle le curseur était positionné.\\
+	2f. Entraineur ou Joueur démarre le processus fin de la stratégie.\\
 	\hspace{1cm}1. Système arrête la stratégie et place le curseur sur la dernière image.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
@@ -173,49 +165,47 @@
 	\textbf{Acteurs primaires :} Entraineur\\
 	\\
 	\textbf{Figurants et intérêts :} \\
-	- Entraineur: Veut pouvoir placer les éléments sur la stratégie et les modifier à sa guise.\\
+	- Entraineur: Veut pouvoir placer les éléments sur la scène et les modifier à sa guise.\\
 	\\
-	\textbf{Postconditions :} Les éléments sont placés selon ce que l'entraineur souhaite.\\
+	\textbf{Garantie en cas de succès :} Les éléments sont placés selon ce que l'entraineur souhaite.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
 	1. Entraineur sélectionne un élément de la liste d'éléments disponibles.\\
-	2. Système crée un élément selon les spécifications définies dans le sport.\\
-	3. Entraineur clique dans l'aire de jeu à l'endroit où l'élément doit être placé.\\
-	4. Système place l'élément sur l'aire de jeu et affiche l'élément.\\
+	2. Système crée un élément selon les spécifications définies selon le type de sport.\\
+	3. Entraineur clique dans la scène à l'endroit où l'élément doit être placé.\\
+	4. Système place l'élément dans la scène et affiche l'élément.\\
 	5. Système met à jour la disponibilité de l'élément dans la liste d'éléments disponibles (si nécessaire)\\
 	\\
-	\textbf{Extensions :}\\
-	*a. Entraineur annule le placement de l'élément.\\
-	\hspace{0.5cm}1. Système demande à Entraineur s'il est certain de vouloir annuler le placement de l'élément.\\
-	\hspace{0.5cm}2. Entraineur confirme qu'il veut bien annuler le placement de l'élément.\\
-	\hspace{1cm}2a. Entraineur indique qu'il ne veut plus annuler le placement de l'élément.\\
-	\hspace{1.5cm}1. Système revient où il était dans le processus de placement d'un élément.\\
-	\hspace{0.5cm}3. Système supprime l'élément créé et réinitialise sa disponibilité (si nécessaire) dans la liste des éléments.\\
+	\textbf{Scénarios alternatifs :}\\
 	5a. Entraineur souhaite modifier la position de l'élément après l'avoir placé.\\
 	\hspace{0.5cm}1. Entraineur clique sur l'élément à modifier.\\
-	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et charge la fenêtre Propriétés avec les paramètres associés.\\
+	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et affiche les paramètres associés.\\
 	\hspace{0.5cm}3. Entraineur déplace avec la souris l'élément en question ou modifie la propriété "Position" des paramètres.\\
 	\hspace{0.5cm}4. Système déplace l'élément selon les spécifications de l'Entraineur.\\
 	5b. Entraineur souhaite modifier la rotation de l'élément.\\
 	\hspace{0.5cm}1. Entraineur clique sur l'élément à modifier.\\
-	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et charge la fenêtre Propriétés avec les paramètres associés.\\
-	\hspace{0.5cm}3. Système affiche une flèche de rotation près de l'élément sélectionné.\\
-	\hspace{0.5cm}4. Entraineur déplace la flèche de rotation jusqu'à l'angle souhaité ou modifie la propriété "Rotation" des paramètres.\\
-	\hspace{0.5cm}5. Système oriente l'élément selon les spécifications de l'Entraineur.\\
-	5c. Entraineur souhaite modifier le rôle d'un l'élément de type "Joueur".\\
+	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et affiche les paramètres associés.\\
+	\hspace{0.5cm}3. Entraineur modifie la propriété "Rotation" des paramètres.\\
+	\hspace{0.5cm}4. Système oriente l'élément selon les spécifications de l'Entraineur.\\
+	5c. Entraineur souhaite modifier la rotation de l'élément avec la souris.\\
+	\hspace{0.5cm}1. Entraineur déplace sa souris sur l'élément à modifier.\\
+	\hspace{0.5cm}2. Système affiche une flèche de rotation près de l'élément sélectionné.\\
+	\hspace{0.5cm}3. Entraineur déplace la flèche de rotation jusqu'à l'angle souhaité.\\
+	\hspace{0.5cm}4. Système oriente l'élément selon les spécifications de l'Entraineur.\\
+	5d. Entraineur souhaite modifier le rôle d'un l'élément de type "Joueur".\\
 	\hspace{0.5cm}1. Entraineur clique sur l'élément à modifier.\\
-	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et charge la fenêtre Propriétés avec les paramètres associés.\\
-	\hspace{0.5cm}3. Entraineur sélectionne le rôle du joueur à partir d'une liste déroulante dans la fenêtre Propriétés.\\
+	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et affiche les paramètres associés.\\
+	\hspace{0.5cm}3. Entraineur sélectionne le rôle du joueur.\\
 	\hspace{0.5cm}4. Système modifie l'élément pour correspondre aux spécifications du rôle du joueur.\\
-	5c. Entraineur souhaite supprimer un élément.\\
+	5e. Entraineur souhaite supprimer un élément.\\
 	\hspace{0.5cm}1. Entraineur clique sur l'élément à supprimer.\\
-	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et charge la fenêtre Propriétés avec les paramètres associés.\\
-	\hspace{0.5cm}3. Entraineur clique sur le bouton "Supprimer".\\
+	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné et affiche avec les paramètres associés.\\
+	\hspace{0.5cm}3. Entraineur démarre le processus de suppression.\\
 	\hspace{0.5cm}4. Système demande à Entraineur s'il veut vraiment supprimer l'élément.\\
 	\hspace{0.5cm}5. Entraineur confirme la suppression de l'élément.\\
 	\hspace{1cm}5a. Entraineur annule la suppression de l'élément.\\
 	\hspace{1.5cm}1. Système revient où il était dans le processus de placement d'un élément.\\
-	\hspace{1cm}6. Système supprime l'élément.\\
+	\hspace{0.5cm}6. Système supprime l'élément.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
@@ -235,27 +225,25 @@
 	\textbf{Figurants et intérêts :} \\
 	- Entraineur: Veut pouvoir modifier la trajectoire des éléments mobiles à sa guise.\\
 	\\
-	\textbf{Postconditions :} Les trajectoires des éléments mobiles correspondent à ce que l'entraineur souhaite.\\
+	\textbf{Garantie en cas de succès :} Les trajectoires des éléments mobiles correspondent à ce que l'entraineur souhaite.\\
+	\\
+	\textbf{Préconditions :}\\
+	Un élément mobile a déjà été placé sur la scène.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
-	1. Entraineur déplace le curseur sur la ligne du temps au début complètement de la séquence ou clique sur le bouton "Retour au début".\\
-	2. Système replace les éléments selon leurs positions et orientations d'origine.\\
-	3. Entraineur délace les éléments mobiles aux endroits désirés. Voir cas d'utilisation \underline{Placer les éléments}.\\
-	4. Entraineur clique sur le bouton "Prochaine image".\\
-	5. Système enregistre toutes les positions des éléments mobiles.\\
-	6. Système affiche sur la ligne du temps tous les éléments modifiés.\\
-	7. Système déplace le curseur de la ligne du temps d'une image.\\
-	\textit{Répéter les étapes 3 à 7 jusqu'à la fin de la stratégie.}\\
+	1. Entraineur déplace les éléments mobiles aux positions souhaitées. Voir cas d'utilisation \underline{Placer les éléments}.\\
+	2. Entraineur passe à la prochaine image.\\
+	3. Système enregistre toutes les positions des éléments mobiles.\\
+	4. Système affiche la prochaine image et les éléments mobiles de l'image précédente en transparence.\\
+	\textit{Répéter les étapes 1 à 4 jusqu'à la fin de la stratégie.}\\
 	\\
-	\textbf{Extensions :}\\
-	3a. Entraineur souhaite retirer le déplacement d'un élément mobile.\\
-	\hspace{0.5cm}1. Entraineur clique sur l'élément mobile désiré.\\
-	\hspace{0.5cm}2. Système indique visuellement que l'élément est sélectionné.\\
-	\hspace{0.5cm}3. Entraineur clique sur le bouton "Supprimer image-clé".\\
-	\hspace{0.5cm}4. Système supprime l'image-clé de l'élément mobile et replace l'élément mobile à son ancien emplacement.\\
-	7a. Entraineur souhaite revenir à l'image précédente pour la modifier.\\
-	\hspace{0.5cm}1. Entraineur clique sur le bouton "Image précédente" ou clique sur la ligne du temps à l'endroit désiré.\\
-	\hspace{0.5cm}2. Système affiche les éléments mobiles à leur position lors de l'image sélectionnée.\\
+	\textbf{Scénarios alternatifs :}\\
+	2a. Entraineur souhaite revenir à l'image précédente pour la modifier.\\
+	\hspace{0.5cm}1. Entraineur passe à l'image précédente.\\
+	\hspace{0.5cm}2. Système affiche l'image précédente et les éléments mobiles de l'image qui la précède en transparence.\\
+	4a. La prochaine image n'existe pas.\\
+	\hspace{0.5cm}1. Système génère une nouvelle image à partir de la précédente.\\
+	\hspace{0.5cm}2. Système affiche la nouvelle image et les éléments mobiles de l'image précédente en transparence.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
@@ -275,26 +263,22 @@
 	\textbf{Figurants et intérêts :} \\
 	- Entraineur: Veut pouvoir modifier la trajectoire des éléments mobiles à sa guise et en temps réel.\\
 	\\
-	\textbf{Postconditions :} Les trajectoires des éléments mobiles correspondent à ce que l'entraineur souhaite.\\
+	\textbf{Garantie en cas de succès :} Les trajectoires des éléments mobiles correspondent à ce que l'entraineur souhaite.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
-	1. Entraineur déplace le curseur sur la ligne du temps au début complètement de la séquence ou clique sur le bouton "Retour au début".\\
-	2. Système replace les éléments selon leurs positions et orientations d'origine.\\
-	3. Entraineur clique sur un élément mobile.\\
-	4. Système indique visuellement que l'élément est sélectionné.\\
-	5. Entraineur clique sur le bouton "Démarrer enregistrement en temps réel".\\
-	6. Système affiche un décompte de 3 secondes à l'écran.\\
-	7. Système joue la stratégie en temps réel et enregistre les positions de la souris pour chaque image.\\
-	8. Système génère une image-clé à chaque image et enregistrent celles-ci pour l'élément mobile sélectionné.\\
-	9. Entraineur visualise la stratégie ainsi obtenu selon le cas d'utilisation \underline{Visualiser une stratégie}.\\
-	\textit{Répéter les étapes 1 à 9 pour chaque élément mobile.}\\
+	1. Entraineur démarre la processus d'enregistrement en temps réel.\\
+	2. Entraineur clique sur un élément mobile.\\
+	3. Système déplace les autres éléments mobiles en temps réel tout en déplaçant l'élément mobile sélectionné en suivant la position de la souris.\\
+	4. Entraineur visualise la stratégie ainsi obtenue selon le cas d'utilisation \underline{Visualiser une stratégie}.\\
+	\textit{Répéter les étapes 1 à 4 pour chaque élément mobile.}\\
 	\\
-	\textbf{Extensions :}\\
+	\textbf{Scénarios alternatifs :}\\
 	*a. Entraineur souhaite arrêter l'enregistrement.\\
-	\hspace{0.5cm}1. Entraineur clique sur le bouton "Annuler l'enregistrement".\\
-	\hspace{0.5cm}2. Système arrête l'enregistrement, supprime les images-clés générées et retourne les éléments mobiles à leurs positions initiales.\\
-	9a. Entraineur souhaite ré-enregistrer la trajectoire.\\
-	\hspace{0.5cm}1. Entraineur répète les étapes 1 à 9 en prenant soin de sélectionner le même élément mobile.\\
+	\hspace{0.5cm}1. Entraineur signale à Système qu'il souhaite arrêter l'enregistrement.\\
+	\hspace{0.5cm}2. Système arrête l'enregistrement.\\
+	4a. Entraineur souhaite ré-enregistrer la trajectoire.\\
+	\hspace{0.5cm}1. Entraineur revient à l'image désirée.\\
+	\hspace{0.5cm}2. Entraineur répète les étapes 1 à 4 en prenant soin de sélectionner le même élément mobile.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Régulièrement\\
 	\\
@@ -313,22 +297,20 @@
 	\textbf{Acteurs primaires :} Entraineur\\
 	\\
 	\textbf{Figurants et intérêts :} \\
-	- Entraineur: Veut pouvoir créer et modifier les types de sports supporter par le logiciel.\\
+	- Entraineur: Veut pouvoir créer et modifier les types de sports supportés par le logiciel.\\
 	\\
-	\textbf{Postconditions :} Une fois qu'un type de sport est créé, il est possible de créer une stratégie pour ce type de sport et de configurer les obstacles associés à ce type de sport.\\
-	\\
-	\textbf{Garanties en cas de succès :} Le type de sport a été enregistré.\\
+	\textbf{Garantie en cas de succès :} Une fois qu'un type de sport est créé, il est possible de créer une stratégie pour ce type de sport et de configurer les obstacles associés à ce type de sport.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
 	1. Entraineur démarre le processus de configuration d'un  type de sport.\\
-	2. Système demande lequel des types de sport l'utilisateur veut configurer ou s'il veut en créer un nouveau type de sport.\\
+	2. Système demande quel type de sport doit être configuré.\\
 	3. Entraineur indique le type à configurer.\\
-	4. Système offre de modifier les spécifications du type de sport, telle que le nom du sport, l'imgae pour représenter le terrain, les dimensions réelles du terrain, le nombre de joueurs et les catégories de joueurs associées au sport.\\
-	5. Entraineur modifie des spécifications du type de sport.\\
-	6. Entraineur démarre le processus d'enregistrement.\\
+	4. Système offre de modifier les propriétés du type de sport, tels que le nom du sport, l'image pour représenter le terrain, les dimensions réelles du terrain, le nombre de joueurs et les catégories de joueurs associées au sport.\\
+	5. Entraineur modifie des propriétés du type de sport.\\
+	6. Entraineur démarre le processus d'enregistrement du type de sport.\\
 	7. Système valide et enregistre les modifications du type de sport.\\
 	\\
-	\textbf{Extensions :}\\
+	\textbf{Scénarios alternatifs :}\\
 	*a. Entraineur annule le processus de configuration du type de sport.\\
 	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler la configuration du type de sport.\\
 	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler la configuration du type de sport.\\
@@ -336,12 +318,12 @@
 	\hspace{3cm}1. Système revient où il était dans le processus de configuration.\\
 	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de configuration ne soit démarré.\\
 	3a. Entraineur indique qu'il veut créer un nouveau type de sport.\\
-	\hspace{1cm}1. Système demande à Entraineur de remplir tout les champs de spécification du type de sport.\\
+	\hspace{1cm}1. Système demande à Entraineur de remplir tous les champs de propriétés du type de sport.\\
 	\hspace{1cm}2. Entraineur entre toutes les spécifications du type de sport.\\
-	\hspace{1cm}3. Entraineur démarre le processus d'enregistrement.\\
-	\hspace{1cm}4. Système valide et enregistre la création du type de sport.\\
+	\hspace{1cm}3. Entraineur démarre le processus d'enregistrement du type de sport.\\
+	\hspace{1cm}4. Système valide et enregistre le nouveau type de sport.\\
 	7a. Système valide les modifications et constate des données invalides.\\
-	\hspace{1cm}1. Système affichae un message d'erreur à l'utlisateur et demande de corriger les données invalides.\\
+	\hspace{1cm}1. Système affiche un message d'erreur et demande de corriger les données invalides.\\
 	\hspace{1cm}2. Entraineur corrige les données.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Parfois\\
@@ -362,43 +344,45 @@
 	\textbf{Acteurs primaires :} Entraineur\\
 	\\
 	\textbf{Figurants et intérêts :} \\
-	- Entraineur: Veut pouvoir créer et modifier les types de sports supporter par le logiciel.\\
+	- Entraineur: Veut pouvoir créer et modifier les obstacles associés à un type de sport.\\
 	\\
 	\textbf{Préconditions :} Un type de sport a été créé.\\
 	\\
-	\textbf{Garanties en cas de succès :} Les obstacles ont été enregistré.\\
+	\textbf{Garanties en cas de succès :} Les obstacles peuvent être utilisés dans une stratégie de ce type de sport.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
 	1. Entraineur démarre le processus de configuration des obstacles.\\
-	2. Système demande pour lequel des types de sport l'utilisateur veut configurer les obstacles.\\
-	3. Entraineur indique le type désiré.\\
-	4. Système offre d'ajouter, de modifier ou de supprimer un obsatce.\\
-	5. Entraineur choisi de modifier les spécifications d'un obstacle.\\
-	6. Système offre de modifier les spécifications de l'obstacle, telle que le nom de l'obstacle, l'imgae pour représenter l'obstacle et les dimensions réelles de l'obstacle.\\
-	7. Entraineur modifie des spécifications de l'obstacle.\\
+	2. Système demande de sélectionner un type de sport pour lequel les obstacles doivent être configurés.\\
+	3. Entraineur indique le type de sport désiré.\\
+	4. Système offre d'ajouter, de modifier ou de supprimer un obstacle.\\
+	5. Entraineur choisit de modifier les propriétés d'un obstacle.\\
+	6. Système offre de modifier les propriétés de l'obstacle, telles que le nom de l'obstacle, l'image pour représenter l'obstacle et les dimensions réelles de l'obstacle.\\
+	7. Entraineur modifie des propriétés de l'obstacle.\\
 	8. Entraineur démarre le processus d'enregistrement.\\
 	9. Système valide et enregistre les modifications de l'obstacle.\\
 	\\
-	\textbf{Extensions :}\\
-	*a. Entraineur annule le processus de configuration de l'obstacle.\\
+	\textbf{Scénarios alternatifs :}\\
+	*a. Entraineur souhaite interrompre le processus de configuration des obstacles.\\
+	\hspace{1cm}1. Système retourne à l'interface précédente.\\
+	5a. Entraineur indique qu'il veut créer un nouvel obstacle.\\
+	\hspace{1cm}1. Système demande à Entraineur de remplir tous les champs de propriétés de l'obstacle.\\
+	\hspace{1cm}2. Entraineur entre toutes les propriétés de l'obstacle.\\
+	\hspace{1cm}3. Entraineur démarre le processus d'enregistrement.\\
+	\hspace{1cm}4. Système valide et enregistre le nouvel obstacle.\\
+	5b. Entraineur indique qu'il veut supprimer un obstacle.\\
+	\hspace{1cm}1. Système demande à Entraineur de confirmer son choix.\\
+	\hspace{1cm}2. Entraineur confirme qu'il veut bien supprimer l'obstacle.\\
+	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus supprimer l'obstacle.\\
+	\hspace{3cm}1. Système revient à l'interface d'ajout/modification/suppression.\\
+	\hspace{1cm}3. Système supprime l'obstacle et revient à l'interface d'ajout/modification/suppression.\\
+	7a. Entraineur annule le processus de configuration de l'obstacle.\\
 	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler la configuration de l'obstacle.\\
 	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler la configuration de l'obstacle.\\
 	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler la configuration de l'obstacle.\\
 	\hspace{3cm}1. Système revient où il était dans le processus de configuration.\\
 	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus de configuration ne soit démarré.\\
-	5a. Entraineur indique qu'il veut créer un nouvelle obstacle.\\
-	\hspace{1cm}1. Système demande à Entraineur de remplir tout les champs de spécification de l'obstacle.\\
-	\hspace{1cm}2. Entraineur entre toutes les spécifications de l'obstacle.\\
-	\hspace{1cm}3. Entraineur démarre le processus d'enregistrement.\\
-	\hspace{1cm}4. Système valide et enregistre la création du type de sport.\\
-	5b. Entraineur indique qu'il veut supprimer un obstacle.\\
-	\hspace{1cm}1. Système demande à Entraineur de confimer son choix.\\
-	\hspace{1cm}2. Entraineur confirme qu'il veut bien supprimer l'obstacle.\\
-	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus supprimer l'obstacle.\\
-	\hspace{3cm}1. Système revient à l'interface d'ajout/modification/suppression.\\
-	\hspace{1cm}3. Système supprime l'obstacle et revient à l'interface d'ajout/modification/suppression.\\
 	9a. Système valide les modifications et constate des données invalides.\\
-	\hspace{1cm}1. Système affichae un message d'erreur à l'utlisateur et demande de corriger les données invalides.\\
+	\hspace{1cm}1. Système affiche un message d'erreur et demande de corriger les données invalides.\\
 	\hspace{1cm}2. Entraineur corrige les données.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Parfois\\
@@ -418,22 +402,19 @@
 	\textbf{Acteurs primaires :} Entraineur\\
 	\\
 	\textbf{Figurants et intérêts :} \\
-	- Entraineur: Veut pouvoir exporter les fichiers de l'applications en image.\\
+	- Entraineur: Veut pouvoir exporter les fichiers de l'application en image.\\
+	\\
+	\textbf{Garanties en cas de succès :} La stratégie est exportée en tant qu'image.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
 	1. Entraineur démarre le processus d'exportation.\\
-	2. Système demande en quel format les fichiers doivent être exporter.\\
-	3. Entraineur sélectionne un format d'image.\\
-	4. Entraineur indique l'endroit où il veut enregistrer l'image.\\
-	5. Système enregistre la stratégie sous forme d'image.\\
+	2. Système demande le format d'exportation du fichier, l'emplacement où il devra être exporté ainsi que le nom du fichier.\\
+	3. Entraineur sélectionne un format d'image, indique l'emplacement du fichier exporté ainsi que son nom.\\
+	4. Système enregistre la stratégie sous forme d'image avec des flèches représentants les trajectoires.\\
 	\\
-	\textbf{Extensions :}\\
-	*a. Entraineur annule le processus d'exportation d'une image.\\
-	\hspace{1cm}1. Système demande à Entraineur s'il est certain de vouloir annuler l'exportation d'une image.\\
-	\hspace{1cm}2. Entraineur confirme qu'il veut bien annuler l'exportation d'une image.\\
-	\hspace{2cm}2a. Entraineur indique qu'il ne veut plus annuler l'exportation d'une image.\\
-	\hspace{3cm}1. Système revient où il était dans le processus d'exportation d'une image.\\
-	\hspace{1cm}3. Système retourne à la page où il se trouvait avant que le processus d'exportation d'une image soit démarré.\\
+	\textbf{Scénarios alternatifs :}\\
+	*a. Entraineur annule le processus d'exportation en image.\\
+	\hspace{1cm}1. Système retourne à la page où il se trouvait avant que le processus d'exportation en image soit démarré.\\
 	\\
 	\textbf{Fréquence d'occurrence :} Parfois\\
 	\\
