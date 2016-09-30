@@ -222,3 +222,6 @@ TSWLatexianTemp*
 # auto folder when using emacs and auctex 
 /auto/*
 /Visualigue/nbproject/private/
+*.bak_*
+*.vux
+
