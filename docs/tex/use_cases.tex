@@ -1,7 +1,20 @@
 \chapter{Modèle des cas d'utilisation}
 \label{s:use_cases}
 
+La figure \ref{fig:use_cases} représente l'intéraction des acteurs avec le système VisuaLigue. Le diagramme est relativement simple, car l'entraineur exécute les différentes actions avec le système, alors que les parents et les joueurs n'ont accès qu'à certaines fonctionnalités.
 
+On note une extension entre les deux modes de saisie de trajectoires. En effet, le client a spécifié qu'il voulait pouvoir modifier la trajectoire des éléments mobiles en mode image par image, ainsi qu'en temps réel avec souris. Le mode image par image est le plus simple à implémenter, donc il a été spécifié en premier. Le mode en temps réel est en fait une extension du premier mode à cause de son interactivité. Ceci explique le lien entre les deux dans le diagramme.
+
+Chaque cas d'utilisation est détaillé par une ficher complète dans les prochains paragraphes. Un diagramme de séquence système suit chaque cas d'utilisation afin de décrire visuellement le scénario principal.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Diagramme de cas d'utilisation"}.png}
+	\caption{Diagramme des cas d'utilisation}
+	\label{fig:use_cases}
+\end{figure}
+
+\newpage
 \section{Cas d'utilisation : Créer une stratégie}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -48,6 +61,14 @@
 	\hline
 \end{longtable}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 1 - Creer une strategie"}.png}
+	\caption{Diagramme du cas d'utilisation « Créer une stratégie »}
+	\label{fig:use_case_1}
+\end{figure}
+
+\newpage
 \section{Cas d'utilisation : Enregistrer une stratégie}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -75,6 +96,14 @@
 	\hline
 \end{longtable}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 2 - Enregistrer une strategie"}.png}
+	\caption{Diagramme du cas d'utilisation « Enregistrer une stratégie »}
+	\label{fig:use_case_2}
+\end{figure}
+
+\newpage
 \section{Cas d'utilisation : Charger une stratégie}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -114,6 +143,14 @@
 	\hline
 \end{longtable}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 3 - Charger une strategie"}.png}
+	\caption{Diagramme du cas d'utilisation « Charger une stratégie »}
+	\label{fig:use_case_3}
+\end{figure}
+
+\newpage
 \section{Cas d'utilisation : Visualiser une stratégie}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -154,6 +191,14 @@
 	\hline
 \end{longtable}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 4 - Visualiser une strategie"}.png}
+	\caption{Diagramme du cas d'utilisation « Visualiser une stratégie »}
+	\label{fig:use_case_4}
+\end{figure}
+
+\newpage
 \section{Cas d'utilisation : Placer les éléments}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -212,6 +257,14 @@
 	\hline
 \end{longtable}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 5 - Placer les elements"}.png}
+	\caption{Diagramme du cas d'utilisation « Placer les éléments »}
+	\label{fig:use_case_5}
+\end{figure}
+
+\newpage
 \section{Cas d'utilisation : Modifier les trajectoires des éléments mobiles image par image}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -250,6 +303,14 @@
 	\hline
 \end{longtable}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 6 - Modifier les trajectoires des elements mobiles image par image"}.png}
+	\caption{Diagramme du cas d'utilisation « Modifier les trajectoires des éléments mobiles image par image »}
+	\label{fig:use_case_6}
+\end{figure}
+
+\newpage
 \section{Cas d'utilisation : Modifier les trajectoires des éléments mobiles en temps réel}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -284,7 +345,14 @@
 	\hline
 \end{longtable}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 7 - Modifier les trajectoires des elements mobiles en temps reel"}.png}
+	\caption{Diagramme du cas d'utilisation « Modifier les trajectoires des éléments mobiles en temps réel »}
+	\label{fig:use_case_7}
+\end{figure}
 
+\newpage
 \section{Cas d'utilisation : Configurer les types de sports}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -330,8 +398,14 @@
 	\hline
 \end{longtable}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 8 - Configurer les types de sports"}.png}
+	\caption{Diagramme du cas d'utilisation « Configurer les types de sports »}
+	\label{fig:use_case_8}
+\end{figure}
 
-
+\newpage
 \section{Cas d'utilisation : Configurer les obstacles}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -389,7 +463,14 @@
 	\hline
 \end{longtable}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 9 - Configurer les obstacles"}.png}
+	\caption{Diagramme du cas d'utilisation « Configurer les obstacles »}
+	\label{fig:use_case_9}
+\end{figure}
 
+\newpage
 \section{Cas d'utilisation : Exporter une stratégie en format image}
 \begin{longtable}{|p{16cm}|}
 	\hline
@@ -419,3 +500,10 @@
 	\\
 	\hline
 \end{longtable}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams/Cas 10 - Exporter une strategie en format image"}.png}
+	\caption{Diagramme du cas d'utilisation « Exporter une stratégie en format image »}
+	\label{fig:use_case_10}
+\end{figure}
