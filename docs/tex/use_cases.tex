@@ -1,7 +1,7 @@
 \chapter{Modèle des cas d'utilisation}
 \label{s:use_cases}
 
-La figure \ref{fig:use_cases} représente l'intéraction des acteurs avec le système VisuaLigue. Le diagramme est relativement simple, car l'entraineur exécute les différentes actions avec le système, alors que les parents et les joueurs n'ont accès qu'à certaines fonctionnalités.
+La figure \ref{fig:use_cases} représente l'interaction des acteurs avec le système VisuaLigue. Le diagramme est relativement simple, car l'entraineur exécute les différentes actions avec le système, alors que les parents et les joueurs n'ont accès qu'à certaines fonctionnalités.
 
 On note une extension entre les deux modes de saisie de trajectoires. En effet, le client a spécifié qu'il voulait pouvoir modifier la trajectoire des éléments mobiles en mode image par image, ainsi qu'en temps réel avec souris. Le mode image par image est le plus simple à implémenter, donc il a été spécifié en premier. Le mode en temps réel est en fait une extension du premier mode à cause de son interactivité. Ceci explique le lien entre les deux dans le diagramme.
 
@@ -39,7 +39,7 @@ Chaque cas d'utilisation est détaillé par une ficher complète dans les procha
 	3. Entraineur fournit à Système les informations nécessaires.\\
 	4. Système demande l'endroit où le fichier devra être enregistré ainsi que le nom de ce dernier.\\
 	5. Entraineur choisi l'endroit où le fichier devra être enregistré ainsi que son nom.\\
-	6. Système crée le fichier et Entraineur continue dans le cas d'utilisation \underline{Placer les éléments}.\\
+	6. Système crée le fichier et Entraineur continu dans le cas d'utilisation \underline{Placer les éléments}.\\
 	\\
 	\textbf{Scénarios alternatifs :}\\
 	*a. Entraineur annule le processus de création d'une stratégie.\\
@@ -327,7 +327,7 @@ Chaque cas d'utilisation est détaillé par une ficher complète dans les procha
 	\textbf{Garantie en cas de succès :} Les trajectoires des éléments mobiles correspondent à ce que l'entraineur souhaite.\\
 	\\
 	\textbf{Principal scénario de succès :}\\
-	1. Entraineur démarre la processus d'enregistrement en temps réel.\\
+	1. Entraineur démarre le processus d'enregistrement en temps réel.\\
 	2. Entraineur clique sur un élément mobile.\\
 	3. Système déplace les autres éléments mobiles en temps réel tout en déplaçant l'élément mobile sélectionné en suivant la position de la souris.\\
 	4. Entraineur visualise la stratégie ainsi obtenue selon le cas d'utilisation \underline{Visualiser une stratégie}.\\
@@ -336,7 +336,7 @@ Chaque cas d'utilisation est détaillé par une ficher complète dans les procha
 	*a. Entraineur souhaite arrêter l'enregistrement.\\
 	\hspace{0.5cm}1. Entraineur signale à Système qu'il souhaite arrêter l'enregistrement.\\
 	\hspace{0.5cm}2. Système arrête l'enregistrement.\\
-	4a. Entraineur souhaite ré-enregistrer la trajectoire.\\
+	4a. Entraineur souhaite réenregistrer la trajectoire.\\
 	\hspace{0.5cm}1. Entraineur revient à l'image désirée.\\
 	\hspace{0.5cm}2. Entraineur répète les étapes 1 à 4 en prenant soin de sélectionner le même élément mobile.\\
 	\\
@@ -357,7 +357,7 @@ Chaque cas d'utilisation est détaillé par une ficher complète dans les procha
 \begin{longtable}{|p{16cm}|}
 	\hline
 	\\
-	\textbf{Projet :} Visualigue\\
+	\textbf{Projet :} VisuaLigue\\
 	\\
 	\textbf{Niveau :} But d'utilisateur\\
 	\\
@@ -372,7 +372,7 @@ Chaque cas d'utilisation est détaillé par une ficher complète dans les procha
 	1. Entraineur démarre le processus de configuration d'un  type de sport.\\
 	2. Système demande quel type de sport doit être configuré.\\
 	3. Entraineur indique le type à configurer.\\
-	4. Système offre de modifier les propriétés du type de sport, tels que le nom du sport, l'image pour représenter le terrain, les dimensions réelles du terrain, le nombre de joueurs et les catégories de joueurs associées au sport.\\
+	4. Système offre de modifier les propriétés du type de sport, telles que le nom du sport, l'image pour représenter le terrain, les dimensions réelles du terrain, le nombre de joueurs et les catégories de joueurs associées au sport.\\
 	5. Entraineur modifie des propriétés du type de sport.\\
 	6. Entraineur démarre le processus d'enregistrement du type de sport.\\
 	7. Système valide et enregistre les modifications du type de sport.\\
@@ -410,7 +410,7 @@ Chaque cas d'utilisation est détaillé par une ficher complète dans les procha
 \begin{longtable}{|p{16cm}|}
 	\hline
 	\\
-	\textbf{Projet :} Visualigue\\
+	\textbf{Projet :} VisuaLigue\\
 	\\
 	\textbf{Niveau :} But d'utilisateur\\
 	\\

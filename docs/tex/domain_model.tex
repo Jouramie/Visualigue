@@ -1,7 +1,7 @@
 \chapter{Modèle du domaine}
 \label{s:domain_model}
 
-Cette section présente le modèle du domaine de VisuaLigue. La figure \ref{fig:domain_model} présente une vue globable de l'application.
+Cette section présente le modèle du domaine de VisuaLigue. La figure \ref{fig:domain_model} présente une vue globale de l'application.
 
 \begin{figure}[H]
 	\centering
@@ -10,7 +10,7 @@ Cette section présente le modèle du domaine de VisuaLigue. La figure \ref{fig:
 	\label{fig:domain_model}
 \end{figure}
 
-Le point d'entrée est l'utilisateur. Celui-ci peut être une Entraineur, un Joueur ou un Parent. Dans ce diagramme, on prend en considération que l'utilisateur est un Entraineur, car il peut exécuter toutes les actions.
+Le point d'entrée est l'utilisateur. Celui-ci peut être un Entraineur, un Joueur ou un Parent. Dans ce diagramme, on prend en considération que l'utilisateur est un Entraineur, car il peut exécuter toutes les actions.
 
 L'utilisateur peut configurer des sports. Un sport est constitué d'un terrain, de plusieurs descriptions de joueurs, de balles et d'obstacles. Le terrain contient l'image, la taille et les dimensions. Il ne peut y avoir qu'un seul terrain par sport. Les descriptions des joueurs, des balles et des obstacles contiennent les propriétés qui seront utilisées lors de l'ajout de ceux-ci dans une stratégie. Par exemple, c'est ici que l'on définit le rôle des joueurs. Puisque plusieurs propriétés sont partagées entre ces classes, une généralisation appelée \textit{DescriptionÉlément} a été créée. Afin d'alléger le diagramme, la classe utilisateur n'a pas été reliée aux descriptions ni au terrain. Toutefois, on comprendra que lorsque l'utilisateur configure un sport, il modifie aussi les descriptions et le terrain.  Il est aussi à noter que le terme « balle » est utilisé pour décrire tout élément mobile principal d'un sport. Par exemple, il peut représenter une rondelle de hockey, un Frisbee ou même une pierre de curling. Voir le glossaire à la page \pageref{s:glossaire} pour plus de détails.
 
