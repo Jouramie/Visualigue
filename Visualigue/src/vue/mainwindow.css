@@ -5,3 +5,11 @@
 .mainFxmlClass {
 
 }
+
+.boutonMenuGauche{
+    -fx-font-size: 10;
+    -fx-alignment: baseline-center;
+    -fx-color: RED;
+    -fx-width: 50;
+    
+}
