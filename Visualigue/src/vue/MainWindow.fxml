@@ -52,7 +52,28 @@
       </VBox>
    </left>
    <right>
-      <VBox styleClass="background" BorderPane.alignment="CENTER" />
+      <VBox styleClass="background" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Label" />
+            <HBox>
+               <children>
+                  <Label text="Position X: " />
+                  <TextField />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label text="Position Y: " />
+                  <TextField />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label text="Orientation: " />
+                  <TextField prefHeight="25.0" prefWidth="106.0" />
+               </children>
+            </HBox>
+         </children></VBox>
    </right>
    <bottom>
       <VBox styleClass="background" BorderPane.alignment="CENTER">
@@ -86,7 +107,7 @@
             </HBox>
          </children>
          <BorderPane.margin>
-            <Insets left="60.0" right="150.0" />
+            <Insets left="60.0" />
          </BorderPane.margin>
       </VBox>
    </bottom>
