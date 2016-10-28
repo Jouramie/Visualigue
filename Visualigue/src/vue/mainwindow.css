@@ -6,17 +6,12 @@
 -fx-background-color: darkgrey;
 }
 
-.btnTopMenu{
-    -fx-font-size: 12;
-    -fx-alignment: bottom-center;
-    -fx-color: gainsboro;
-    -fx-width: 100;
-    -fx-background-radius: 0px;
-    
+.background{
+    -fx-background-color: gainsboro;
 }
 
-.backgroundMenu{
-    -fx-background-color: gainsboro;
+.paneScene{
+    -fx-background-color: darkgrey;
 }
 
 .btnLeftMenu{
@@ -31,11 +26,6 @@
     -fx-background-radius: 0px;
 }
 
-.play{
-    -fx-font-size: 16;
-}
-
-.record{
-     -fx-font-size: 16;
-     -fx-font-color: red;
+.btnRecord{
+    -fx-color: red;
 }

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.web.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
@@ -8,63 +11,107 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8">
-    <stylesheets>
-        <URL value="@mainwindow.css" />
-    </stylesheets>
-   <children>
-      <BorderPane prefHeight="400.0" prefWidth="600.0">
-         <top>
-            <HBox prefHeight="26.0" prefWidth="600.0" styleClass="backgroundMenu" BorderPane.alignment="TOP_CENTER">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="750.0" styleClass="background" stylesheets="@mainwindow.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <MenuBar styleClass="background">
+        <menus>
+          <Menu mnemonicParsing="false" text="Fichier">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Édition">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Affichage">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Aide">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Action 1" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <left>
+      <VBox styleClass="background">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
+            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Mobile" />
+            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Statique" />
+            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom" />
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </VBox>
+   </left>
+   <right>
+      <VBox styleClass="background" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Label" />
+            <HBox>
                <children>
-                  <Button fx:id="btnTest" mnemonicParsing="false" prefWidth="80.0" styleClass="btnTopMenu" text="Fichier" />
-                  <Button mnemonicParsing="false" prefWidth="80.0" styleClass="btnTopMenu" text="Édition" />
-                  <Button mnemonicParsing="false" prefWidth="80.0" styleClass="btnTopMenu" text="Affichage" />
-                  <Button mnemonicParsing="false" prefWidth="80.0" styleClass="btnTopMenu" text="Aide" />
+                  <Label text="Position X: " />
+                  <TextField />
                </children>
             </HBox>
-         </top>
-         <left>
-            <VBox styleClass="backgroundMenu">
+            <HBox>
                <children>
-                  <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
-                  <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Mobile" />
-                  <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Statique" />
-                  <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom" />
+                  <Label text="Position Y: " />
+                  <TextField />
                </children>
-            </VBox>
-         </left>
-         <right>
-            <VBox prefHeight="374.0" prefWidth="153.0" styleClass="backgroundMenu" BorderPane.alignment="CENTER" />
-         </right>
-         <center>
-            <Pane fx:id="scenePane" ></Pane>
-            <!--<VBox prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            </HBox>
+            <HBox>
                <children>
-                  <Pane prefHeight="374.0" prefWidth="540.0" />
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="backgroundMenu">
-                     <children>
-                        <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⚫" />
-                        <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏮" />
-                        <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏪" />
-                        <Button mnemonicParsing="false" styleClass="btnTimeLine" text="▶" />
-                        <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏩" />
-                        <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏭" />
-                        <TextField prefHeight="25.0" prefWidth="29.0" text="X2" />
-                     </children>
-                  </HBox>
-                  <Slider styleClass="backgroundMenu" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" styleClass="backgroundMenu">
-                     <children>
-                        <Label text="X: " />
-                        <Label prefHeight="17.0" prefWidth="45.0" text="512" />
-                        <Label alignment="CENTER" text="Y: " />
-                        <Label alignment="CENTER" text="420" />
-                     </children>
-                  </HBox>
+                  <Label text="Orientation: " />
+                  <TextField prefHeight="25.0" prefWidth="106.0" />
                </children>
-            </VBox>-->
-         </center>
-      </BorderPane>
-   </children>
-</AnchorPane>
+            </HBox>
+         </children></VBox>
+   </right>
+   <bottom>
+      <VBox styleClass="background" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" text="⚫">
+                     <styleClass>
+                        <String fx:value="btnRecord" />
+                        <String fx:value="btnTimeLine" />
+                     </styleClass></Button>
+                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏮" />
+                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏪" />
+                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="▶" />
+                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏩" />
+                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏭" />
+                  <TextField prefHeight="25.0" prefWidth="29.0" text="X2" />
+               </children>
+            </HBox>
+            <Slider styleClass="backgroundMenu">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin></Slider>
+            <HBox>
+               <children>
+                  <Label text="X: " />
+                  <Label prefWidth="45.0" text="512" />
+                  <Label alignment="CENTER" text="Y: " />
+                  <Label alignment="CENTER" text="420" />
+               </children>
+            </HBox>
+         </children>
+         <BorderPane.margin>
+            <Insets left="60.0" />
+         </BorderPane.margin>
+      </VBox>
+   </bottom>
+   <center>
+      <Pane fx:id="scenePane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="paneScene" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

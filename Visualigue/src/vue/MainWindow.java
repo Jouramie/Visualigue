@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.Element;
@@ -25,7 +26,7 @@ public class MainWindow implements Initializable
 {
     GodController controller;
     private Stage stage;
-    private AnchorPane root;
+    private BorderPane root;
     private List<UIElement> uiElements;
     private double currentTime;
     
@@ -44,7 +45,7 @@ public class MainWindow implements Initializable
         {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/MainWindow.fxml"));
             fxmlLoader.setController(this);
-            root = (AnchorPane)fxmlLoader.load();
+            root = (BorderPane)fxmlLoader.load();
             stage = primaryStage;
             Scene scene = new Scene(root, 500, 400);
             stage.setScene(scene);
