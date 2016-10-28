@@ -8,6 +8,10 @@ public class MobileElement extends Element
     {
         this.trajectory = new Trajectory();
     }
+
+    public MobileElement(Vector2D vector2D, Vector2D vector2D0, ElementDescription description) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     @Override
     public Vector2D getPosition(double time)

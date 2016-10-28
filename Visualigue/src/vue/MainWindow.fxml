@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controleur.Controleur">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8">
     <stylesheets>
         <URL value="@mainwindow.css" />
     </stylesheets>
@@ -17,7 +17,7 @@
          <top>
             <HBox prefHeight="26.0" prefWidth="600.0" styleClass="backgroundMenu" BorderPane.alignment="TOP_CENTER">
                <children>
-                  <Button mnemonicParsing="false" prefWidth="80.0" styleClass="btnTopMenu" text="Fichier" />
+                  <Button fx:id="btnTest" mnemonicParsing="false" prefWidth="80.0" styleClass="btnTopMenu" text="Fichier" />
                   <Button mnemonicParsing="false" prefWidth="80.0" styleClass="btnTopMenu" text="Édition" />
                   <Button mnemonicParsing="false" prefWidth="80.0" styleClass="btnTopMenu" text="Affichage" />
                   <Button mnemonicParsing="false" prefWidth="80.0" styleClass="btnTopMenu" text="Aide" />
@@ -38,7 +38,8 @@
             <VBox prefHeight="374.0" prefWidth="153.0" styleClass="backgroundMenu" BorderPane.alignment="CENTER" />
          </right>
          <center>
-            <VBox prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <Pane fx:id="scenePane" ></Pane>
+            <!--<VBox prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
                   <Pane prefHeight="374.0" prefWidth="540.0" />
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="backgroundMenu">
@@ -62,7 +63,7 @@
                      </children>
                   </HBox>
                </children>
-            </VBox>
+            </VBox>-->
          </center>
       </BorderPane>
    </children>
