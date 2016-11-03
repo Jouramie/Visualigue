@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane stylesheets="@sporteditiondialog.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <AnchorPane prefHeight="629.0" prefWidth="793.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text layoutX="49.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du sport :" wrappingWidth="80.13671875" />
+            <TextField fx:id="sportName" layoutX="141.0" layoutY="65.0" />
+            <TreeView fx:id="elementDescription" layoutX="37.0" layoutY="376.0" prefHeight="200.0" prefWidth="357.0" />
+            <TextField fx:id="courtImage" layoutX="141.0" layoutY="104.0" />
+            <Text layoutX="50.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Terrain :" wrappingWidth="80.13671875" />
+            <Text layoutX="386.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hauteur :" wrappingWidth="80.13671875" />
+            <TextField fx:id="courtHeight" layoutX="467.0" layoutY="57.0" />
+            <Text layoutX="386.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Largeur :" wrappingWidth="80.13671875" />
+            <TextField fx:id="courtWidth" layoutX="467.0" layoutY="104.0" />
+            <Button layoutX="297.0" layoutY="104.0" mnemonicParsing="false" text="Browse" />
+            <Button layoutX="609.0" layoutY="410.0" mnemonicParsing="false" text="Nouvel élément" />
+            <Button layoutX="609.0" layoutY="463.0" mnemonicParsing="false" text="Modifier élément" />
+            <Button layoutX="609.0" layoutY="517.0" mnemonicParsing="false" text="Supprimer élément" />
+            <ImageView fx:id="court" fitHeight="172.0" fitWidth="543.0" layoutX="81.0" layoutY="187.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="elementDescriptionView" fitHeight="150.0" fitWidth="182.0" layoutX="409.0" layoutY="401.0" pickOnBounds="true" preserveRatio="true" />
+            <TextField fx:id="playerNumber" layoutX="141.0" layoutY="142.0" />
+            <Text layoutX="41.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre de joueur :" wrappingWidth="80.13671875" />
+            <Button layoutX="288.0" layoutY="289.0" mnemonicParsing="false" onAction="#onActionCancel" prefHeight="70.0" prefWidth="130.0" text="QUITTER" />
+         </children>
+      </AnchorPane>
+   </center>
+   <left>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ListView fx:id="sports" prefHeight="629.0" prefWidth="200.0" />
+         </children>
+      </Pane>
+   </left>
+</BorderPane>
