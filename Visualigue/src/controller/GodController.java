@@ -4,37 +4,98 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Element;
 import model.ElementDescription;
-import model.MobileElement;
-import model.StaticElement;
+import model.PlayerDescription;
+import model.Sport;
+import model.StaticElementDescription;
+import model.Strategy;
 import model.Vector2D;
 
 public class GodController
 {
-    private List<Element> elements;
+    private List<Sport> sports;
+    private Strategy strategy;
+    private double time;
+    private ElementDescription currentElementDescription;
+    private Element selectedElement;
+    
+    private StaticElementDescription test;
     
     public GodController()
     {
-        elements = new ArrayList();
+        this.sports = new ArrayList<Sport>();
+        this.strategy = null;
+        this.time = 0.0;
+        this.currentElementDescription = null;
+        this.selectedElement = null;
+        
+        test = new StaticElementDescription("test", new Vector2D(40, 40), "test.jpg");
     }
     
-    public void addMobileElement(double x, double y)
+    public void createStrategy(Sport sport, String name)
     {
-        ElementDescription description = new ElementDescription("test", new Vector2D(20, 20), "/res/test.png");
-        MobileElement elem = new MobileElement();
-        elem.setPosition(0.0, new Vector2D(x, y), 0);
-        elem.setPosition(5.0, new Vector2D(x+40, y+40), 0);
-        elements.add(elem);
+        this.strategy = new Strategy(name, sport);
     }
     
-    public void addStaticElement(double x, double y)
+    public void saveStrategy(String path)
     {
-        ElementDescription description = new ElementDescription("test2", new Vector2D(20, 20), "/res/test.png");
-        StaticElement elem = new StaticElement(new Vector2D(x, y), new Vector2D(0, 1), description);
-        elements.add(elem);
+        // TODO
+    }
+    
+    public void loadStrategy(String path)
+    {
+        
+    }
+    
+    public void addElement(Vector2D pos) throws Exception
+    {
+        if(currentElementDescription != null)
+        {
+            if(currentElementDescription instanceof StaticElementDescription)
+            {
+                this.strategy.createStaticElement((StaticElementDescription)currentElementDescription);
+            }
+            /*else if(currentElementDescription instanceof BallDescription)
+            {
+                this.strategy.createStaticElement((BallDescription)currentElementDescription);
+            }*/
+            else if(currentElementDescription instanceof PlayerDescription)
+            {
+                this.strategy.createPlayer((PlayerDescription)currentElementDescription);
+            }
+        }
+    }
+    
+    public void selectElement(Element elem)
+    {
+        this.selectedElement = elem;
+    }
+    
+    public void selectElementDescription(String name)
+    {
+        // TODO:
+        this.currentElementDescription = test;
+    }
+    
+    public void setCurrentElemPosition(Vector2D pos)
+    {
+        if(this.selectedElement != null)
+        {
+            this.selectedElement.setPosition(this.time, pos, 0.0);
+        }
     }
     
     public List<Element> getAllElements()
     {
-        return elements;
+        if(this.strategy != null)
+        {
+            return this.strategy.getAllElements();
+        }
+        
+        return new ArrayList<Element>();
+    }
+    
+    public double getCurrentTime()
+    {
+        return this.time;
     }
 }

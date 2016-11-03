@@ -1,6 +1,6 @@
 package model;
 
-public class ElementDescription
+public abstract class ElementDescription
 {
     private String name;
     private Vector2D size;

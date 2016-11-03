@@ -8,16 +8,19 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.Element;
+import model.Vector2D;
 
 public class MainWindow implements Initializable
 {
@@ -25,16 +28,16 @@ public class MainWindow implements Initializable
     private Stage stage;
     private BorderPane root;
     private List<UIElement> uiElements;
-    private double currentTime;
     
     @FXML
     private Pane scenePane;
+    @FXML
+    private MenuItem menuNewStrategy;
     
     public MainWindow(GodController controller, Stage primaryStage)
     {
         this.controller = controller;
         this.uiElements = new ArrayList();
-        this.currentTime = 0;
         
         try
         {
@@ -58,6 +61,9 @@ public class MainWindow implements Initializable
     {
         scenePane.setOnMousePressed(this::onMouseClicked);
         
+        // Menu listeners
+        menuNewStrategy.setOnAction(this::onNewStrategy);
+        
         update();
     }
     
@@ -73,7 +79,7 @@ public class MainWindow implements Initializable
             {
                 if(uiElem.getElement() == elem)
                 {
-                    uiElem.update(this.currentTime / 1000.0);
+                    uiElem.update(this.controller.getCurrentTime() / 1000.0);
                     elemToDelete.remove(uiElem);
                     found = true;
                     break;
@@ -92,29 +98,24 @@ public class MainWindow implements Initializable
         {
             uiElements.remove(uiElem);
         }
-        
-        // On efface ce qu'il y a dans le pane
-        /*scenePane.getChildren().clear();
-        
-        // On recrée tous les nodes nécessaires
-        List<Element> elements = controller.getAllElements();
-        for(Element elem : elements)
-        {
-            ImageView sprite = new ImageView(elem.getElementDescription().getImage());
-            sprite.setX(elem.getPosition(0).getX());
-            sprite.setY(elem.getPosition(0).getY());
-            sprite.setFitWidth(elem.getElementDescription().getSize().getX());
-            sprite.setFitHeight(elem.getElementDescription().getSize().getY());
-            sprite.setTranslateX(-elem.getElementDescription().getSize().getX()/2);
-            sprite.setTranslateY(-elem.getElementDescription().getSize().getY()/2);
-            scenePane.getChildren().add(sprite);
-        }*/
     }
     
     private void onMouseClicked(MouseEvent e)
     {
         Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-        controller.addStaticElement(point.getX(), point.getY());
+        try
+        {
+            controller.addElement(new Vector2D(point.getX(), point.getY()));
+        }
+        catch(Exception exception)
+        {
+            // TODO
+        }
         update();
+    }
+    
+    private void onNewStrategy(ActionEvent e)
+    {
+        
     }
 }
