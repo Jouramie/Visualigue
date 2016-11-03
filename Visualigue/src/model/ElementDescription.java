@@ -1,6 +1,6 @@
 package model;
 
-public abstract class ElementDescription
+public class ElementDescription
 {
     private String name;
     private Vector2D size;
@@ -35,7 +35,7 @@ public abstract class ElementDescription
         this.size = size;
     }
     
-    public Vector2D setSize()
+    public Vector2D getSize()
     {
         return this.size;
     }

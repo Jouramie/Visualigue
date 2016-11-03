@@ -2,7 +2,7 @@ package model;
 
 public abstract class Element
 {
-    private ElementDescription description;
+    protected ElementDescription description;
     private boolean changed;
     
     public abstract Vector2D getPosition(double time);
