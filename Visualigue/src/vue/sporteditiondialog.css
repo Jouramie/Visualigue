@@ -3,5 +3,9 @@
  */
 
 .mainFxmlClass {
+-fx-background-color: darkgrey;
+}
 
+.background{
+    -fx-background-color: gainsboro;
 }
