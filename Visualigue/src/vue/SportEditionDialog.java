@@ -21,7 +21,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * FXML Controller class
@@ -101,4 +103,45 @@ public class SportEditionDialog implements Initializable
         stage.close();
     }
 
+    @FXML
+    private void onActionAddBall(ActionEvent e)
+    {
+        Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initOwner(stage);
+        
+        ElementEditionDialog elementEdition = new ElementEditionDialog(controller, dialog, "balles");
+    }
+    
+    @FXML
+    private void onActionAddPlayer(ActionEvent e)
+    {
+        Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initOwner(stage);
+        
+        ElementEditionDialog elementEdition = new ElementEditionDialog(controller, dialog, "catégories de joueur");
+    }
+    
+    @FXML
+    private void onActionAddObstacle(ActionEvent e)
+    {
+        Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initOwner(stage);
+        
+        ElementEditionDialog elementEdition = new ElementEditionDialog(controller, dialog, "obstacles");
+    }
+    
+    @FXML
+    private void onActionModifyElement(ActionEvent e)
+    {
+        
+    }
+    
+    @FXML
+    private void onActionDeleteElement(ActionEvent e)
+    {
+        
+    }
 }

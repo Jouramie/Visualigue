@@ -15,27 +15,14 @@
    <top>
       <MenuBar styleClass="background">
         <menus>
-          <Menu mnemonicParsing="false" text="Fichier">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
+          <Menu mnemonicParsing="false" text="Fichier" />
           <Menu mnemonicParsing="false" text="Édition">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-                  <MenuItem mnemonicParsing="false" onAction="#onActionConfigureSport" text="Éditer sport" />
+                  <MenuItem mnemonicParsing="false" onAction="#onActionConfigureSport" text="Configurer les sports" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Affichage">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Aide">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Action 1" />
-            </items>
-          </Menu>
+          <Menu mnemonicParsing="false" text="Affichage" />
+          <Menu mnemonicParsing="false" text="Aide" />
         </menus>
       </MenuBar>
    </top>
@@ -55,26 +42,47 @@
    <right>
       <VBox styleClass="background" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Label" />
+            <Label text="Nom joueur / obstacle">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin></Label>
             <HBox>
                <children>
-                  <Label text="Position X: " />
-                  <TextField />
+                  <Label prefWidth="70.0" text="Rôle:" />
+                  <ChoiceBox prefWidth="120.0" />
                </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
             </HBox>
             <HBox>
                <children>
-                  <Label text="Position Y: " />
-                  <TextField />
+                  <Label prefHeight="17.0" prefWidth="70.0" text="Position X: " />
+                  <TextField prefWidth="80.0" />
                </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
             </HBox>
             <HBox>
                <children>
-                  <Label text="Orientation: " />
-                  <TextField prefHeight="25.0" prefWidth="106.0" />
+                  <Label prefWidth="70.0" text="Position Y: " />
+                  <TextField prefWidth="80.0" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label prefWidth="70.0" text="Orientation: " />
+                  <TextField prefHeight="25.0" prefWidth="80.0" />
                </children>
             </HBox>
-         </children></VBox>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </BorderPane.margin></VBox>
    </right>
    <bottom>
       <VBox styleClass="background" BorderPane.alignment="CENTER">
@@ -108,7 +116,7 @@
             </HBox>
          </children>
          <BorderPane.margin>
-            <Insets left="60.0" />
+            <Insets left="60.0" right="150.0" />
          </BorderPane.margin>
       </VBox>
    </bottom>
