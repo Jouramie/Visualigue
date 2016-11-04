@@ -13,7 +13,7 @@
    <center>
       <VBox styleClass="background" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="lblTitre" text="Configurer un obstacle">
+            <Label fx:id="lblTitre" text="Configuration des ...">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
