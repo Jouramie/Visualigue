@@ -18,17 +18,20 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.Element;
 import model.Vector2D;
 
 public class MainWindow implements Initializable
 {
+
     GodController controller;
     private Stage stage;
     private BorderPane root;
     private List<UIElement> uiElements;
-    
+
     @FXML
     private Pane scenePane;
     @FXML
@@ -38,46 +41,45 @@ public class MainWindow implements Initializable
     {
         this.controller = controller;
         this.uiElements = new ArrayList();
-        
+
         try
         {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/MainWindow.fxml"));
             fxmlLoader.setController(this);
-            root = (BorderPane)fxmlLoader.load();
+            root = (BorderPane) fxmlLoader.load();
             stage = primaryStage;
             Scene scene = new Scene(root, 500, 400);
             stage.setScene(scene);
             stage.setTitle("VisuaLigue");
             stage.show();
-        }
-        catch (IOException ex)
+        } catch (IOException ex)
         {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
         scenePane.setOnMousePressed(this::onMouseClicked);
-        
+
         // Menu listeners
         menuNewStrategy.setOnAction(this::onNewStrategy);
         
         update();
     }
-    
+
     public void update()
     {
         List<Element> elements = controller.getAllElements();
         List<UIElement> elemToDelete = new ArrayList(uiElements);
-        
-        for(Element elem : elements)
+
+        for (Element elem : elements)
         {
             boolean found = false;
-            for(UIElement uiElem : uiElements)
+            for (UIElement uiElem : uiElements)
             {
-                if(uiElem.getElement() == elem)
+                if (uiElem.getElement() == elem)
                 {
                     uiElem.update(this.controller.getCurrentTime() / 1000.0);
                     elemToDelete.remove(uiElem);
@@ -85,21 +87,22 @@ public class MainWindow implements Initializable
                     break;
                 }
             }
-            
-            if(!found)
+
+            if (!found)
             {
                 UIElement newUIElement = new UIElement(elem);
                 uiElements.add(newUIElement);
                 scenePane.getChildren().add(newUIElement.getNode());
             }
         }
-        
-        for(UIElement uiElem : elemToDelete)
+
+        for (UIElement uiElem : elemToDelete)
         {
             uiElements.remove(uiElem);
         }
+
     }
-    
+
     private void onMouseClicked(MouseEvent e)
     {
         Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
@@ -113,9 +116,18 @@ public class MainWindow implements Initializable
         }
         update();
     }
-    
-    private void onNewStrategy(ActionEvent e)
+	private void onNewStrategy(ActionEvent e)
     {
         
     }
-}
+
+	@FXML
+    private void onActionConfigureSport(ActionEvent e)
+    {
+        Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initOwner(stage);
+        
+        SportEditionDialog sportEdition = new SportEditionDialog(controller, dialog);
+        
+    }}
