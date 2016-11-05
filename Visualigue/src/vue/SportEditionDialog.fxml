@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane stylesheets="@sporteditiondialog.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane stylesheets="@sporteditiondialog.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <AnchorPane prefHeight="629.0" prefWidth="793.0" BorderPane.alignment="CENTER">
          <children>
@@ -31,15 +32,17 @@
             <ImageView fx:id="elementDescriptionView" fitHeight="150.0" fitWidth="182.0" layoutX="409.0" layoutY="401.0" pickOnBounds="true" preserveRatio="true" />
             <TextField fx:id="playerNumber" layoutX="141.0" layoutY="142.0" />
             <Text layoutX="41.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre de joueur :" wrappingWidth="80.13671875" />
-            <Button layoutX="288.0" layoutY="289.0" mnemonicParsing="false" onAction="#onActionCancel" prefHeight="70.0" prefWidth="130.0" text="QUITTER" />
+            <Button layoutX="288.0" layoutY="289.0" mnemonicParsing="false" onAction="#onActionSave" prefHeight="70.0" prefWidth="130.0" text="Enregistrer" />
          </children>
       </AnchorPane>
    </center>
    <left>
-      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <ListView fx:id="sports" prefHeight="629.0" prefWidth="200.0" />
+            <Label text="Liste des sports" />
+            <ListView fx:id="sports" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="100.0" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#onActionAddSport" text="Ajouter un sport" />
          </children>
-      </Pane>
+      </VBox>
    </left>
 </BorderPane>

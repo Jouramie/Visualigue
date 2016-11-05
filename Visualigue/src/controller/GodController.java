@@ -94,6 +94,31 @@ public class GodController
         return new ArrayList<Element>();
     }
     
+    public void addSport(String name, String courtImage, double courtHeight, double courtWidth, int playerNumber)
+    {    
+        Sport sport = new Sport(name, courtImage, courtHeight, courtWidth, playerNumber);
+        sports.add(sport);
+    }
+    
+    public void saveSport(String oldName, String newName, String courtImage, double courtHeight, double courtWidth, int playerNumber)
+    {
+        for(Sport sport : sports)
+        {
+            if(sport.getName().equals(oldName))
+            {
+                sport.setName(newName);
+                sport.setCourtImage(courtImage);
+                sport.setCourtSize(new Vector2D(courtHeight, courtWidth));
+                sport.setMaxPlayer(playerNumber);
+            }
+        }
+    }
+    
+    public List<Sport> getSports()
+    {
+        return this.sports;
+    }
+    
     public double getCurrentTime()
     {
         return this.time;

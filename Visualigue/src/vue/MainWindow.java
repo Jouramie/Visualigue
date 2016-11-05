@@ -121,13 +121,13 @@ public class MainWindow implements Initializable
         
     }
 
-	@FXML
+    @FXML
     private void onActionConfigureSport(ActionEvent e)
     {
         Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        dialog.initStyle(StageStyle.DECORATED);
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
         
         SportEditionDialog sportEdition = new SportEditionDialog(controller, dialog);
-        
     }}

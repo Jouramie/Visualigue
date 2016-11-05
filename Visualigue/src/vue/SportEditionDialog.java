@@ -8,6 +8,7 @@ package vue;
 import controller.GodController;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import model.Sport;
 
 /**
  * FXML Controller class
@@ -30,7 +32,6 @@ import javafx.stage.Stage;
  */
 public class SportEditionDialog implements Initializable
 {
-
     @FXML
     private ListView sports;
 
@@ -65,7 +66,7 @@ public class SportEditionDialog implements Initializable
     public SportEditionDialog(GodController controller, Stage primaryStage)
     {
         this.controller = controller;
-        stage = primaryStage;
+        this.stage = primaryStage;
 
         try
         {
@@ -73,7 +74,6 @@ public class SportEditionDialog implements Initializable
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/SportEditionDialog.fxml"));
             fxmlLoader.setController(this);
             root = (BorderPane) fxmlLoader.load();
-            stage = primaryStage;
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Configuration des sports");
@@ -83,22 +83,74 @@ public class SportEditionDialog implements Initializable
         }
 
         stage.show();
-
     }
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        // TODO
+        updateSportsList();
     }
 
     @FXML
-    private void onActionCancel(ActionEvent e)
+    private void onActionAddSport(ActionEvent e)
     {
-        stage.close();
+        controller.addSport("Nouveau sport", "", 0, 0, 0);
+        updateSportsList();
+    }
+    
+    @FXML
+    private void onActionSave(ActionEvent e)
+    {
+        try
+        {
+            int height = Integer.parseInt(courtHeight.getText());
+            int width = Integer.parseInt(courtWidth.getText());
+            int numPlayer = Integer.parseInt(playerNumber.getText());
+            
+            Sport sport = getCurrentSport();
+            if(sport != null)
+            {
+                controller.saveSport(sport.getName(), sportName.getText(), courtImage.getText(), height, width, numPlayer);
+                sport.setName(sportName.getText());
+                updateSportsList();
+            }
+        }
+        catch(Exception exception)
+        {
+            
+        }
+    }
+    
+    private Sport getCurrentSport()
+    {
+        String currentName = (String)sports.getSelectionModel().getSelectedItem();
+        List<Sport> allSports = controller.getSports();
+        for(Sport s : allSports)
+        {
+            if(s.getName().equals(currentName))
+            {
+                return s;
+            }
+        }
+        
+        return null;
     }
 
+    private void updateSportsList()
+    {
+        List<Sport> allSports = controller.getSports();
+        
+        Sport oldSelection = getCurrentSport();
+        
+        sports.getItems().clear();
+        for(Sport sport : allSports)
+        {
+            sports.getItems().add(sport.getName());
+        }
+        
+        if(oldSelection != null)
+        {
+            sports.getSelectionModel().select(oldSelection.getName());
+        }
+    }
 }
