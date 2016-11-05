@@ -8,7 +8,9 @@
 	\caption{Diagramme de séquence de conversion de coordonnées}
 \end{figure}
 
-*** Description ***
+Puisque les éléments sont ajoutés dans un Pane de JavaFX avec les dimensions réelles, la conversion s'en trouve fortement simplifiée. Par exemple, lorsque l'on ajoute le sprite qui représente le terrain, on l'ajoute avec ses vrais dimensions dans le Pane (ex: 100m par 60m). Pour pouvoir l'afficher avec des dimensions raisonnables à l'écran, il suffit de jouer avec les dimensions du Pane intérieur pour faire un zoom.
+
+Ainsi, on procède en ajoutant un écouteur sur le Pane qui contient la scène et en écoutant les événements de clic de la souris. Par la suite, on obtient la position en X et la position en Y à partir de l'événement JavaFX généré. Ces coordonnées seront en pixels par rapport au sommet supérieur gauche du Pane. Finalement, on utilise la méthode {\tt sceneToLocal} du Pane pour convertir ces coordonnées en unités réelles.
 
 \section{Ajout d'un élément à l'aide de la souris}
 \begin{figure}[H]
@@ -35,7 +37,13 @@
 	\caption{Diagramme de séquence d'édition de stratégie image par image}
 \end{figure}
 
-*** Description ***
+La première étape pour l'édition image par image est de sélectionner l'outil de déplacement dans la barre d'outil. Pour cela, un simple écouteur est mis sur le bouton en question. Ceci permet à l'interface de comprendre que l'utilisateur veut pouvoir déplacer des éléments.
+
+Ensuite, lorsque l'utilisateur clique sur un élément, un écouteur permet d'informer l'interface de l'action. L'interface informe le contrôleur de l'élément sélectionné. À la fin du déplacement (le \textit{drag}), un écouteur nous informe de l'événement. L'interface informe donc le contrôleur de la nouvelle position du joueur. Le contrôleur met alors à jour l'élément actuel. Dans le diagramme ci-dessus, on illustre le cas le plus complexe où l'élément est un \textit{MobileElement}. Dans ce cas, la position est mise à jour dans la trajectoire. Dans le cas d'un Obstacle, la position est simplement mise à jour dans une variable interne, sans gestion de trajectoire. Par la suite, l'interface se met à jour pour représenter le nouveau domaine.
+
+Si l'utilisateur place sa souris au-dessus d'un élément, un écouteur avertit l'interface qui affiche une petite flèche pour indiquer la possibilité de rotation de l'élément. Si cette petite flèche est déplacée, une rotation est appliquée à l'élément de la même façon que pour la position.
+
+L'utilisateur peut ainsi modifier autant d'éléments qu'il le souhaite. Une fois qu'il a fini d'éditer la trame actuelle, il peut passer à la prochaine trame en cliquant sur le bouton approprié. L'interface va alors notifier le contrôleur qui va mettre à jour sa variable interne de temps. Puis, l'interface se mettra à jour pour présenter la prochaine trame.
 
 \section{Édition de la stratégie en temps réel}
 \begin{figure}[H]
@@ -44,7 +52,7 @@
 	\caption{Diagramme de séquence d'édition de stratégie en temps réel}
 \end{figure}
 
-*** Description ***
+L'édition en temps réel débute par le clic sur le bouton d'enregistrement en temps réel. Par la suite, dès que l'utilisateur cliquera sur un élément de la stratégie, l'édition en temps réel débutera. Ainsi, lors du clic sur un élément, l'interface avertit le contrôleur du début de l'édition en temps réel. Le contrôleur va alors démarrer un fil d'exécution pour mettre à jour les éléments et enregistrer la position de l'élément en édition. Ainsi, à chaque trame, le contrôleur va appeler la méthode \textit{update} de l'interface. Cet appel se fait par l'interface \textit{Updatable}. L'interface se met à jour en récupérant le temps actuel et tous les éléments, puis en modifiant ses \textit{UIElement} pour refléter le domaine. À la fin, il met à jour la position du joueur en édition de la même façon que pour le mode image par image. Finalement, le contrôleur met à jour sa variable de temps et le tout se répète jusqu'à la fin de la stratégie.
 
 \section{Visualisation d'une stratégie}
 \begin{figure}[H]
