@@ -1,0 +1,64 @@
+\documentclass[ULlof]{ULrapport}
+
+% Chargement des packages
+\usepackage[utf8]{inputenc}
+\usepackage[autolanguage]{numprint}
+\usepackage{icomma}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{pbox}
+\usepackage{float}
+\usepackage{pifont}
+
+\setcounter{tocdepth}{2}
+
+% Definition d'une commande pour presenter des cellules multilignes dans un tableau
+%\newcommand{\cellulemultiligne}[1]{\begin{tabular}{@{}c@{}}#1\end{tabular}}
+
+% Definition de colonnes en mode paragraphe avec alignement ajustable
+% Cette definition requiert le chargement du package "array"
+%    - alignement horizontal, parametre #1 : - \raggedright (aligne a gauche)
+%                                            - \centering (centre)
+%                                            - \raggedleft (aligne a droite)
+%    - alignement vertical, parametre #2 : - p (aligne en haut)
+%                                          - m (centre)
+%                                          - b (aligne en bas)
+%    - largeur, parametre #3 : longueur
+%\newcolumntype{Z}[3]{>{#1\hspace{0pt}\arraybackslash}#2{#3}}
+
+% Page titre
+\TitreProjet{Tableau de hockey interactif}
+\TitreRapport{Document de conception -- Remise 2}
+\Destinataire{Martin Savoie}
+\NomEquipe{The Javangers}
+\TableauMembres{
+   111\,127\,868  & Jérémie Bolduc & \\\hline
+   111\,126\,228  & Simon-Pierre Deschênes & \\\hline
+   111\,121\,082  & Émile Grégoire & \\\hline
+   111\,130\,693  & Alexandre McCune & \\\hline
+}
+\DateRemise{6 novembre 2016}
+
+
+\HistoriqueVersions{
+   0.0 & 19 septembre 2016 & Création du document \\\hline
+   0.1 & 2 octobre 2016 & Première version après la phase d'inception et le début de l'élaboration \\\hline
+   1.0 & 6 novembre 2016 & Version pour la remise 2 \\\hline
+}
+
+\begin{document}
+\input{tex/diag_classe}
+\input{tex/diag_sequence}
+\input{tex/echeancier2}
+	
+% Annexes
+\appendix
+\input{tex/vision}
+\input{tex/use_cases}
+%\input{tex/supplementary_specification}
+\input{tex/domain_model}
+%\input{tex/mockup}
+%\input{tex/echeancier}
+\input{tex/glossaire}
+
+\end{document}
