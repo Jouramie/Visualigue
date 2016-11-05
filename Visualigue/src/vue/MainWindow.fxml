@@ -15,7 +15,12 @@
    <top>
       <MenuBar styleClass="background">
         <menus>
-          <Menu mnemonicParsing="false" text="Fichier" />
+          <Menu mnemonicParsing="false" text="Fichier">
+            <items>
+              <MenuItem fx:id="menuNewStrategy" mnemonicParsing="false" text="Nouvelle stratégie" />
+              <MenuItem mnemonicParsing="false" text="Quitter" />
+            </items>
+          </Menu>
           <Menu mnemonicParsing="false" text="Édition">
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#onActionConfigureSport" text="Configurer les sports" />

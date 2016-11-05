@@ -5,6 +5,13 @@ public class StaticElement extends Element
     private Vector2D position;
     private Vector2D orientation;
     
+    public StaticElement(ElementDescription description)
+    {
+        this.position = new Vector2D(0, 0);
+        this.orientation = new Vector2D(0, 0);
+        this.description = description;
+    }
+    
     public StaticElement(Vector2D position, Vector2D orientation, ElementDescription description)
     {
         this.position = position;
