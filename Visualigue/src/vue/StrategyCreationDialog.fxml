@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" stylesheets="@StrategyCreationDialog.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <VBox>
+         <children>
+            <Label text="Stratégies récentes">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </Label>
+            <ListView fx:id="listViewStrategy" prefHeight="256.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="30.0" left="30.0" top="30.0" />
+               </BorderPane.margin>
+            </ListView>
+            <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onActionAdd" text="Ajouter une stratégie">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="20.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="30.0" left="30.0" top="30.0" />
+         </BorderPane.margin>
+      </VBox>
+   </left>
+   <center>
+      <StackPane>
+         <children>
+            <VBox fx:id="vboxAdd" visible="false">
+               <children>
+                  <Label text="Ajouter une stratégie">
+                     <font>
+                        <Font name="System Bold" size="21.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox>
+                     <children>
+                        <Label prefWidth="50.0" text="Nom :" />
+                        <TextField />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label prefWidth="50.0" text="Sport :" />
+                        <ChoiceBox prefWidth="150.0" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onActionSave" text="Sauvegarder">
+                     <VBox.margin>
+                        <Insets left="50.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <VBox fx:id="vboxDisplay">
+               <children>
+                  <Label text="Aperçu">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </Label>
+                  <ImageView fitHeight="160.0" fitWidth="320.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                  <Button fx:id="btnLoad" mnemonicParsing="false" onAction="#onActionLoad" text="Charger une stratégie">
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="30.0" left="20.0" right="30.0" top="30.0" />
+         </BorderPane.margin>
+      </StackPane>
+   </center>
+</BorderPane>

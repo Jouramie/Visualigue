@@ -79,7 +79,7 @@ public class SportEditionDialog implements Initializable
             stage.setTitle("Configuration des sports");
         } catch (IOException ex)
         {
-            Logger.getLogger(StategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         stage.show();
