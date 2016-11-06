@@ -19,7 +19,7 @@ Ainsi, on procède en ajoutant un écouteur sur le Pane qui contient la scène e
 	\caption{Diagramme de séquence d'ajout d'un élément}
 \end{figure}
 
-*** Description ***
+Le premier appel se fait à partir d'un bouton dans le menu de gauche. On y sélectionne l'outil de création d'élément. Le second appel viens de la scène, c'est l'endroit où on a cliquer dans la scène. Ensuite, il ne reste plus qu'à créer l'élément et à mettre à jour l'interface graphique.
 
 \section{Déterminer si le clic de la souris est sur un joueur}
 \begin{figure}[H]
@@ -28,7 +28,7 @@ Ainsi, on procède en ajoutant un écouteur sur le Pane qui contient la scène e
 	\caption{Diagramme de séquence pour déterminer si le clic de la souris est sur un joueur}
 \end{figure}
 
-*** Description ***
+Ce diagramme montre comment un clic dans la scène permet de sélectionner un élément. Il faut noter qu'avant d'ajouter un élément dans la scène, on place un écouteur JavaFX dessus. Au moment du clic de souris sur l'élément, l'écouteur est appelé. Par la suite, il ne reste plus qu'à trouver quel élément correspond à la source de l'événement en itérant parmi les \textit{UIElement} et en comparant le noeud avec celui qui a généré l'événement.
 
 \section{Édition de la stratégie image par image}
 \begin{figure}[H]
@@ -61,5 +61,10 @@ L'édition en temps réel débute par le clic sur le bouton d'enregistrement en 
 	\caption{Diagramme de séquence de visualisation d'une stratégie}
 \end{figure}
 
-*** Description ***
+Ce diagramme montre ce qui se passe lorsqu'on appuit sur le bouton servant à démarrer la stratégie. On a représenté uniquement le cas avec le bouton Jouer parce que c'est le plus complexe.
+Lorsqu'on utilise un autre bouton pour changer d'image, on peut imaginer le même diagramme, mais sans la boucle <<stategy end>>. 
 
+De la même manière, seul le cas où l'élément est un élément mobile a été représenté dans le diagramme, car c'est le plus complexe. 
+Dans le cas où l'élément est statique, il n'y a simplement pas d'appel à la classe Trajectory.
+
+La visualisation de la stratégie fonctionne de la même manière que pour l'édition de la stratégie en temps réel, sauf que la position actuelle de la souris n'est pas renvoyée au contrôleur. Veuillez vous référer aux explications du diagramme précédent pour plus de détails.
