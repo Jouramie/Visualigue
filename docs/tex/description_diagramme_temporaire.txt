@@ -1,7 +1,7 @@
 Visionnement :
 
-Ce diagramme montre ce qui se passe lorsqu'on appuis sur le bouton servant à démarrer la stratégie. On a représenté uniquement le cas avec le bouton Jouer parce que c'est le plus complexe.
-Lorsqu'on utilise un autre bouton servant à changer d'image, on peut s'imaginer l'exacte même diagramme, mais sans la boucle << stategy end >>. 
+Ce diagramme montre ce qui se passe lorsqu'on appuit sur le bouton servant à démarrer la stratégie. On a représenté uniquement le cas avec le bouton Jouer parce que c'est le plus complexe.
+Lorsqu'on utilise un autre bouton pour changer d'image, on peut imaginer le même diagramme, mais sans la boucle << stategy end >>. 
 
 De la même manière, seul le cas où l'élément est un élément mobile a été représenté dans le diagramme, car c'est le plus complexe. 
 Dans le cas où l'élément est statique, il n'y a simplement pas d'appel à la classe Trajectory.
@@ -14,4 +14,4 @@ Au moment où on clic dessus, l'eventHandler des clics sur les éléments est appel
 Ajout d'un joueur : 
 
 Le premier appel se fait à partir d'un bouton dans le menu de gauche. On y sélectionne l'outil de création d'élément. Le second appel viens de la scène, c'est l'endroit où on a cliquer dans la scène. 
-On peut ensuite créer l'élément paisiblement. 
+Ensuite, il ne reste plus qu'à créer l'élément. 
