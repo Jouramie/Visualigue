@@ -24,7 +24,7 @@ import javafx.stage.Stage;
  *
  * @author megal_000
  */
-public class ElementEditionDialog implements Initializable
+public class ElementDescriptionEditionDialog implements Initializable
 {
     @FXML
     private Label lblTitre;
@@ -33,7 +33,7 @@ public class ElementEditionDialog implements Initializable
     BorderPane root;
     Stage stage;
     
-    public ElementEditionDialog(GodController controller, Stage primaryStage, String type)
+    public ElementDescriptionEditionDialog(GodController controller, Stage primaryStage, String type)
     {
         this.controller = controller;
         stage = primaryStage;
@@ -41,7 +41,7 @@ public class ElementEditionDialog implements Initializable
         try
         {
 
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/ElementEditionDialog.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/ElementDescriptionEditionDialog.fxml"));
             fxmlLoader.setController(this);
             root = (BorderPane) fxmlLoader.load();
             stage = primaryStage;
@@ -51,7 +51,7 @@ public class ElementEditionDialog implements Initializable
             lblTitre.setText("Configuration des " + type);
         } catch (IOException ex)
         {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         stage.show();

@@ -76,7 +76,7 @@ public class SportEditionDialog implements Initializable
             stage.setTitle("Configuration des sports");
         } catch (IOException ex)
         {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         stage.show();
@@ -147,7 +147,7 @@ public class SportEditionDialog implements Initializable
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
         
-        ElementEditionDialog elementEdition = new ElementEditionDialog(controller, dialog, "balles");
+        ElementDescriptionEditionDialog elementEdition = new ElementDescriptionEditionDialog(controller, dialog, "balles");
     }
     
     @FXML
@@ -158,7 +158,7 @@ public class SportEditionDialog implements Initializable
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
         
-        ElementEditionDialog elementEdition = new ElementEditionDialog(controller, dialog, "cat�gories de joueur");
+        ElementDescriptionEditionDialog elementEdition = new ElementDescriptionEditionDialog(controller, dialog, "cat�gories de joueur");
     }
     
     @FXML
@@ -169,7 +169,7 @@ public class SportEditionDialog implements Initializable
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
         
-        ElementEditionDialog elementEdition = new ElementEditionDialog(controller, dialog, "obstacles");
+        ElementDescriptionEditionDialog elementEdition = new ElementDescriptionEditionDialog(controller, dialog, "obstacles");
     }
     
     @FXML
