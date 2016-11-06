@@ -24,7 +24,7 @@ import javafx.stage.StageStyle;
 import model.Element;
 import model.Vector2D;
 
-public class StategyEditionWindow implements Initializable
+public class StrategyEditionWindow implements Initializable
 {
 
     GodController controller;
@@ -37,7 +37,7 @@ public class StategyEditionWindow implements Initializable
     @FXML
     private MenuItem menuNewStrategy;
     
-    public StategyEditionWindow(GodController controller, Stage primaryStage)
+    public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
         this.controller = controller;
         this.uiElements = new ArrayList();
@@ -54,8 +54,15 @@ public class StategyEditionWindow implements Initializable
             stage.show();
         } catch (IOException ex)
         {
-            Logger.getLogger(StategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        dialog.initStyle(StageStyle.DECORATED);
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initOwner(stage);
+        
+        StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
     }
 
     @Override

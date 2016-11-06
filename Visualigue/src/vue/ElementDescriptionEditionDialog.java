@@ -51,7 +51,7 @@ public class ElementDescriptionEditionDialog implements Initializable
             lblTitre.setText("Configuration des " + type);
         } catch (IOException ex)
         {
-            Logger.getLogger(StategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         stage.show();
