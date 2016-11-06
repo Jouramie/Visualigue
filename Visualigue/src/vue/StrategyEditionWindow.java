@@ -12,19 +12,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -42,8 +36,6 @@ public class StrategyEditionWindow implements Initializable
     @FXML
     private Pane scenePane;
     @FXML
-    private MenuItem menuNewStrategy;
-    @FXML
     private Button playerButton;
     @FXML
     private Button ballButton;
@@ -57,7 +49,7 @@ public class StrategyEditionWindow implements Initializable
 
         try
         {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/StategyEditionWindow.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/StrategyEditionWindow.fxml"));
             fxmlLoader.setController(this);
             root = (BorderPane) fxmlLoader.load();
             stage = primaryStage;
@@ -82,9 +74,6 @@ public class StrategyEditionWindow implements Initializable
     public void initialize(URL location, ResourceBundle resources)
     {
         scenePane.setOnMousePressed(this::onMouseClicked);
-
-        // Menu listeners
-        menuNewStrategy.setOnAction(this::onNewStrategy);
         
         Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
         clipRect.heightProperty().bind(scenePane.heightProperty());
@@ -151,9 +140,15 @@ public class StrategyEditionWindow implements Initializable
         update();
     }
     
-    private void onNewStrategy(ActionEvent e)
+    @FXML
+    private void onActionNewStrategy(ActionEvent e)
     {
+        Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        dialog.initStyle(StageStyle.DECORATED);
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initOwner(stage);
         
+        StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
     }
 
     @FXML
