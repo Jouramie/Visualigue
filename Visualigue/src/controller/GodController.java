@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import model.BallDescription;
 import model.Element;
 import model.ElementDescription;
 import model.PlayerDescription;
@@ -18,7 +19,9 @@ public class GodController
     private ElementDescription currentElementDescription;
     private Element selectedElement;
     
-    private StaticElementDescription test;
+    private PlayerDescription playerDescription;
+    private BallDescription ballDescription;
+    private StaticElementDescription staticDescription;
     
     public GodController()
     {
@@ -28,8 +31,13 @@ public class GodController
         this.currentElementDescription = null;
         this.selectedElement = null;
         
-        test = new StaticElementDescription("test", new Vector2D(40, 40), "./res/test.png");
+        // Tests values
+        playerDescription = new PlayerDescription("player", new Vector2D(40, 40), "./res/player.png");
+        ballDescription = new BallDescription("ball", new Vector2D(20, 20), "./res/test.png");
+        staticDescription = new StaticElementDescription("static", new Vector2D(20, 20), "./res/cone.png");
         this.strategy = new Strategy("Test", null);
+        
+        this.sports.add(new Sport("Hockey", "hockey.png", 400, 1000, 5));
     }
     
     public void createStrategy(Sport sport, String name)
@@ -49,24 +57,25 @@ public class GodController
     
     public void addElement(Vector2D pos) throws Exception
     {
-        /*if(currentElementDescription != null)
+        if(currentElementDescription != null)
         {
+            Element elem = null;
+            
             if(currentElementDescription instanceof StaticElementDescription)
             {
-                this.strategy.createStaticElement((StaticElementDescription)currentElementDescription);
+                elem = this.strategy.createStaticElement((StaticElementDescription)currentElementDescription);
             }
             else if(currentElementDescription instanceof BallDescription)
             {
-                this.strategy.createStaticElement((BallDescription)currentElementDescription);
+                elem = this.strategy.createBall((BallDescription)currentElementDescription);
             }
             else if(currentElementDescription instanceof PlayerDescription)
             {
-                this.strategy.createPlayer((PlayerDescription)currentElementDescription);
+                elem = this.strategy.createPlayer((PlayerDescription)currentElementDescription);
             }
-        }*/
-        
-        Element elem = this.strategy.createStaticElement(test);
-        elem.setPosition(this.time, pos, 0.0);
+            
+            elem.setPosition(this.time, pos, 0.0);
+        }
     }
     
     public void selectElement(Element elem)
@@ -76,8 +85,18 @@ public class GodController
     
     public void selectElementDescription(String name)
     {
-        // TODO:
-        this.currentElementDescription = test;
+        if(name.equals("Player"))
+        {
+            this.currentElementDescription = playerDescription;
+        }
+        else if(name.equals("Ball"))
+        {
+            this.currentElementDescription = ballDescription;
+        }
+        else if(name.equals("Static"))
+        {
+            this.currentElementDescription = staticDescription;
+        }
     }
     
     public void setCurrentElemPosition(Vector2D pos)

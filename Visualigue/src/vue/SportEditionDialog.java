@@ -43,6 +43,9 @@ public class SportEditionDialog implements Initializable
 
     @FXML
     private TextField courtWidth;
+    
+    @FXML
+    private TextField numTeams;
 
     @FXML
     private TextField playerNumber;
@@ -86,6 +89,10 @@ public class SportEditionDialog implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         updateSportsList();
+        
+        sports.getSelectionModel().selectedItemProperty().addListener((event) -> {
+            this.updateCurrentSport();
+        });
     }
 
     @FXML
@@ -199,6 +206,20 @@ public class SportEditionDialog implements Initializable
         if(oldSelection != null)
         {
             sports.getSelectionModel().select(oldSelection.getName());
+        }
+    }
+    
+    private void updateCurrentSport()
+    {
+        Sport currentSport = getCurrentSport();
+        if(currentSport != null)
+        {
+            sportName.setText(currentSport.getName());
+            courtImage.setText(currentSport.getCourtImage());
+            courtHeight.setText("" + currentSport.getCourtSize().getY());
+            courtWidth.setText("" + currentSport.getCourtSize().getX());
+            playerNumber.setText("" + currentSport.getMaxPlayer());
+            numTeams.setText("2");
         }
     }
 }

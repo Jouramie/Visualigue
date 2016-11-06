@@ -7,16 +7,16 @@ public class StaticElement extends Element
     
     public StaticElement(ElementDescription description)
     {
+        super(description);
         this.position = new Vector2D(0, 0);
         this.orientation = new Vector2D(0, 0);
-        this.description = description;
     }
     
     public StaticElement(Vector2D position, Vector2D orientation, ElementDescription description)
     {
+        super(description);
         this.position = position;
         this.orientation = orientation;
-        this.description = description;
     }
     
     @Override

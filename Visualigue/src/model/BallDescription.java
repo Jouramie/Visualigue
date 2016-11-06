@@ -9,9 +9,9 @@ package model;
  *
  * @author emile
  */
-public class PlayerDescription extends ElementDescription
+public class BallDescription extends ElementDescription
 {
-    public PlayerDescription(String name, Vector2D size, String image)
+    public BallDescription(String name, Vector2D size, String image)
     {
         super(name, size, image);
     }

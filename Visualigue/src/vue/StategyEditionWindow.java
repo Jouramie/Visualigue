@@ -12,12 +12,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -26,7 +34,6 @@ import model.Vector2D;
 
 public class StategyEditionWindow implements Initializable
 {
-
     GodController controller;
     private Stage stage;
     private BorderPane root;
@@ -36,6 +43,12 @@ public class StategyEditionWindow implements Initializable
     private Pane scenePane;
     @FXML
     private MenuItem menuNewStrategy;
+    @FXML
+    private Button playerButton;
+    @FXML
+    private Button ballButton;
+    @FXML
+    private Button staticButton;
     
     public StategyEditionWindow(GodController controller, Stage primaryStage)
     {
@@ -65,6 +78,20 @@ public class StategyEditionWindow implements Initializable
 
         // Menu listeners
         menuNewStrategy.setOnAction(this::onNewStrategy);
+        
+        Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
+        clipRect.heightProperty().bind(scenePane.heightProperty());
+        clipRect.widthProperty().bind(scenePane.widthProperty());
+        scenePane.setClip(clipRect);
+        
+        ImageView ice = new ImageView("./res/hockey.png");
+        ice.setX(500);
+        ice.setY(200);
+        ice.setFitWidth(1000);
+        ice.setFitHeight(400);
+        ice.setTranslateX(-1000/2);
+        ice.setTranslateY(-400/2);
+        scenePane.getChildren().add(ice);
         
         update();
     }
@@ -131,4 +158,32 @@ public class StategyEditionWindow implements Initializable
         dialog.initOwner(stage);
         
         SportEditionDialog sportEdition = new SportEditionDialog(controller, dialog);
-    }}
+    }
+    
+    @FXML
+    private void onActionPlayerDescription()
+    {
+        this.controller.selectElementDescription("Player");
+        this.playerButton.setStyle("-fx-background-color: lightblue;");
+        this.ballButton.setStyle("-fx-background-color: inherit;");
+        this.staticButton.setStyle("-fx-background-color: inherit;");
+    }
+    
+    @FXML
+    private void onActionBallDescription()
+    {
+        this.controller.selectElementDescription("Ball");
+        this.ballButton.setStyle("-fx-background-color: lightblue;");
+        this.playerButton.setStyle("-fx-background-color: inherit;");
+        this.staticButton.setStyle("-fx-background-color: inherit;");
+    }
+    
+    @FXML
+    private void onActionStaticDescription()
+    {
+        this.controller.selectElementDescription("Static");
+        this.staticButton.setStyle("-fx-background-color: lightblue;");
+        this.playerButton.setStyle("-fx-background-color: inherit;");
+        this.ballButton.setStyle("-fx-background-color: inherit;");
+    }
+}

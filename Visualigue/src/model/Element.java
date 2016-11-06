@@ -10,6 +10,11 @@ public abstract class Element
     public abstract void setPosition(double time, Vector2D position, double dt);
     public abstract void setOrientation(double time, Vector2D orientation, double dt);
     
+    public Element(ElementDescription desc)
+    {
+        this.description = desc;
+    }
+    
     public double getTrajectoryDuration()
     {
         return 0.0;

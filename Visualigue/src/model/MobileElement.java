@@ -3,21 +3,22 @@ package model;
 public class MobileElement extends Element
 {
     private Trajectory trajectory;
-    private ElementDescription description;
     
     public MobileElement()
     {
+        super(null);
         this.trajectory = new Trajectory();
     }
     
     public MobileElement(ElementDescription description)
     {
+        super(description);
         this.trajectory = new Trajectory();
-        this.description = description;
     }
 
     public MobileElement(Vector2D vector2D, Vector2D vector2D0, ElementDescription description)
     {
+        super(description);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

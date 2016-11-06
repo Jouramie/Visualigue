@@ -9,10 +9,10 @@ package model;
  *
  * @author emile
  */
-public class PlayerDescription extends ElementDescription
+public class Ball extends MobileElement
 {
-    public PlayerDescription(String name, Vector2D size, String image)
+    public Ball(BallDescription desc)
     {
-        super(name, size, image);
+        super(desc);
     }
 }

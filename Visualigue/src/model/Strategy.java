@@ -25,19 +25,19 @@ public class Strategy
         return elem;
     }
     
-    /*public Ball createBall(BallDescription desc)
+    public Ball createBall(BallDescription desc)
     {
         Ball elem = new Ball(desc);
         elements.add(elem);
         return elem;
-    }*/
+    }
      
     public Player createPlayer(PlayerDescription desc) throws Exception
     {
-        if(this.nbPlayer >= this.sport.getMaxPlayer())
+        /*if(this.nbPlayer >= this.sport.getMaxPlayer())
         {
             throw new Exception("Votre sport ne peut pas contenir plus de " + this.sport.getMaxPlayer() + " joueurs.");
-        }
+        }*/
         
         Player elem = new Player(desc);
         elements.add(elem);
