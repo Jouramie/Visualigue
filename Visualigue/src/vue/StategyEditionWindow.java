@@ -116,7 +116,8 @@ public class StategyEditionWindow implements Initializable
         }
         update();
     }
-	private void onNewStrategy(ActionEvent e)
+    
+    private void onNewStrategy(ActionEvent e)
     {
         
     }

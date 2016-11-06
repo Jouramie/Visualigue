@@ -28,12 +28,13 @@ public class GodController
         this.currentElementDescription = null;
         this.selectedElement = null;
         
-        test = new StaticElementDescription("test", new Vector2D(40, 40), "test.jpg");
+        test = new StaticElementDescription("test", new Vector2D(40, 40), "./res/test.png");
+        this.strategy = new Strategy("Test", null);
     }
     
     public void createStrategy(Sport sport, String name)
     {
-        this.strategy = new Strategy(name, sport);
+        //this.strategy = new Strategy(name, sport);
     }
     
     public void saveStrategy(String path)
@@ -48,21 +49,24 @@ public class GodController
     
     public void addElement(Vector2D pos) throws Exception
     {
-        if(currentElementDescription != null)
+        /*if(currentElementDescription != null)
         {
             if(currentElementDescription instanceof StaticElementDescription)
             {
                 this.strategy.createStaticElement((StaticElementDescription)currentElementDescription);
             }
-            /*else if(currentElementDescription instanceof BallDescription)
+            else if(currentElementDescription instanceof BallDescription)
             {
                 this.strategy.createStaticElement((BallDescription)currentElementDescription);
-            }*/
+            }
             else if(currentElementDescription instanceof PlayerDescription)
             {
                 this.strategy.createPlayer((PlayerDescription)currentElementDescription);
             }
-        }
+        }*/
+        
+        Element elem = this.strategy.createStaticElement(test);
+        elem.setPosition(this.time, pos, 0.0);
     }
     
     public void selectElement(Element elem)
