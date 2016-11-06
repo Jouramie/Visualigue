@@ -24,7 +24,7 @@ import javafx.stage.StageStyle;
 import model.Element;
 import model.Vector2D;
 
-public class MainWindow implements Initializable
+public class StategyEditionWindow implements Initializable
 {
 
     GodController controller;
@@ -37,14 +37,14 @@ public class MainWindow implements Initializable
     @FXML
     private MenuItem menuNewStrategy;
     
-    public MainWindow(GodController controller, Stage primaryStage)
+    public StategyEditionWindow(GodController controller, Stage primaryStage)
     {
         this.controller = controller;
         this.uiElements = new ArrayList();
 
         try
         {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/MainWindow.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/StategyEditionWindow.fxml"));
             fxmlLoader.setController(this);
             root = (BorderPane) fxmlLoader.load();
             stage = primaryStage;
@@ -54,7 +54,7 @@ public class MainWindow implements Initializable
             stage.show();
         } catch (IOException ex)
         {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

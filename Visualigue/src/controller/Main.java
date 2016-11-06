@@ -2,7 +2,7 @@ package controller;
 
 import javafx.stage.Stage;
 import javafx.application.Application;
-import vue.MainWindow;
+import vue.StategyEditionWindow;
 
 public class Main extends Application
 {
@@ -19,7 +19,7 @@ public class Main extends Application
     {
         stage = primaryStage;
         controller = new GodController();
-        MainWindow mainWindow = new MainWindow(controller, primaryStage);
+        StategyEditionWindow mainWindow = new StategyEditionWindow(controller, primaryStage);
     }
     
     public static void main(String[] args)
