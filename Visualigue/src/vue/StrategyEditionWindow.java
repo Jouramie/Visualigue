@@ -80,7 +80,7 @@ public class StrategyEditionWindow implements Initializable
         clipRect.widthProperty().bind(scenePane.widthProperty());
         scenePane.setClip(clipRect);
         
-        ImageView ice = new ImageView("./res/hockey.png");
+        ImageView ice = new ImageView("/res/hockey.png");
         ice.setX(500);
         ice.setY(200);
         ice.setFitWidth(1000);

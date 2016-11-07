@@ -32,9 +32,9 @@ public class GodController
         this.selectedElement = null;
         
         // Tests values
-        playerDescription = new PlayerDescription("player", new Vector2D(40, 40), "./res/player.png");
-        ballDescription = new BallDescription("ball", new Vector2D(20, 20), "./res/test.png");
-        staticDescription = new StaticElementDescription("static", new Vector2D(20, 20), "./res/cone.png");
+        playerDescription = new PlayerDescription("player", new Vector2D(40, 40), "/res/player.png");
+        ballDescription = new BallDescription("ball", new Vector2D(20, 20), "/res/test.png");
+        staticDescription = new StaticElementDescription("static", new Vector2D(20, 20), "/res/cone.png");
         this.strategy = new Strategy("Test", null);
         
         this.sports.add(new Sport("Hockey", "hockey.png", 400, 1000, 5));

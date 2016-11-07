@@ -92,7 +92,7 @@
                   </Label>
                   <ImageView fitHeight="160.0" fitWidth="320.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
-                        <Image url="./res/preview.png" />
+                        <Image url="/res/preview.png" />
                      </image></ImageView>
                   <Button fx:id="btnLoad" mnemonicParsing="false" onAction="#onActionLoad" text="Charger une stratégie">
                      <VBox.margin>
