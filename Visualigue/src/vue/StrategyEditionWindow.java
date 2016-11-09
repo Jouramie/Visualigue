@@ -18,6 +18,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -55,6 +56,10 @@ public class StrategyEditionWindow implements Initializable
     private Button ballButton;
     @FXML
     private Button staticButton;
+    @FXML
+    private Label xCoordinate;
+    @FXML
+    private Label yCoordinate;
     
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
@@ -89,6 +94,8 @@ public class StrategyEditionWindow implements Initializable
     public void initialize(URL location, ResourceBundle resources)
     {
         scenePane.setOnMousePressed(this::onMouseClicked);
+        scenePane.setOnMouseMoved(this::onMouseMoved);
+        scenePane.setOnMouseExited(this::onMouseExited);
         
         Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
         clipRect.heightProperty().bind(scenePane.heightProperty());
@@ -203,6 +210,19 @@ public class StrategyEditionWindow implements Initializable
                 controller.setCurrentElemPosition(new Vector2D(point.getX(), point.getY()));
             }
         }
+    }
+    
+    private void onMouseMoved(MouseEvent e)
+    {
+        Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
+        xCoordinate.setText("" + point.getX());
+        yCoordinate.setText("" + point.getY());
+    }
+    
+    private void onMouseExited(MouseEvent e)
+    {
+        xCoordinate.setText("-");
+        yCoordinate.setText("-");
     }
     
     @FXML
