@@ -124,20 +124,22 @@
          <children>
             <HBox alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" text="⚫">
+                  <Button mnemonicParsing="false" onAction="#onActionRecord" text="⚫">
                      <styleClass>
                         <String fx:value="btnRecord" />
                         <String fx:value="btnTimeLine" />
                      </styleClass></Button>
-                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏮" />
-                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏪" />
-                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="▶" />
-                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏩" />
-                  <Button mnemonicParsing="false" styleClass="btnTimeLine" text="⏭" />
-                  <TextField prefHeight="25.0" prefWidth="29.0" text="X2" />
+                  <Button mnemonicParsing="false" onAction="#onActionRestart" styleClass="btnTimeLine" text="⏮" />
+                  <Button mnemonicParsing="false" onAction="#onActionRewind" styleClass="btnTimeLine" text="⏪" />
+                  <Button mnemonicParsing="false" onAction="#onActionLastFrame" styleClass="btnTimeLine" text="⮜" />
+                  <Button mnemonicParsing="false" onAction="#onActionPlay" styleClass="btnTimeLine" text="▶" />
+                  <Button mnemonicParsing="false" onAction="#onActionNextFrame" styleClass="btnTimeLine" text="⮞" />
+                  <Button mnemonicParsing="false" onAction="#onActionFastForward" styleClass="btnTimeLine" text="⏩" />
+                  <Button mnemonicParsing="false" onAction="#onActionGoToEnd" styleClass="btnTimeLine" text="⏭" />
+                  <TextField fx:id="speed" prefHeight="25.0" prefWidth="29.0" text="X2" />
                </children>
             </HBox>
-            <Slider styleClass="backgroundMenu">
+            <Slider fx:id="timeLine" styleClass="backgroundMenu">
                <VBox.margin>
                   <Insets />
                </VBox.margin></Slider>

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -19,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -34,11 +36,12 @@ import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable
 {
+
     private enum Toolbox
     {
         ADD_PLAYER, ADD_BALL, ADD_OBSTACLE, MOVE, RECORD, ZOOM
     }
-    
+
     GodController controller;
     private Stage stage;
     private BorderPane root;
@@ -60,6 +63,8 @@ public class StrategyEditionWindow implements Initializable
     private Label xCoordinate;
     @FXML
     private Label yCoordinate;
+    @FXML
+    private Slider timeLine;
     
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
@@ -81,12 +86,12 @@ public class StrategyEditionWindow implements Initializable
         {
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         Stage dialog = new Stage(StageStyle.TRANSPARENT);
         dialog.initStyle(StageStyle.DECORATED);
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
-        
+
         StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
     }
 
@@ -96,21 +101,24 @@ public class StrategyEditionWindow implements Initializable
         scenePane.setOnMousePressed(this::onMouseClicked);
         scenePane.setOnMouseMoved(this::onMouseMoved);
         scenePane.setOnMouseExited(this::onMouseExited);
-        
+
+        timeLine.valueProperty().addListener((observable)
+                -> onSliderValueChanged(observable)
+        );
         Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
         clipRect.heightProperty().bind(scenePane.heightProperty());
         clipRect.widthProperty().bind(scenePane.widthProperty());
         scenePane.setClip(clipRect);
-        
+
         ImageView ice = new ImageView("/res/hockey.png");
         ice.setX(500);
         ice.setY(200);
         ice.setFitWidth(1000);
         ice.setFitHeight(400);
-        ice.setTranslateX(-1000/2);
-        ice.setTranslateY(-400/2);
+        ice.setTranslateX(-1000 / 2);
+        ice.setTranslateY(-400 / 2);
         scenePane.getChildren().add(ice);
-        
+
         update();
     }
 
@@ -153,28 +161,27 @@ public class StrategyEditionWindow implements Initializable
 
     private void onMouseClicked(MouseEvent e)
     {
-        if(selectedTool == Toolbox.ADD_BALL || selectedTool == Toolbox.ADD_OBSTACLE || selectedTool == Toolbox.ADD_PLAYER)
+        if (selectedTool == Toolbox.ADD_BALL || selectedTool == Toolbox.ADD_OBSTACLE || selectedTool == Toolbox.ADD_PLAYER)
         {
             Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
             try
             {
                 Element elem = controller.addElement(new Vector2D(point.getX(), point.getY()));
-            }
-            catch(Exception exception)
+            } catch (Exception exception)
             {
                 // TODO
             }
             update();
         }
     }
-    
+
     private void onMouseClickElement(MouseEvent e)
     {
-        Node node = (Node)e.getSource();
-        
-        for(UIElement uiElement : uiElements)
-        {   
-            if(uiElement.getNode().equals(node))
+        Node node = (Node) e.getSource();
+
+        for (UIElement uiElement : uiElements)
+        {
+            if (uiElement.getNode().equals(node))
             {
                 selectedUIElement = uiElement;
                 controller.selectElement(uiElement.getElement());
@@ -187,24 +194,24 @@ public class StrategyEditionWindow implements Initializable
             }
         }
     }
-    
+
     private void onMouseDragged(MouseEvent e)
     {
-        if(selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE)
         {
-            if(selectedUIElement != null)
+            if (selectedUIElement != null)
             {
                 Point2D point = scenePane.sceneToLocal(new Point2D(e.getSceneX(), e.getSceneY()));
                 selectedUIElement.getNode().relocate(point.getX(), point.getY());
             }
         }
     }
-    
+
     private void onMouseReleased(MouseEvent e)
     {
-        if(selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE)
         {
-            if(selectedUIElement != null)
+            if (selectedUIElement != null)
             {
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
                 controller.setCurrentElemPosition(new Vector2D(point.getX(), point.getY()));
@@ -232,7 +239,7 @@ public class StrategyEditionWindow implements Initializable
         dialog.initStyle(StageStyle.DECORATED);
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
-        
+
         StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
     }
 
@@ -243,10 +250,10 @@ public class StrategyEditionWindow implements Initializable
         dialog.initStyle(StageStyle.DECORATED);
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
-        
+
         SportEditionDialog sportEdition = new SportEditionDialog(controller, dialog);
     }
-    
+
     @FXML
     private void onActionMoveTool()
     {
@@ -256,7 +263,7 @@ public class StrategyEditionWindow implements Initializable
         this.staticButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.MOVE;
     }
-    
+
     @FXML
     private void onActionPlayerDescription()
     {
@@ -267,7 +274,7 @@ public class StrategyEditionWindow implements Initializable
         this.staticButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_PLAYER;
     }
-    
+
     @FXML
     private void onActionBallDescription()
     {
@@ -278,7 +285,7 @@ public class StrategyEditionWindow implements Initializable
         this.staticButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_BALL;
     }
-    
+
     @FXML
     private void onActionStaticDescription()
     {
@@ -288,5 +295,57 @@ public class StrategyEditionWindow implements Initializable
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_OBSTACLE;
+    }
+
+    @FXML
+    private void onActionPlay()
+    {
+        System.out.println("vue.StrategyEditionWindow.onActionPlay()");
+    }
+
+    @FXML
+    private void onActionRecord()
+    {
+        System.out.println("vue.StrategyEditionWindow.onActionRecord()");
+    }
+
+    @FXML
+    private void onActionRestart()
+    {
+        System.out.println("vue.StrategyEditionWindow.onActionRestart()");
+    }
+
+    @FXML
+    private void onActionRewind()
+    {
+        System.out.println("vue.StrategyEditionWindow.onActionRewind()");
+    }
+
+    @FXML
+    private void onActionFastForward()
+    {
+        System.out.println("vue.StrategyEditionWindow.onActionFastForward()");
+    }
+
+    @FXML
+    private void onActionGoToEnd()
+    {
+        System.out.println("vue.StrategyEditionWindow.onActionGoToEnd()");
+    }
+
+    @FXML
+    private void onSliderValueChanged(Observable o)
+    {
+        System.out.println(timeLine.getValue());
+    }
+    
+    @FXML
+    private void onActionNextFrame(){
+        System.out.println("vue.StrategyEditionWindow.onActionNextFrame()");
+    }
+    
+    @FXML
+    private void onActionLastFrame(){
+        System.out.println("vue.StrategyEditionWindow.onActionLastFrame()");
     }
 }
