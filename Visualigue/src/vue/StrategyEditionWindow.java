@@ -172,18 +172,11 @@ public class StrategyEditionWindow implements Initializable
                 selectedUIElement = uiElement;
                 controller.selectElement(uiElement.getElement());
  
-                DropShadow borderGlow= new DropShadow();
-                borderGlow.setOffsetY(0f);
-                borderGlow.setOffsetX(0f);
-                borderGlow.setColor(Color.YELLOW);
-                borderGlow.setWidth(70);
-                borderGlow.setHeight(70);
-
-                uiElement.getNode().setEffect(borderGlow);
+                uiElement.glow();
             }
             else
             {
-                uiElement.getNode().setEffect(null);
+                uiElement.unGlow();
             }
         }
     }

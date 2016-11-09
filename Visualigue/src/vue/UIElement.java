@@ -2,8 +2,10 @@ package vue;
 
 import java.util.HashMap;
 import javafx.scene.Node;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import model.Element;
 
 public class UIElement
@@ -52,5 +54,21 @@ public class UIElement
         }
         
         return result;
+    }
+    
+    public void glow()
+    {
+        DropShadow borderGlow= new DropShadow();
+        borderGlow.setOffsetY(0f);
+        borderGlow.setOffsetX(0f);
+        borderGlow.setColor(Color.YELLOW);
+        borderGlow.setWidth(70);
+        borderGlow.setHeight(70);
+        node.setEffect(borderGlow);
+    }
+    
+    public void unGlow()
+    {
+        node.setEffect(null);
     }
 }
