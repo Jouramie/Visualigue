@@ -28,8 +28,7 @@ public class UIElement
     
     public void update(double time)
     {
-        this.node.setX(this.element.getPosition(time).getX());
-        this.node.setY(this.element.getPosition(time).getY());
+        node.relocate(element.getPosition(time).getX(), element.getPosition(time).getY());
         this.node.setImage(UIElement.getImage(this.element.getElementDescription().getImage()));
     }
     

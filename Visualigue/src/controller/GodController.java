@@ -55,12 +55,12 @@ public class GodController
         
     }
     
-    public void addElement(Vector2D pos) throws Exception
+    public Element addElement(Vector2D pos) throws Exception
     {
+        Element elem = null;
+        
         if(currentElementDescription != null)
         {
-            Element elem = null;
-            
             if(currentElementDescription instanceof StaticElementDescription)
             {
                 elem = this.strategy.createStaticElement((StaticElementDescription)currentElementDescription);
@@ -76,6 +76,7 @@ public class GodController
             
             elem.setPosition(this.time, pos, 0.0);
         }
+        return elem;
     }
     
     public void selectElement(Element elem)

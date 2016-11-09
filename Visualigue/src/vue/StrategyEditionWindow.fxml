@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -16,7 +20,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="750.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="750.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <MenuBar styleClass="background">
         <menus>
@@ -50,7 +54,7 @@
    <left>
       <VBox styleClass="background">
          <children>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
+            <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onActionMoveTool" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
             <Button fx:id="playerButton" mnemonicParsing="false" onAction="#onActionPlayerDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Joueur" />
             <Button fx:id="ballButton" mnemonicParsing="false" onAction="#onActionBallDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Balle" />
             <Button fx:id="staticButton" layoutX="10.0" layoutY="130.0" mnemonicParsing="false" onAction="#onActionStaticDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Obstacle" />

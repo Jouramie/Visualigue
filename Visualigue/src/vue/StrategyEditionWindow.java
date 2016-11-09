@@ -9,16 +9,21 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -28,13 +33,22 @@ import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable
 {
+    private enum Toolbox
+    {
+        ADD_PLAYER, ADD_BALL, ADD_OBSTACLE, MOVE, RECORD, ZOOM
+    }
+    
     GodController controller;
     private Stage stage;
     private BorderPane root;
     private List<UIElement> uiElements;
+    private UIElement selectedUIElement;
+    private Toolbox selectedTool;
 
     @FXML
     private Pane scenePane;
+    @FXML
+    private Button moveButton;
     @FXML
     private Button playerButton;
     @FXML
@@ -44,6 +58,7 @@ public class StrategyEditionWindow implements Initializable
     
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
+        this.selectedTool = Toolbox.MOVE;
         this.controller = controller;
         this.uiElements = new ArrayList();
 
@@ -104,7 +119,7 @@ public class StrategyEditionWindow implements Initializable
             {
                 if (uiElem.getElement() == elem)
                 {
-                    uiElem.update(this.controller.getCurrentTime() / 1000.0);
+                    uiElem.update(this.controller.getCurrentTime());
                     elemToDelete.remove(uiElem);
                     found = true;
                     break;
@@ -116,6 +131,9 @@ public class StrategyEditionWindow implements Initializable
                 UIElement newUIElement = new UIElement(elem);
                 uiElements.add(newUIElement);
                 scenePane.getChildren().add(newUIElement.getNode());
+                newUIElement.getNode().setOnMousePressed(this::onMouseClickElement);
+                newUIElement.getNode().setOnMouseDragged(this::onMouseDragged);
+                newUIElement.getNode().setOnMouseReleased(this::onMouseReleased);
             }
         }
 
@@ -128,16 +146,70 @@ public class StrategyEditionWindow implements Initializable
 
     private void onMouseClicked(MouseEvent e)
     {
-        Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-        try
+        if(selectedTool == Toolbox.ADD_BALL || selectedTool == Toolbox.ADD_OBSTACLE || selectedTool == Toolbox.ADD_PLAYER)
         {
-            controller.addElement(new Vector2D(point.getX(), point.getY()));
+            Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
+            try
+            {
+                Element elem = controller.addElement(new Vector2D(point.getX(), point.getY()));
+            }
+            catch(Exception exception)
+            {
+                // TODO
+            }
+            update();
         }
-        catch(Exception exception)
+    }
+    
+    private void onMouseClickElement(MouseEvent e)
+    {
+        Node node = (Node)e.getSource();
+        
+        for(UIElement uiElement : uiElements)
+        {   
+            if(uiElement.getNode().equals(node))
+            {
+                selectedUIElement = uiElement;
+                controller.selectElement(uiElement.getElement());
+ 
+                DropShadow borderGlow= new DropShadow();
+                borderGlow.setOffsetY(0f);
+                borderGlow.setOffsetX(0f);
+                borderGlow.setColor(Color.YELLOW);
+                borderGlow.setWidth(70);
+                borderGlow.setHeight(70);
+
+                uiElement.getNode().setEffect(borderGlow);
+            }
+            else
+            {
+                uiElement.getNode().setEffect(null);
+            }
+        }
+    }
+    
+    private void onMouseDragged(MouseEvent e)
+    {
+        if(selectedTool == Toolbox.MOVE)
         {
-            // TODO
+            if(selectedUIElement != null)
+            {
+                Point2D point = scenePane.sceneToLocal(new Point2D(e.getSceneX(), e.getSceneY()));
+                selectedUIElement.getNode().relocate(point.getX(), point.getY());
+            }
         }
-        update();
+    }
+    
+    private void onMouseReleased(MouseEvent e)
+    {
+        if(selectedTool == Toolbox.MOVE)
+        {
+            if(selectedUIElement != null)
+            {
+                Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
+                controller.setCurrentElemPosition(new Vector2D(point.getX(), point.getY()));
+            }
+        }
     }
     
     @FXML
@@ -163,29 +235,45 @@ public class StrategyEditionWindow implements Initializable
     }
     
     @FXML
+    private void onActionMoveTool()
+    {
+        this.moveButton.setStyle("-fx-background-color: lightblue;");
+        this.playerButton.setStyle("-fx-background-color: inherit;");
+        this.ballButton.setStyle("-fx-background-color: inherit;");
+        this.staticButton.setStyle("-fx-background-color: inherit;");
+        selectedTool = Toolbox.MOVE;
+    }
+    
+    @FXML
     private void onActionPlayerDescription()
     {
         this.controller.selectElementDescription("Player");
+        this.moveButton.setStyle("-fx-background-color: inherit;");
         this.playerButton.setStyle("-fx-background-color: lightblue;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
         this.staticButton.setStyle("-fx-background-color: inherit;");
+        selectedTool = Toolbox.ADD_PLAYER;
     }
     
     @FXML
     private void onActionBallDescription()
     {
         this.controller.selectElementDescription("Ball");
+        this.moveButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.staticButton.setStyle("-fx-background-color: inherit;");
+        selectedTool = Toolbox.ADD_BALL;
     }
     
     @FXML
     private void onActionStaticDescription()
     {
         this.controller.selectElementDescription("Static");
+        this.moveButton.setStyle("-fx-background-color: inherit;");
         this.staticButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
+        selectedTool = Toolbox.ADD_OBSTACLE;
     }
 }
