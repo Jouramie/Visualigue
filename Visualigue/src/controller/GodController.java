@@ -147,4 +147,16 @@ public class GodController
     {
         return this.time;
     }
+    
+    public void setCurrentTime(double time){
+        this.time = time;
+    }
+    
+    public void nextFrame() {
+        time++;
+    }
+    
+    public void prevFrame() {
+        time--;
+    }
 }

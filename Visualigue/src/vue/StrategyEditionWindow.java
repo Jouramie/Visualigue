@@ -65,7 +65,7 @@ public class StrategyEditionWindow implements Initializable
     private Label yCoordinate;
     @FXML
     private Slider timeLine;
-    
+
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
         this.selectedTool = Toolbox.MOVE;
@@ -78,7 +78,7 @@ public class StrategyEditionWindow implements Initializable
             fxmlLoader.setController(this);
             root = (BorderPane) fxmlLoader.load();
             stage = primaryStage;
-            Scene scene = new Scene(root, 500, 400);
+            Scene scene = new Scene(root, 1000, 800);
             stage.setScene(scene);
             stage.setTitle("VisuaLigue");
             stage.show();
@@ -102,9 +102,11 @@ public class StrategyEditionWindow implements Initializable
         scenePane.setOnMouseMoved(this::onMouseMoved);
         scenePane.setOnMouseExited(this::onMouseExited);
 
-        timeLine.valueProperty().addListener((observable)
-                -> onSliderValueChanged(observable)
+        timeLine.valueProperty().addListener((observable, prevValue, newValue)
+                -> onSliderValueChanged(newValue.doubleValue())
         );
+        timeLine.setMinorTickCount(4);
+        
         Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
         clipRect.heightProperty().bind(scenePane.heightProperty());
         clipRect.widthProperty().bind(scenePane.widthProperty());
@@ -124,6 +126,8 @@ public class StrategyEditionWindow implements Initializable
 
     public void update()
     {
+        timeLine.setValue(controller.getCurrentTime());
+
         List<Element> elements = controller.getAllElements();
         List<UIElement> elemToDelete = new ArrayList(uiElements);
 
@@ -185,10 +189,9 @@ public class StrategyEditionWindow implements Initializable
             {
                 selectedUIElement = uiElement;
                 controller.selectElement(uiElement.getElement());
- 
+
                 uiElement.glow();
-            }
-            else
+            } else
             {
                 uiElement.unGlow();
             }
@@ -218,20 +221,20 @@ public class StrategyEditionWindow implements Initializable
             }
         }
     }
-    
+
     private void onMouseMoved(MouseEvent e)
     {
         Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
         xCoordinate.setText("" + point.getX());
         yCoordinate.setText("" + point.getY());
     }
-    
+
     private void onMouseExited(MouseEvent e)
     {
         xCoordinate.setText("-");
         yCoordinate.setText("-");
     }
-    
+
     @FXML
     private void onActionNewStrategy(ActionEvent e)
     {
@@ -334,18 +337,25 @@ public class StrategyEditionWindow implements Initializable
     }
 
     @FXML
-    private void onSliderValueChanged(Observable o)
+    private void onSliderValueChanged(double value)
     {
-        System.out.println(timeLine.getValue());
+        controller.setCurrentTime(value);
+        System.out.println(value);
     }
-    
+
     @FXML
-    private void onActionNextFrame(){
+    private void onActionNextFrame()
+    {
         System.out.println("vue.StrategyEditionWindow.onActionNextFrame()");
+        controller.nextFrame();
+        update();
     }
-    
+
     @FXML
-    private void onActionLastFrame(){
+    private void onActionPrevFrame()
+    {
         System.out.println("vue.StrategyEditionWindow.onActionLastFrame()");
+        controller.prevFrame();
+        update();
     }
 }

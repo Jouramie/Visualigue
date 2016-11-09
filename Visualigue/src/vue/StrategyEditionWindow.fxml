@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="425.0" prefWidth="750.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <MenuBar styleClass="background">
         <menus>
@@ -131,7 +131,7 @@
                      </styleClass></Button>
                   <Button mnemonicParsing="false" onAction="#onActionRestart" styleClass="btnTimeLine" text="⏮" />
                   <Button mnemonicParsing="false" onAction="#onActionRewind" styleClass="btnTimeLine" text="⏪" />
-                  <Button mnemonicParsing="false" onAction="#onActionLastFrame" styleClass="btnTimeLine" text="⮜" />
+                  <Button mnemonicParsing="false" onAction="#onActionPrevFrame" styleClass="btnTimeLine" text="⮜" />
                   <Button mnemonicParsing="false" onAction="#onActionPlay" styleClass="btnTimeLine" text="▶" />
                   <Button mnemonicParsing="false" onAction="#onActionNextFrame" styleClass="btnTimeLine" text="⮞" />
                   <Button mnemonicParsing="false" onAction="#onActionFastForward" styleClass="btnTimeLine" text="⏩" />
@@ -139,7 +139,7 @@
                   <TextField fx:id="speed" prefHeight="25.0" prefWidth="29.0" text="X2" />
                </children>
             </HBox>
-            <Slider fx:id="timeLine" styleClass="backgroundMenu">
+            <Slider fx:id="timeLine" styleClass="sliderTimeLine">
                <VBox.margin>
                   <Insets />
                </VBox.margin></Slider>
