@@ -1,6 +1,7 @@
 package vue;
 
 import controller.GodController;
+import controller.Updatable;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import javafx.stage.StageStyle;
 import model.Element;
 import model.Vector2D;
 
-public class StrategyEditionWindow implements Initializable
+public class StrategyEditionWindow implements Initializable, Updatable
 {
 
     private enum Toolbox
@@ -351,5 +352,11 @@ public class StrategyEditionWindow implements Initializable
         System.out.println("vue.StrategyEditionWindow.onActionLastFrame()");
         controller.setCurrentTime(controller.getCurrentTime() - (1f / FPS));
         update();
+    }
+    
+    @Override
+    public void updateOnRecord()
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
