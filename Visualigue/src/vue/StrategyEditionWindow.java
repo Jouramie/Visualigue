@@ -23,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -41,6 +42,8 @@ public class StrategyEditionWindow implements Initializable
     {
         ADD_PLAYER, ADD_BALL, ADD_OBSTACLE, MOVE, RECORD, ZOOM
     }
+    
+    public static final int FPS = 2;
 
     GodController controller;
     private Stage stage;
@@ -102,9 +105,6 @@ public class StrategyEditionWindow implements Initializable
         scenePane.setOnMouseMoved(this::onMouseMoved);
         scenePane.setOnMouseExited(this::onMouseExited);
 
-        timeLine.valueProperty().addListener((observable, prevValue, newValue)
-                -> onSliderValueChanged(newValue.doubleValue())
-        );
         timeLine.setMinorTickCount(4);
         
         Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
@@ -126,7 +126,8 @@ public class StrategyEditionWindow implements Initializable
 
     public void update()
     {
-        timeLine.setValue(controller.getCurrentTime());
+        timeLine.setValue(controller.getCurrentTime() * FPS);
+        timeLine.setMax((controller.getDuration() * FPS) + 10);
 
         List<Element> elements = controller.getAllElements();
         List<UIElement> elemToDelete = new ArrayList(uiElements);
@@ -334,20 +335,13 @@ public class StrategyEditionWindow implements Initializable
     private void onActionGoToEnd()
     {
         System.out.println("vue.StrategyEditionWindow.onActionGoToEnd()");
-    }
-
-    @FXML
-    private void onSliderValueChanged(double value)
-    {
-        controller.setCurrentTime(value);
-        System.out.println(value);
-    }
+    }    
 
     @FXML
     private void onActionNextFrame()
     {
         System.out.println("vue.StrategyEditionWindow.onActionNextFrame()");
-        controller.nextFrame();
+        controller.setCurrentTime(controller.getCurrentTime() + (1f / FPS));
         update();
     }
 
@@ -355,7 +349,7 @@ public class StrategyEditionWindow implements Initializable
     private void onActionPrevFrame()
     {
         System.out.println("vue.StrategyEditionWindow.onActionLastFrame()");
-        controller.prevFrame();
+        controller.setCurrentTime(controller.getCurrentTime() - (1f / FPS));
         update();
     }
 }

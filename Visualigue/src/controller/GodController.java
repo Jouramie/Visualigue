@@ -149,14 +149,21 @@ public class GodController
     }
     
     public void setCurrentTime(double time){
-        this.time = time;
+        if(time >= 0) 
+            this.time = time;
+        else 
+            this.time = 0;
     }
     
     public void nextFrame() {
-        time++;
+        setCurrentTime(time + 1);
     }
     
     public void prevFrame() {
-        time--;
+        setCurrentTime(time - 1);
+    }
+    
+    public double getDuration() {
+        return strategy.getDuration();
     }
 }
