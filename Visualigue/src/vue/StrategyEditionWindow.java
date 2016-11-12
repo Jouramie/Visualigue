@@ -150,9 +150,13 @@ public class StrategyEditionWindow implements Initializable
                 UIElement newUIElement = new UIElement(elem);
                 uiElements.add(newUIElement);
                 scenePane.getChildren().add(newUIElement.getNode());
-                newUIElement.getNode().setOnMousePressed(this::onMouseClickElement);
-                newUIElement.getNode().setOnMouseDragged(this::onMouseDragged);
-                newUIElement.getNode().setOnMouseReleased(this::onMouseReleased);
+                newUIElement.getNode().setOnMousePressed(this::onMouseClickedElement);
+                newUIElement.getElementImage().setOnMouseDragged(this::onMouseDraggedElement);
+                newUIElement.getElementImage().setOnMouseReleased(this::onMouseReleasedElement);
+                newUIElement.getNode().setOnMouseEntered(this::onMouseEnteredElement);
+                newUIElement.getElementOrientationArrow().setOnMouseExited(this::onMouseExitedElement);
+                newUIElement.getElementOrientationArrow().setOnMouseDragged(this::onMouseRotatingElement);
+                newUIElement.getElementOrientationArrow().setOnMouseReleased(this::onMouseReleasedRotatingElement);
             }
         }
 
@@ -161,6 +165,21 @@ public class StrategyEditionWindow implements Initializable
             uiElements.remove(uiElem);
         }
 
+    }
+    
+    private void onMouseMoved(MouseEvent e)
+    {
+        Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
+        xCoordinate.setText("" + point.getX());
+        yCoordinate.setText("" + point.getY());
+    }
+    
+    
+
+    private void onMouseExited(MouseEvent e)
+    {
+        xCoordinate.setText("-");
+        yCoordinate.setText("-");
     }
 
     private void onMouseClicked(MouseEvent e)
@@ -179,7 +198,7 @@ public class StrategyEditionWindow implements Initializable
         }
     }
 
-    private void onMouseClickElement(MouseEvent e)
+    private void onMouseClickedElement(MouseEvent e)
     {
         Node node = (Node) e.getSource();
 
@@ -191,26 +210,27 @@ public class StrategyEditionWindow implements Initializable
                 controller.selectElement(uiElement.getElement());
 
                 uiElement.glow();
-            } else
+            }
+            else
             {
                 uiElement.unGlow();
             }
         }
     }
 
-    private void onMouseDragged(MouseEvent e)
+    private void onMouseDraggedElement(MouseEvent e)
     {
         if (selectedTool == Toolbox.MOVE)
         {
             if (selectedUIElement != null)
             {
-                Point2D point = scenePane.sceneToLocal(new Point2D(e.getSceneX(), e.getSceneY()));
-                selectedUIElement.getNode().relocate(point.getX(), point.getY());
+                Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
+                selectedUIElement.move(point.getX(), point.getY());
             }
         }
     }
 
-    private void onMouseReleased(MouseEvent e)
+    private void onMouseReleasedElement(MouseEvent e)
     {
         if (selectedTool == Toolbox.MOVE)
         {
@@ -221,18 +241,52 @@ public class StrategyEditionWindow implements Initializable
             }
         }
     }
-
-    private void onMouseMoved(MouseEvent e)
+    
+    private void onMouseEnteredElement(MouseEvent e)
     {
-        Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-        xCoordinate.setText("" + point.getX());
-        yCoordinate.setText("" + point.getY());
+        Node node = (Node)e.getSource();
+        
+        for (UIElement uiElem : uiElements)
+        {
+            if (uiElem.getNode().equals(node))
+            {
+                uiElem.showOrientationArrow();
+            }
+        }
     }
-
-    private void onMouseExited(MouseEvent e)
+    
+    private void onMouseExitedElement(MouseEvent e)
     {
-        xCoordinate.setText("-");
-        yCoordinate.setText("-");
+        Node node = (Node)e.getSource();
+        
+        for (UIElement uiElem : uiElements)
+        {
+            if (uiElem.getElementOrientationArrow().equals(node))
+            {
+                uiElem.hideOrientationArrow();
+            }
+        }
+    }
+    
+    private void onMouseRotatingElement(MouseEvent e)
+    {
+        selectedUIElement.setRotating(true);
+        Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
+        Vector2D mousePosition = new Vector2D(point.getX(), point.getY());
+        Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
+        Vector2D result = mousePosition.substract(elementPosition);
+        selectedUIElement.getNode().setRotate(Math.toDegrees(result.getAngle()));
+    }
+    
+    private void onMouseReleasedRotatingElement(MouseEvent e)
+    {
+        selectedUIElement.setRotating(false);
+        selectedUIElement.hideOrientationArrow();
+        Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
+        Vector2D mousePosition = new Vector2D(point.getX(), point.getY());
+        Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
+        Vector2D result = mousePosition.substract(elementPosition);
+        controller.setCurrentElemOrientation(result.normaliser());
     }
 
     @FXML

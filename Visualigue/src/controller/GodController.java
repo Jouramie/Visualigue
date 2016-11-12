@@ -5,6 +5,7 @@ import java.util.List;
 import model.BallDescription;
 import model.Element;
 import model.ElementDescription;
+import model.MobileElement;
 import model.PlayerDescription;
 import model.Sport;
 import model.StaticElementDescription;
@@ -105,6 +106,14 @@ public class GodController
         if(this.selectedElement != null)
         {
             this.selectedElement.setPosition(this.time, pos, 0.0);
+        }
+    }
+    
+    public void setCurrentElemOrientation(Vector2D ori)
+    {
+        if(this.selectedElement != null)
+        {
+            this.selectedElement.setOrientation(time, ori, 0.0);
         }
     }
     
