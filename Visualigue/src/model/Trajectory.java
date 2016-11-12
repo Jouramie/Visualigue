@@ -111,7 +111,12 @@ public class Trajectory
     
     public double getDuration()
     {
-        return Math.max(positions.lastKey(), orientations.lastKey());
+        double duration = 0;
+        if(!positions.isEmpty() && !orientations.isEmpty())
+        {
+            duration = Math.max(positions.lastKey(), orientations.lastKey());
+        }
+        return duration;
     }
     
     public void flushPositions(double begin, double end)
