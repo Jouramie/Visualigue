@@ -6,7 +6,6 @@ import javafx.concurrent.Task;
 import model.BallDescription;
 import model.Element;
 import model.ElementDescription;
-import model.MobileElement;
 import model.PlayerDescription;
 import model.Sport;
 import model.StaticElementDescription;
