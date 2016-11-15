@@ -43,8 +43,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         ADD_PLAYER, ADD_BALL, ADD_OBSTACLE, MOVE, RECORD, ZOOM
     }
-    
-    public static final int FPS = 2;
 
     GodController controller;
     private Stage stage;
@@ -125,10 +123,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         update();
     }
 
+    @Override
     public void update()
     {
-        timeLine.setValue(controller.getCurrentTime() * FPS);
-        timeLine.setMax((controller.getDuration() * FPS) + 10);
+        System.out.println("vue.StrategyEditionWindow.update()");
+        double t = controller.getCurrentTime();
+        timeLine.setValue(t * GodController.FPS);
+        timeLine.setMax((controller.getDuration() * GodController.FPS) + 10);
 
         List<Element> elements = controller.getAllElements();
         List<UIElement> elemToDelete = new ArrayList(uiElements);
@@ -140,7 +141,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 if (uiElem.getElement() == elem)
                 {
-                    uiElem.update(this.controller.getCurrentTime());
+                    uiElem.update(t);
                     elemToDelete.remove(uiElem);
                     found = true;
                     break;
@@ -360,6 +361,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionPlay()
     {
         System.out.println("vue.StrategyEditionWindow.onActionPlay()");
+        controller.playStrategy();
+        
     }
 
     @FXML
@@ -396,7 +399,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionNextFrame()
     {
         System.out.println("vue.StrategyEditionWindow.onActionNextFrame()");
-        controller.setCurrentTime(controller.getCurrentTime() + (1f / FPS));
+        controller.setCurrentTime(controller.getCurrentTime() + (1f / controller.FPS));
         update();
     }
 
@@ -404,7 +407,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionPrevFrame()
     {
         System.out.println("vue.StrategyEditionWindow.onActionLastFrame()");
-        controller.setCurrentTime(controller.getCurrentTime() - (1f / FPS));
+        controller.setCurrentTime(controller.getCurrentTime() - (1f / controller.FPS));
         update();
     }
     
