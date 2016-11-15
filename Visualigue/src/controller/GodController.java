@@ -15,6 +15,8 @@ import model.Vector2D;
 public class GodController
 {
 
+    public static final double FPS = 2;
+
     private List<Sport> sports;
     private Strategy strategy;
     private double time;
@@ -26,6 +28,8 @@ public class GodController
     private StaticElementDescription staticDescription;
 
     private Updatable window;
+    
+    private StrategyPlayer sp;
 
     public GodController()
     {
@@ -49,7 +53,7 @@ public class GodController
         //this.strategy = new Strategy(name, sport);
     }
 
-    public void saveStrategy(String path)
+    public void saveStrategy()
     {
         // TODO
     }
@@ -76,7 +80,8 @@ public class GodController
                 elem = this.strategy.createPlayer((PlayerDescription) currentElementDescription);
             }
 
-            elem.setPosition(this.time, pos, 0.0);
+            elem.setPosition(time, pos, 0.0);
+            elem.setOrientation(time, new Vector2D(), 0.0);
         }
         return elem;
     }
@@ -107,15 +112,15 @@ public class GodController
             this.selectedElement.setPosition(this.time, pos, 0.0);
         }
     }
-    
+
     public void setCurrentElemOrientation(Vector2D ori)
     {
-        if(this.selectedElement != null)
+        if (this.selectedElement != null)
         {
             this.selectedElement.setOrientation(time, ori, 0.0);
         }
     }
-    
+
     public List<Element> getAllElements()
     {
         if (this.strategy != null)
@@ -186,28 +191,22 @@ public class GodController
     {
 
         private long start;
-        private double strategyLenght;
-        private double speed;
 
-        public StrategyPlayer(double speed)
-        {
-            this.speed = speed;
-            strategyLenght = strategy.getDuration();
-        }
-
+        @Override
         protected Void call() throws Exception
         {
             start = System.currentTimeMillis();
-            long currentTime = start;
+            long currentTime;
 
             do
             {
                 currentTime = System.currentTimeMillis();
-                time = (currentTime - start) * speed / 1000;
+                time = (double)(currentTime - start) / 1000;
                 window.update();
-                Thread.sleep(100);
-            } while (time != strategyLenght);
+                Thread.sleep((long)(1000 / FPS));
+            } while (time <= strategy.getDuration());
 
+            time = ((int)(time*FPS))/FPS;
             return null;
         }
     }
@@ -215,5 +214,13 @@ public class GodController
     public void setWindow(Updatable window)
     {
         this.window = window;
+    }
+    
+    public void playStrategy()
+    {
+        sp = new StrategyPlayer();
+        Thread th = new Thread(sp);
+        th.setDaemon(true);
+        th.start();
     }
 }
