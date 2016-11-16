@@ -1,6 +1,6 @@
 package model;
 
-public class MobileElement extends Element
+public abstract class MobileElement extends Element
 {
     private Trajectory trajectory;
     

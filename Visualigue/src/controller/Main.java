@@ -20,6 +20,7 @@ public class Main extends Application
         stage = primaryStage;
         controller = new GodController();
         StrategyEditionWindow mainWindow = new StrategyEditionWindow(controller, primaryStage);
+        controller.setWindow(mainWindow);
     }
     
     public static void main(String[] args)

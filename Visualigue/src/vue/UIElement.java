@@ -1,46 +1,68 @@
 package vue;
 
 import java.util.HashMap;
+import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import model.Element;
 
 public class UIElement
 {
-    private ImageView node;
+    private Group node;
+    ImageView image;
+    ImageView orientation;
     private Element element;
+    private boolean rotating;
+    
     static private HashMap<String, Image> images = new HashMap();
     
     public UIElement(Element element)
     {
         this.element = element;
+        rotating = false;
         
-        this.node = new ImageView();
-        this.node.setImage(UIElement.getImage(this.element.getElementDescription().getImage()));
-        this.node.setX(this.element.getPosition(0).getX());
-        this.node.setY(this.element.getPosition(0).getY());
-        this.node.setFitWidth(this.element.getElementDescription().getSize().getX());
-        this.node.setFitHeight(this.element.getElementDescription().getSize().getY());
-        this.node.setTranslateX(-this.element.getElementDescription().getSize().getX()/2);
-        this.node.setTranslateY(-this.element.getElementDescription().getSize().getY()/2);
+        image = new ImageView();
+        image.setImage(UIElement.getImage(element.getElementDescription().getImage()));
+        image.setFitWidth(element.getElementDescription().getSize().getX());
+        image.setFitHeight(element.getElementDescription().getSize().getY());
+        
+        orientation = new ImageView();
+        orientation.setImage(UIElement.getImage("/res/orientation.png"));
+        orientation.setFitWidth(4*element.getElementDescription().getSize().getX());
+        orientation.setFitHeight(4*element.getElementDescription().getSize().getY());
+        orientation.setTranslateX(-1.5*element.getElementDescription().getSize().getX());
+        orientation.setTranslateY(-1.5*element.getElementDescription().getSize().getY());
+        orientation.setVisible(false);
+        
+        node = new Group();
+        node.getChildren().add(image);
+        node.getChildren().add(orientation);
+        move(element.getPosition(0).getX(), element.getPosition(0).getY());
     }
     
     public void update(double time)
     {
-        this.node.setX(this.element.getPosition(time).getX());
-        this.node.setY(this.element.getPosition(time).getY());
-        this.node.setImage(UIElement.getImage(this.element.getElementDescription().getImage()));
+        move(element.getPosition(time).getX(), element.getPosition(time).getY());
+        node.setRotate(Math.toDegrees(element.getOrientation(time).getAngle()));
     }
     
     public Node getNode()
     {
-        return this.node;
+        return node;
     }
     
     public Element getElement()
     {
-        return this.element;
+        return element;
+    }
+    
+    public void move(double x, double y)
+    {
+        node.setTranslateX(x - element.getElementDescription().getSize().getX()/2);
+        node.setTranslateY(y - element.getElementDescription().getSize().getY()/2);
     }
     
     static private Image getImage(String image)
@@ -53,5 +75,49 @@ public class UIElement
         }
         
         return result;
+    }
+    
+    public void glow()
+    {
+        DropShadow borderGlow= new DropShadow();
+        borderGlow.setOffsetY(0f);
+        borderGlow.setOffsetX(0f);
+        borderGlow.setColor(Color.YELLOW);
+        borderGlow.setWidth(70);
+        borderGlow.setHeight(70);
+        image.setEffect(borderGlow);
+    }
+    
+    public void unGlow()
+    {
+        image.setEffect(null);
+    }
+    
+    public void setRotating(boolean value)
+    {
+        rotating = value;
+    }
+    
+    public void showOrientationArrow()
+    {
+        orientation.setVisible(true);
+    }
+    
+    public void hideOrientationArrow()
+    {
+        if(!rotating)
+        {
+            orientation.setVisible(false);
+        }
+    }
+    
+    public Node getElementImage()
+    {
+        return image;
+    }
+    
+    public Node getElementOrientationArrow()
+    {
+        return orientation;
     }
 }
