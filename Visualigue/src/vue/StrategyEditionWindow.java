@@ -184,16 +184,20 @@ public class StrategyEditionWindow implements Initializable, Updatable
             uiElements.remove(uiElem);
         }
         
-        //Update the text of the pane on the right
         if(selectedUIElement != null)
         {
-            Element elem = selectedUIElement.getElement();
-            //set role here
-            //set team here
-            positionX.setText("" + elem.getPosition(controller.getCurrentTime()).getX());
-            positionY.setText("" + elem.getPosition(controller.getCurrentTime()).getY());
-            orientation.setText("" + Math.toDegrees(elem.getOrientation(controller.getCurrentTime()).getAngle()));
+            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
         }
+    }
+    
+    private void updateRightPane(double x, double y, double ori)
+    {
+        //set role here
+        //set team here
+        positionX.setText("" + x);
+        positionY.setText("" + y);
+        orientation.setText("" + ori);
     }
     
     @Override
@@ -253,8 +257,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
                     uiElement.unGlow();
                 }
             }
-
-            update();
+            
+            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
         }
     }
 
@@ -266,6 +271,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
                 selectedUIElement.move(point.getX(), point.getY());
+                updateRightPane(point.getX(), point.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
             }
         }
     }
@@ -279,8 +285,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
                 controller.setCurrentElemPosition(new Vector2D(point.getX(), point.getY()));
             }
-            
-            update();
         }
     }
     
@@ -326,6 +330,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
             Vector2D result = mousePosition.substract(elementPosition);
             selectedUIElement.getNode().setRotate(Math.toDegrees(result.getAngle()));
+            
+            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(result.getAngle()));
         }
     }
     
@@ -340,7 +347,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
             Vector2D result = mousePosition.substract(elementPosition);
             controller.setCurrentElemOrientation(result.normaliser());
-            update();
         }
     }
     
