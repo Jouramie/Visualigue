@@ -132,7 +132,7 @@
                   <Button mnemonicParsing="false" onAction="#onActionRestart" styleClass="btnTimeLine" text="⏮" />
                   <Button mnemonicParsing="false" onAction="#onActionRewind" styleClass="btnTimeLine" text="⏪" />
                   <Button mnemonicParsing="false" onAction="#onActionPrevFrame" styleClass="btnTimeLine" text="⮜" />
-                  <Button mnemonicParsing="false" onAction="#onActionPlay" styleClass="btnTimeLine" text="▶" />
+                  <Button fx:id="playPauseButton" mnemonicParsing="false" onAction="#onActionPlay" styleClass="btnTimeLine" text="▶" />
                   <Button mnemonicParsing="false" onAction="#onActionNextFrame" styleClass="btnTimeLine" text="⮞" />
                   <Button mnemonicParsing="false" onAction="#onActionFastForward" styleClass="btnTimeLine" text="⏩" />
                   <Button mnemonicParsing="false" onAction="#onActionGoToEnd" styleClass="btnTimeLine" text="⏭" />

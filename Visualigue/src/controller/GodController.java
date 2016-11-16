@@ -28,7 +28,7 @@ public class GodController
     private StaticElementDescription staticDescription;
 
     private Updatable window;
-    
+
     private StrategyPlayer sp;
 
     public GodController()
@@ -72,10 +72,12 @@ public class GodController
             if (currentElementDescription instanceof StaticElementDescription)
             {
                 elem = this.strategy.createStaticElement((StaticElementDescription) currentElementDescription);
-            } else if (currentElementDescription instanceof BallDescription)
+            }
+            else if (currentElementDescription instanceof BallDescription)
             {
                 elem = this.strategy.createBall((BallDescription) currentElementDescription);
-            } else if (currentElementDescription instanceof PlayerDescription)
+            }
+            else if (currentElementDescription instanceof PlayerDescription)
             {
                 elem = this.strategy.createPlayer((PlayerDescription) currentElementDescription);
             }
@@ -96,10 +98,12 @@ public class GodController
         if (name.equals("Player"))
         {
             this.currentElementDescription = playerDescription;
-        } else if (name.equals("Ball"))
+        }
+        else if (name.equals("Ball"))
         {
             this.currentElementDescription = ballDescription;
-        } else if (name.equals("Static"))
+        }
+        else if (name.equals("Static"))
         {
             this.currentElementDescription = staticDescription;
         }
@@ -166,7 +170,8 @@ public class GodController
         if (time >= 0)
         {
             this.time = time;
-        } else
+        }
+        else
         {
             this.time = 0;
         }
@@ -191,23 +196,45 @@ public class GodController
     {
 
         private long start;
+        private boolean playing;
 
         @Override
         protected Void call() throws Exception
         {
+            playing = true;
             start = System.currentTimeMillis();
-            long currentTime;
+            long previousTimeMillis;
 
-            do
+            while (time <= strategy.getDuration())
             {
-                currentTime = System.currentTimeMillis();
-                time = (double)(currentTime - start) / 1000;
-                window.update();
-                Thread.sleep((long)(1000 / FPS));
-            } while (time <= strategy.getDuration());
+                previousTimeMillis = System.currentTimeMillis();
+                Thread.sleep((long) (1000 / FPS));
+                if (playing)
+                {
+                    time += (double) (System.currentTimeMillis() - previousTimeMillis) / 1000;
+                    window.update();
+                }
+                else
+                {
+                    break;
+                }
+            }
 
-            time = ((int)(time*FPS))/FPS;
+            // Arrondissement
+            time = ((int) (time * FPS)) / FPS;
+            sp = null;
+            window.wasLastUpdate();
             return null;
+        }
+
+        public void play()
+        {
+            playing = true;
+        }
+
+        public void pause()
+        {
+            playing = false;
         }
     }
 
@@ -215,12 +242,31 @@ public class GodController
     {
         this.window = window;
     }
-    
+
     public void playStrategy()
     {
-        sp = new StrategyPlayer();
-        Thread th = new Thread(sp);
-        th.setDaemon(true);
-        th.start();
+        if (sp == null)
+        {
+            sp = new StrategyPlayer();
+            Thread th = new Thread(sp);
+            th.setDaemon(true);
+            th.start();
+        }
+        else
+        {
+            sp.play();
+        }
+    }
+
+    public void pauseStrategy()
+    {
+        if (sp == null)
+        {
+            throw new IllegalStateException("Something went wrong...");
+        }
+        else
+        {
+            sp.pause();
+        }
     }
 }
