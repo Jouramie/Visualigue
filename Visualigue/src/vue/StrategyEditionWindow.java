@@ -9,26 +9,21 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.Observable;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -38,6 +33,9 @@ import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
 {
+
+    private static final char PAUSE_ICON = '⏸';
+    private static final char PLAY_ICON = '⏵';
 
     private enum Toolbox
     {
@@ -67,6 +65,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private Label yCoordinate;
     @FXML
     private Slider timeLine;
+    @FXML
+    private Button playPauseButton;
 
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
@@ -105,7 +105,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         scenePane.setOnMouseExited(this::onMouseExited);
 
         timeLine.setMinorTickCount(4);
-        
+
         Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
         clipRect.heightProperty().bind(scenePane.heightProperty());
         clipRect.widthProperty().bind(scenePane.widthProperty());
@@ -126,7 +126,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @Override
     public void update()
     {
-        System.out.println("vue.StrategyEditionWindow.update()");
         double t = controller.getCurrentTime();
         timeLine.setValue(t * GodController.FPS);
         timeLine.setMax((controller.getDuration() * GodController.FPS) + 10);
@@ -169,15 +168,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
 
     }
-    
+
     private void onMouseMoved(MouseEvent e)
     {
         Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
         xCoordinate.setText("" + point.getX());
         yCoordinate.setText("" + point.getY());
     }
-    
-    
 
     private void onMouseExited(MouseEvent e)
     {
@@ -244,11 +241,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
             }
         }
     }
-    
+
     private void onMouseEnteredElement(MouseEvent e)
     {
-        Node node = (Node)e.getSource();
-        
+        Node node = (Node) e.getSource();
+
         for (UIElement uiElem : uiElements)
         {
             if (uiElem.getNode().equals(node))
@@ -257,11 +254,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
             }
         }
     }
-    
+
     private void onMouseExitedElement(MouseEvent e)
     {
-        Node node = (Node)e.getSource();
-        
+        Node node = (Node) e.getSource();
+
         for (UIElement uiElem : uiElements)
         {
             if (uiElem.getElementOrientationArrow().equals(node))
@@ -270,7 +267,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             }
         }
     }
-    
+
     private void onMouseRotatingElement(MouseEvent e)
     {
         selectedUIElement.setRotating(true);
@@ -280,7 +277,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         Vector2D result = mousePosition.substract(elementPosition);
         selectedUIElement.getNode().setRotate(Math.toDegrees(result.getAngle()));
     }
-    
+
     private void onMouseReleasedRotatingElement(MouseEvent e)
     {
         selectedUIElement.setRotating(false);
@@ -358,11 +355,20 @@ public class StrategyEditionWindow implements Initializable, Updatable
     }
 
     @FXML
-    private void onActionPlay()
+    private void onActionPlay(ActionEvent e)
     {
         System.out.println("vue.StrategyEditionWindow.onActionPlay()");
         controller.playStrategy();
-        
+        playPauseButton.setOnAction(this::onActionPause);
+        playPauseButton.setText("" + PAUSE_ICON);
+    }
+
+    private void onActionPause(ActionEvent e)
+    {
+        System.out.println("vue.StrategyEditionWindow.onActionPause()");
+        controller.pauseStrategy();
+        playPauseButton.setOnAction(this::onActionPlay);
+        playPauseButton.setText("" + PLAY_ICON);
     }
 
     @FXML
@@ -393,13 +399,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionGoToEnd()
     {
         System.out.println("vue.StrategyEditionWindow.onActionGoToEnd()");
-    }    
+    }
 
     @FXML
     private void onActionNextFrame()
     {
         System.out.println("vue.StrategyEditionWindow.onActionNextFrame()");
-        controller.setCurrentTime(controller.getCurrentTime() + (1f / controller.FPS));
+        controller.setCurrentTime(controller.getCurrentTime() + (1f / GodController.FPS));
         update();
     }
 
@@ -407,13 +413,23 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionPrevFrame()
     {
         System.out.println("vue.StrategyEditionWindow.onActionLastFrame()");
-        controller.setCurrentTime(controller.getCurrentTime() - (1f / controller.FPS));
+        controller.setCurrentTime(controller.getCurrentTime() - (1f / GodController.FPS));
         update();
     }
-    
+
     @Override
     public void updateOnRecord()
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void wasLastUpdate()
+    {
+        playPauseButton.setOnAction(this::onActionPlay);
+        Platform.runLater(() ->
+        {
+            playPauseButton.setText("" + PLAY_ICON);
+        });
     }
 }

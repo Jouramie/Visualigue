@@ -14,7 +14,7 @@ public class Strategy
     {
         this.name = name;
         this.sport = sport;
-        this.elements = new ArrayList<Element>();
+        this.elements = new ArrayList<>();
         this.nbPlayer = 0;
     }
     
