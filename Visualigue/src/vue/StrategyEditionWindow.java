@@ -31,6 +31,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Element;
+import model.Player;
 import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
@@ -168,7 +169,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 UIElement newUIElement = new UIElement(elem);
                 uiElements.add(newUIElement);
-                scenePane.getChildren().add(newUIElement.getNode());
+                scenePane.getChildren().add(newUIElement.getGroup());
                 newUIElement.getNode().setOnMousePressed(this::onMouseClickedElement);
                 newUIElement.getElementImage().setOnMouseDragged(this::onMouseDraggedElement);
                 newUIElement.getElementImage().setOnMouseReleased(this::onMouseReleasedElement);
@@ -176,6 +177,12 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 newUIElement.getElementOrientationArrow().setOnMouseExited(this::onMouseExitedElement);
                 newUIElement.getElementOrientationArrow().setOnMouseDragged(this::onMouseRotatingElement);
                 newUIElement.getElementOrientationArrow().setOnMouseReleased(this::onMouseReleasedRotatingElement);
+                
+                if(elem instanceof Player)
+                {
+                    Player player = (Player)elem;
+                    newUIElement.setElementName("PlayerName");
+                }
             }
         }
 
