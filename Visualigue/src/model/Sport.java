@@ -1,27 +1,30 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
-/**
- *
- * @author emile
- */
+import java.util.Map;
+import java.util.TreeMap;
+
 public class Sport
 {
     private String name;
     private int maxPlayer;
+    private int maxTeam;
     private String courtImage;
     private Vector2D courtSize;
+    private Map<String, ObstacleDescription> obstacleDescriptions;
+    private Map<String, BallDescription> ballDescriptions;
+    private Map<String, PlayerDescription> playerDescriptions;
     
-    public Sport(String name, String courtImage, double courtHeight, double courtWidth, int maxPLayer)
+    public Sport(String name, String courtImage, double courtHeight, double courtWidth, int maxPlayer, int maxTeam)
     {
         this.name = name;
         this.courtImage = courtImage;
         this.courtSize = new Vector2D(courtWidth, courtHeight);
         this.maxPlayer = maxPlayer;
+        this.maxTeam = maxTeam;
+        
+        this.obstacleDescriptions = new TreeMap();
+        this.ballDescriptions = new TreeMap();
+        this.playerDescriptions = new TreeMap();
     }
     
     public String getName()
