@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,8 +19,10 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -66,8 +69,18 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private Slider timeLine;
     @FXML
+    private ChoiceBox role;
+    @FXML
+    private ChoiceBox team;
+    @FXML
+    private TextField positionX;
+    @FXML
+    private TextField positionY;
+    @FXML
+    private TextField orientation;
+    @FXML
     private Button playPauseButton;
-
+    
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
         this.selectedTool = Toolbox.MOVE;
@@ -104,6 +117,12 @@ public class StrategyEditionWindow implements Initializable, Updatable
         scenePane.setOnMouseMoved(this::onMouseMoved);
         scenePane.setOnMouseExited(this::onMouseExited);
 
+        role.setOnAction(this::onActionRole);
+        team.setOnAction(this::onActionTeam);
+        positionX.setOnAction(this::onActionPositionX);
+        positionY.setOnAction(this::onActionPositionY);
+        orientation.setOnAction(this::onActionOrientation);
+        
         timeLine.setMinorTickCount(4);
 
         Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
@@ -119,6 +138,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
         ice.setTranslateX(-1000 / 2);
         ice.setTranslateY(-400 / 2);
         scenePane.getChildren().add(ice);
+        
+        role.getItems().add("Role Example");
+        team.getItems().add("Team Example");
 
         update();
     }
@@ -166,7 +188,27 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             uiElements.remove(uiElem);
         }
-
+        
+        if(selectedUIElement != null)
+        {
+            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
+        }
+    }
+    
+    private void updateRightPane(double x, double y, double ori)
+    {
+        //set role here
+        //set team here
+        positionX.setText("" + x);
+        positionY.setText("" + y);
+        orientation.setText("" + ori);
+    }
+    
+    @Override
+    public void updateOnRecord()
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void onMouseMoved(MouseEvent e)
@@ -200,21 +242,27 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onMouseClickedElement(MouseEvent e)
     {
-        Node node = (Node) e.getSource();
-
-        for (UIElement uiElement : uiElements)
+        if(selectedTool == Toolbox.MOVE)
         {
-            if (uiElement.getNode().equals(node))
-            {
-                selectedUIElement = uiElement;
-                controller.selectElement(uiElement.getElement());
+            Node node = (Node) e.getSource();
 
-                uiElement.glow();
-            }
-            else
+            for (UIElement uiElement : uiElements)
             {
-                uiElement.unGlow();
+                if (uiElement.getNode().equals(node))
+                {
+                    selectedUIElement = uiElement;
+                    controller.selectElement(uiElement.getElement());
+
+                    uiElement.glow();
+                }
+                else
+                {
+                    uiElement.unGlow();
+                }
             }
+            
+            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
         }
     }
 
@@ -226,6 +274,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
                 selectedUIElement.move(point.getX(), point.getY());
+                updateRightPane(point.getX(), point.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
             }
         }
     }
@@ -244,49 +293,133 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onMouseEnteredElement(MouseEvent e)
     {
-        Node node = (Node) e.getSource();
-
-        for (UIElement uiElem : uiElements)
+        if(selectedTool == Toolbox.MOVE)
         {
-            if (uiElem.getNode().equals(node))
+            Node node = (Node)e.getSource();
+
+            for (UIElement uiElem : uiElements)
             {
-                uiElem.showOrientationArrow();
+                if (uiElem.getNode().equals(node))
+                {
+                    uiElem.showOrientationArrow();
+                }
             }
         }
     }
 
     private void onMouseExitedElement(MouseEvent e)
     {
-        Node node = (Node) e.getSource();
-
-        for (UIElement uiElem : uiElements)
+        if(selectedTool == Toolbox.MOVE)
         {
-            if (uiElem.getElementOrientationArrow().equals(node))
+            Node node = (Node)e.getSource();
+
+            for (UIElement uiElem : uiElements)
             {
-                uiElem.hideOrientationArrow();
+                if (uiElem.getElementOrientationArrow().equals(node))
+                {
+                    uiElem.hideOrientationArrow();
+                }
             }
         }
     }
 
     private void onMouseRotatingElement(MouseEvent e)
     {
-        selectedUIElement.setRotating(true);
-        Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-        Vector2D mousePosition = new Vector2D(point.getX(), point.getY());
-        Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
-        Vector2D result = mousePosition.substract(elementPosition);
-        selectedUIElement.getNode().setRotate(Math.toDegrees(result.getAngle()));
+        if(selectedTool == Toolbox.MOVE)
+        {
+            selectedUIElement.setRotating(true);
+            Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
+            Vector2D mousePosition = new Vector2D(point.getX(), point.getY());
+            Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
+            Vector2D result = mousePosition.substract(elementPosition);
+            selectedUIElement.getNode().setRotate(Math.toDegrees(result.getAngle()));
+            
+            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(result.getAngle()));
+        }
     }
 
     private void onMouseReleasedRotatingElement(MouseEvent e)
     {
-        selectedUIElement.setRotating(false);
-        selectedUIElement.hideOrientationArrow();
-        Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-        Vector2D mousePosition = new Vector2D(point.getX(), point.getY());
-        Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
-        Vector2D result = mousePosition.substract(elementPosition);
-        controller.setCurrentElemOrientation(result.normaliser());
+        if(selectedTool == Toolbox.MOVE)
+        {
+            selectedUIElement.setRotating(false);
+            selectedUIElement.hideOrientationArrow();
+            Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
+            Vector2D mousePosition = new Vector2D(point.getX(), point.getY());
+            Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
+            Vector2D result = mousePosition.substract(elementPosition);
+            controller.setCurrentElemOrientation(result.normaliser());
+        }
+    }
+    
+    private void onActionRole(Event e)
+    {
+        if(selectedUIElement != null)
+        {
+            System.out.println("role ChoiceBox");
+        }
+        
+    }
+    
+    private void onActionTeam(Event e)
+    {
+        if(selectedUIElement != null)
+        {
+            System.out.println("team ChoiceBox");
+        }
+    }
+    
+    private void onActionPositionX(ActionEvent e)
+    {
+        if(selectedUIElement != null)
+        {
+            try
+            {
+                double x = Double.parseDouble(positionX.getText());
+                double y = selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY();
+                controller.setCurrentElemPosition(new Vector2D(x, y));
+                update();
+            }
+            catch(Exception exception)
+            {
+            }
+        }
+    }
+    
+    private void onActionPositionY(ActionEvent e)
+    {
+        if(selectedUIElement != null)
+        {
+            try
+            {
+                double x = selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX();
+                double y = Double.parseDouble(positionY.getText());
+                controller.setCurrentElemPosition(new Vector2D(x, y));
+                update();
+            }
+            catch(Exception exception)
+            {
+            }
+        }
+    }
+    
+    private void onActionOrientation(ActionEvent e)
+    {
+        if(selectedUIElement != null)
+        {
+            try
+            {
+                double angle = Double.parseDouble(orientation.getText());
+                Vector2D ori = new Vector2D(1, 0);
+                ori.setAngle(Math.toRadians(angle));
+                controller.setCurrentElemOrientation(ori);
+                update();
+            }
+            catch(Exception exception)
+            {
+            }
+        }
     }
 
     @FXML

@@ -75,7 +75,7 @@
             <HBox>
                <children>
                   <Label prefWidth="70.0" text="Rôle:" />
-                  <ChoiceBox prefWidth="120.0" />
+                  <ChoiceBox fx:id="role" prefWidth="120.0" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -84,7 +84,7 @@
             <HBox>
                <children>
                   <Label prefWidth="70.0" text="Équipe:" />
-                  <ChoiceBox prefWidth="120.0" />
+                  <ChoiceBox fx:id="team" prefWidth="120.0" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -93,7 +93,7 @@
             <HBox>
                <children>
                   <Label prefHeight="17.0" prefWidth="70.0" text="Position X: " />
-                  <TextField prefWidth="80.0" />
+                  <TextField fx:id="positionX" prefWidth="80.0" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -102,7 +102,7 @@
             <HBox>
                <children>
                   <Label prefWidth="70.0" text="Position Y: " />
-                  <TextField prefWidth="80.0" />
+                  <TextField fx:id="positionY" prefWidth="80.0" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />
@@ -111,7 +111,7 @@
             <HBox>
                <children>
                   <Label prefWidth="70.0" text="Orientation: " />
-                  <TextField prefHeight="25.0" prefWidth="80.0" />
+                  <TextField fx:id="orientation" prefHeight="25.0" prefWidth="80.0" />
                </children>
             </HBox>
          </children>
