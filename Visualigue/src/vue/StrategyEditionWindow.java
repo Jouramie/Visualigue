@@ -551,12 +551,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
     }
 
     @Override
-    public void updateOnRecord()
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void wasLastUpdate()
     {
         playPauseButton.setOnAction(this::onActionPlay);
