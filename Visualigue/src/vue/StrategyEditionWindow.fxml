@@ -92,7 +92,7 @@
             </HBox>
             <HBox>
                <children>
-                  <Label prefHeight="17.0" prefWidth="70.0" text="Position X: " />
+                  <Label text="Position X: " />
                   <TextField fx:id="positionX" prefWidth="80.0" />
                </children>
                <VBox.margin>
@@ -101,7 +101,7 @@
             </HBox>
             <HBox>
                <children>
-                  <Label prefWidth="70.0" text="Position Y: " />
+                  <Label text="Position Y: " />
                   <TextField fx:id="positionY" prefWidth="80.0" />
                </children>
                <VBox.margin>
@@ -110,8 +110,8 @@
             </HBox>
             <HBox>
                <children>
-                  <Label prefWidth="70.0" text="Orientation: " />
-                  <TextField fx:id="orientation" prefHeight="25.0" prefWidth="80.0" />
+                  <Label text="Orientation: " />
+                  <TextField fx:id="orientation" prefWidth="80.0" />
                </children>
             </HBox>
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#onActionDelete" text="Supprimer" />
