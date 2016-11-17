@@ -45,11 +45,11 @@ public class UIElement
         node.getChildren().add(orientation);
         
         elementName = new Label();
-        elementName.setTranslateY(element.getElementDescription().getSize().getY() + 5);
+        elementName.setTranslateY(element.getElementDescription().getSize().getY());
         
         group = new Group();
-        group.getChildren().add(node);
         group.getChildren().add(elementName);
+        group.getChildren().add(node);
         
         move(element.getPosition(time).getX(), element.getPosition(time).getY());
     }
