@@ -24,6 +24,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -176,6 +178,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 uiElements.add(newUIElement);
                 scenePane.getChildren().add(newUIElement.getGroup());
                 newUIElement.getNode().setOnMousePressed(this::onMouseClickedElement);
+                newUIElement.getNode().setOnKeyPressed(this::onKeyPressedElement);
                 newUIElement.getElementImage().setOnMouseDragged(this::onMouseDraggedElement);
                 newUIElement.getElementImage().setOnMouseReleased(this::onMouseReleasedElement);
                 newUIElement.getNode().setOnMouseEntered(this::onMouseEnteredElement);
@@ -194,6 +197,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         for (UIElement uiElem : elemToDelete)
         {
             uiElements.remove(uiElem);
+            scenePane.getChildren().remove(uiElem.getGroup());
         }
         
         if(selectedUIElement != null)
@@ -259,7 +263,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 {
                     selectedUIElement = uiElement;
                     controller.selectElement(uiElement.getElement());
-
+                    uiElement.getNode().setFocusTraversable(true);
+                    uiElement.getNode().requestFocus();
                     uiElement.glow();
                 }
                 else
@@ -270,6 +275,16 @@ public class StrategyEditionWindow implements Initializable, Updatable
             
             Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
             updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
+        }
+    }
+    
+    private void onKeyPressedElement(KeyEvent e)
+    {
+        if(e.getCode() == KeyCode.DELETE)
+        {
+            controller.deleteCurrentElement();
+            selectedUIElement = null;
+            update();
         }
     }
 
@@ -426,6 +441,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
             catch(Exception exception)
             {
             }
+        }
+    }
+    
+    @FXML
+    private void onActionDelete(ActionEvent e)
+    {
+        if(selectedUIElement != null)
+        {
+            controller.deleteCurrentElement();
+            selectedUIElement = null;
+            update();
         }
     }
 

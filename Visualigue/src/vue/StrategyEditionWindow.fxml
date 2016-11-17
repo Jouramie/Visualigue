@@ -66,7 +66,7 @@
       </VBox>
    </left>
    <right>
-      <VBox styleClass="background" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" spacing="10.0" styleClass="background" BorderPane.alignment="CENTER">
          <children>
             <Label text="Nom joueur / obstacle">
                <VBox.margin>
@@ -114,6 +114,7 @@
                   <TextField fx:id="orientation" prefHeight="25.0" prefWidth="80.0" />
                </children>
             </HBox>
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#onActionDelete" text="Supprimer" />
          </children>
          <BorderPane.margin>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

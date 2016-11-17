@@ -87,6 +87,15 @@ public class GodController
         }
         return elem;
     }
+    
+    public void deleteCurrentElement()
+    {
+        if(selectedElement != null)
+        {
+            strategy.deleteElement(selectedElement);
+            selectedElement = null;
+        }
+    }
 
     public void selectElement(Element elem)
     {
