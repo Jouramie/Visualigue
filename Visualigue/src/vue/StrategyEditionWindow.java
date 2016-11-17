@@ -19,6 +19,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -57,6 +58,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     @FXML
     private Pane scenePane;
+    @FXML
+    private CheckBox elementNameCheckBox;
     @FXML
     private Button deleteButton;
     @FXML
@@ -231,10 +234,12 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 Player player = (Player)selectedUIElement.getElement();
                 nameLabel.setText("PlayerName");
+                elementNameCheckBox.setSelected(selectedUIElement.isElementNameVisible());
             }
             else
             {
                 nameLabel.setText(selectedUIElement.getElement().getElementDescription().getName());
+                elementNameCheckBox.setSelected(false);
             }
             
             role.setDisable(!elementIsPlayer);
@@ -242,6 +247,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             positionX.setDisable(false);
             positionY.setDisable(false);
             orientation.setDisable(false);
+            elementNameCheckBox.setDisable(!elementIsPlayer);
             deleteButton.setDisable(false);
         }
         else
@@ -253,6 +259,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
             positionX.setDisable(true);
             positionY.setDisable(true);
             orientation.setDisable(true);
+            elementNameCheckBox.setSelected(false);
+            elementNameCheckBox.setDisable(true);
             deleteButton.setDisable(true);
         }
     }
@@ -481,6 +489,15 @@ public class StrategyEditionWindow implements Initializable, Updatable
             catch(Exception exception)
             {
             }
+        }
+    }
+    
+    @FXML
+    private void onActionElementNameVisible(ActionEvent e)
+    {
+        if(selectedUIElement != null)
+        {
+            selectedUIElement.setElementNameVisible(elementNameCheckBox.isSelected());
         }
     }
     

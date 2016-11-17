@@ -143,4 +143,14 @@ public class UIElement
     {
         return orientation;
     }
+    
+    public boolean isElementNameVisible()
+    {
+        return elementName.isVisible();
+    }
+    
+    public void setElementNameVisible(boolean visible)
+    {
+        elementName.setVisible(visible);
+    }
 }
