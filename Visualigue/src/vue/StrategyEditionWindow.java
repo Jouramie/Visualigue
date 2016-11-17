@@ -225,9 +225,18 @@ public class StrategyEditionWindow implements Initializable, Updatable
         
         if(selectedUIElement != null)
         {
-            nameLabel.setText(selectedUIElement.getElement().getElementDescription().getName());
-            
             boolean elementIsPlayer = selectedUIElement.getElement() instanceof Player;
+            
+            if(elementIsPlayer)
+            {
+                Player player = (Player)selectedUIElement.getElement();
+                nameLabel.setText("PlayerName");
+            }
+            else
+            {
+                nameLabel.setText(selectedUIElement.getElement().getElementDescription().getName());
+            }
+            
             role.setDisable(!elementIsPlayer);
             team.setDisable(!elementIsPlayer);
             positionX.setDisable(false);
