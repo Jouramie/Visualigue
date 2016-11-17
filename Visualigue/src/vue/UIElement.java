@@ -22,7 +22,7 @@ public class UIElement
     private Label elementName;
     static private HashMap<String, Image> images = new HashMap();
     
-    public UIElement(Element element)
+    public UIElement(Element element, double time)
     {
         this.element = element;
         rotating = false;
@@ -51,7 +51,7 @@ public class UIElement
         group.getChildren().add(node);
         group.getChildren().add(elementName);
         
-        move(element.getPosition(0).getX(), element.getPosition(0).getY());
+        move(element.getPosition(time).getX(), element.getPosition(time).getY());
     }
     
     public void update(double time)

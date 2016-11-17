@@ -172,7 +172,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
             if (!found)
             {
-                UIElement newUIElement = new UIElement(elem);
+                UIElement newUIElement = new UIElement(elem, controller.getCurrentTime());
                 uiElements.add(newUIElement);
                 scenePane.getChildren().add(newUIElement.getGroup());
                 newUIElement.getNode().setOnMousePressed(this::onMouseClickedElement);
