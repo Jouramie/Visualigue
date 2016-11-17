@@ -58,6 +58,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private Pane scenePane;
     @FXML
+    private Button deleteButton;
+    @FXML
     private Button moveButton;
     @FXML
     private Button playerButton;
@@ -83,6 +85,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private TextField orientation;
     @FXML
     private Button playPauseButton;
+    @FXML
+    private Label nameLabel;
     
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
@@ -205,6 +209,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
             updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
         }
+        else
+        {
+            updateRightPane(0, 0, 0);
+        }
     }
     
     private void updateRightPane(double x, double y, double ori)
@@ -214,6 +222,30 @@ public class StrategyEditionWindow implements Initializable, Updatable
         positionX.setText("" + x);
         positionY.setText("" + y);
         orientation.setText("" + ori);
+        
+        if(selectedUIElement != null)
+        {
+            nameLabel.setText(selectedUIElement.getElement().getElementDescription().getName());
+            
+            boolean elementIsPlayer = selectedUIElement.getElement() instanceof Player;
+            role.setDisable(!elementIsPlayer);
+            team.setDisable(!elementIsPlayer);
+            positionX.setDisable(false);
+            positionY.setDisable(false);
+            orientation.setDisable(false);
+            deleteButton.setDisable(false);
+        }
+        else
+        {
+            nameLabel.setText("Nom joueur / obstacle");
+            
+            role.setDisable(true);
+            team.setDisable(true);
+            positionX.setDisable(true);
+            positionY.setDisable(true);
+            orientation.setDisable(true);
+            deleteButton.setDisable(true);
+        }
     }
     
     @Override
@@ -263,7 +295,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 {
                     selectedUIElement = uiElement;
                     controller.selectElement(uiElement.getElement());
-                    uiElement.getNode().setFocusTraversable(true);
                     uiElement.getNode().requestFocus();
                     uiElement.glow();
                 }
