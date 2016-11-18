@@ -3,10 +3,12 @@ package vue;
 import java.util.HashMap;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import model.Element;
 
 public class UIElement
@@ -16,10 +18,11 @@ public class UIElement
     ImageView orientation;
     private Element element;
     private boolean rotating;
-    
+    private Group group;
+    private Label elementName;
     static private HashMap<String, Image> images = new HashMap();
     
-    public UIElement(Element element)
+    public UIElement(Element element, double time)
     {
         this.element = element;
         rotating = false;
@@ -40,13 +43,26 @@ public class UIElement
         node = new Group();
         node.getChildren().add(image);
         node.getChildren().add(orientation);
-        move(element.getPosition(0).getX(), element.getPosition(0).getY());
+        
+        elementName = new Label();
+        elementName.setTranslateY(element.getElementDescription().getSize().getY());
+        
+        group = new Group();
+        group.getChildren().add(elementName);
+        group.getChildren().add(node);
+        
+        move(element.getPosition(time).getX(), element.getPosition(time).getY());
     }
     
     public void update(double time)
     {
         move(element.getPosition(time).getX(), element.getPosition(time).getY());
         node.setRotate(Math.toDegrees(element.getOrientation(time).getAngle()));
+    }
+    
+    public Node getGroup()
+    {
+        return group;
     }
     
     public Node getNode()
@@ -61,8 +77,8 @@ public class UIElement
     
     public void move(double x, double y)
     {
-        node.setTranslateX(x - element.getElementDescription().getSize().getX()/2);
-        node.setTranslateY(y - element.getElementDescription().getSize().getY()/2);
+        group.setTranslateX(x - element.getElementDescription().getSize().getX()/2);
+        group.setTranslateY(y - element.getElementDescription().getSize().getY()/2);
     }
     
     static private Image getImage(String image)
@@ -93,6 +109,13 @@ public class UIElement
         image.setEffect(null);
     }
     
+    public void setElementName(String name)
+    {
+        elementName.setText(name);
+        Text text = new Text(name);
+        elementName.setTranslateX(element.getElementDescription().getSize().getX()/2 - text.getLayoutBounds().getWidth()/2);
+    }
+    
     public void setRotating(boolean value)
     {
         rotating = value;
@@ -119,5 +142,15 @@ public class UIElement
     public Node getElementOrientationArrow()
     {
         return orientation;
+    }
+    
+    public boolean isElementNameVisible()
+    {
+        return elementName.isVisible();
+    }
+    
+    public void setElementNameVisible(boolean visible)
+    {
+        elementName.setVisible(visible);
     }
 }

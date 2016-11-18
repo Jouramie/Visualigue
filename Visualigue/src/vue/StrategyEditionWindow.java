@@ -23,12 +23,15 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -38,6 +41,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import model.Element;
+import model.Player;
 import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
@@ -60,6 +64,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     @FXML
     private Pane scenePane;
+    @FXML
+    private CheckBox elementNameCheckBox;
+    @FXML
+    private Button deleteButton;
     @FXML
     private Button moveButton;
     @FXML
@@ -88,6 +96,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private TextField speed;
     @FXML
     private Button playPauseButton;
+    @FXML
+    private Label nameLabel;
     
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
@@ -201,28 +211,40 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
             if (!found)
             {
-                UIElement newUIElement = new UIElement(elem);
+                UIElement newUIElement = new UIElement(elem, controller.getCurrentTime());
                 uiElements.add(newUIElement);
-                scenePane.getChildren().add(newUIElement.getNode());
+                scenePane.getChildren().add(newUIElement.getGroup());
                 newUIElement.getNode().setOnMousePressed(this::onMouseClickedElement);
+                newUIElement.getNode().setOnKeyPressed(this::onKeyPressedElement);
                 newUIElement.getElementImage().setOnMouseDragged(this::onMouseDraggedElement);
                 newUIElement.getElementImage().setOnMouseReleased(this::onMouseReleasedElement);
                 newUIElement.getNode().setOnMouseEntered(this::onMouseEnteredElement);
                 newUIElement.getElementOrientationArrow().setOnMouseExited(this::onMouseExitedElement);
                 newUIElement.getElementOrientationArrow().setOnMouseDragged(this::onMouseRotatingElement);
                 newUIElement.getElementOrientationArrow().setOnMouseReleased(this::onMouseReleasedRotatingElement);
+                
+                if(elem instanceof Player)
+                {
+                    Player player = (Player)elem;
+                    newUIElement.setElementName("PlayerName");
+                }
             }
         }
 
         for (UIElement uiElem : elemToDelete)
         {
             uiElements.remove(uiElem);
+            scenePane.getChildren().remove(uiElem.getGroup());
         }
         
         if(selectedUIElement != null)
         {
             Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
             updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
+        }
+        else
+        {
+            updateRightPane(0, 0, 0);
         }
     }
     
@@ -233,6 +255,44 @@ public class StrategyEditionWindow implements Initializable, Updatable
         positionX.setText("" + x);
         positionY.setText("" + y);
         orientation.setText("" + ori);
+        
+        if(selectedUIElement != null)
+        {
+            boolean elementIsPlayer = selectedUIElement.getElement() instanceof Player;
+            
+            if(elementIsPlayer)
+            {
+                Player player = (Player)selectedUIElement.getElement();
+                nameLabel.setText("PlayerName");
+                elementNameCheckBox.setSelected(selectedUIElement.isElementNameVisible());
+            }
+            else
+            {
+                nameLabel.setText(selectedUIElement.getElement().getElementDescription().getName());
+                elementNameCheckBox.setSelected(false);
+            }
+            
+            role.setDisable(!elementIsPlayer);
+            team.setDisable(!elementIsPlayer);
+            positionX.setDisable(false);
+            positionY.setDisable(false);
+            orientation.setDisable(false);
+            elementNameCheckBox.setDisable(!elementIsPlayer);
+            deleteButton.setDisable(false);
+        }
+        else
+        {
+            nameLabel.setText("Nom joueur / obstacle");
+            
+            role.setDisable(true);
+            team.setDisable(true);
+            positionX.setDisable(true);
+            positionY.setDisable(true);
+            orientation.setDisable(true);
+            elementNameCheckBox.setSelected(false);
+            elementNameCheckBox.setDisable(true);
+            deleteButton.setDisable(true);
+        }
     }
     
     @Override
@@ -282,7 +342,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 {
                     selectedUIElement = uiElement;
                     controller.selectElement(uiElement.getElement());
-
+                    uiElement.getNode().requestFocus();
                     uiElement.glow();
                 }
                 else
@@ -293,6 +353,16 @@ public class StrategyEditionWindow implements Initializable, Updatable
             
             Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
             updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
+        }
+    }
+    
+    private void onKeyPressedElement(KeyEvent e)
+    {
+        if(e.getCode() == KeyCode.DELETE)
+        {
+            controller.deleteCurrentElement();
+            selectedUIElement = null;
+            update();
         }
     }
 
@@ -449,6 +519,26 @@ public class StrategyEditionWindow implements Initializable, Updatable
             catch(Exception exception)
             {
             }
+        }
+    }
+    
+    @FXML
+    private void onActionElementNameVisible(ActionEvent e)
+    {
+        if(selectedUIElement != null)
+        {
+            selectedUIElement.setElementNameVisible(elementNameCheckBox.isSelected());
+        }
+    }
+    
+    @FXML
+    private void onActionDelete(ActionEvent e)
+    {
+        if(selectedUIElement != null)
+        {
+            controller.deleteCurrentElement();
+            selectedUIElement = null;
+            update();
         }
     }
 
