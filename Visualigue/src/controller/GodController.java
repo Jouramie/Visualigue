@@ -16,6 +16,7 @@ public class GodController
 {
 
     public static final double FPS = 2;
+    public static final double FPS_PLAY = 10;
 
     private List<Sport> sports;
     private Strategy strategy;
@@ -217,7 +218,7 @@ public class GodController
             while (time <= strategy.getDuration())
             {
                 previousTimeMillis = System.currentTimeMillis();
-                Thread.sleep((long) (1000 / FPS));
+                Thread.sleep((long) (1000 / FPS_PLAY));
                 if (playing)
                 {
                     time += (double) (System.currentTimeMillis() - previousTimeMillis) / 1000;
@@ -230,7 +231,7 @@ public class GodController
             }
 
             // Arrondissement
-            time = ((int) (time * FPS)) / FPS;
+            time = ((int) (time * FPS_PLAY)) / FPS_PLAY;
             sp = null;
             window.wasLastUpdate();
             return null;

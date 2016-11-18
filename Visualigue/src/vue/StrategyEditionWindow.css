@@ -35,5 +35,6 @@
     -fx-show-tick-marks: true;
     -fx-snap-to-ticks: true;
     -fx-major-tick-unit: 5;
+    -fx-minor-tick-count: 4;
     -fx-block-increment: 1;
 }

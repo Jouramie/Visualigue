@@ -1,5 +1,7 @@
 package vue;
 
+import com.sun.javafx.binding.StringFormatter;
+import com.sun.org.apache.xpath.internal.operations.UnaryOperation;
 import controller.GodController;
 import controller.Updatable;
 import java.io.IOException;
@@ -7,11 +9,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,6 +28,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -34,6 +39,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.StringConverter;
 import model.Element;
 import model.Player;
 import model.Vector2D;
@@ -88,6 +94,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private TextField orientation;
     @FXML
+    private TextField speed;
+    @FXML
     private Button playPauseButton;
     @FXML
     private Label nameLabel;
@@ -135,7 +143,29 @@ public class StrategyEditionWindow implements Initializable, Updatable
         positionY.setOnAction(this::onActionPositionY);
         orientation.setOnAction(this::onActionOrientation);
         
-        timeLine.setMinorTickCount(4);
+        
+        // http://stackoverflow.com/questions/37751922/how-to-format-a-string-in-a-textfield-without-changing-its-value-with-javafx
+        StringConverter<Integer> converter = new StringConverter<Integer>() {
+            
+            @Override
+            public String toString(Integer input)
+            {
+                return "x" + input;
+            }
+
+            @Override
+            public Integer fromString(String text)
+            {
+                return new Integer(text.substring(1));
+            }
+            
+        };
+        
+        speed.setTextFormatter(new TextFormatter<>(converter, 2));
+        speed.setOnAction((ActionEvent e) ->
+        {
+            System.out.println(((TextField)e.getSource()).getText());
+        });
 
         Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
         clipRect.heightProperty().bind(scenePane.heightProperty());

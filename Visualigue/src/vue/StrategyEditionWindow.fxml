@@ -138,7 +138,7 @@
                   <Button mnemonicParsing="false" onAction="#onActionNextFrame" styleClass="btnTimeLine" text="⮞" />
                   <Button mnemonicParsing="false" onAction="#onActionFastForward" styleClass="btnTimeLine" text="⏩" />
                   <Button mnemonicParsing="false" onAction="#onActionGoToEnd" styleClass="btnTimeLine" text="⏭" />
-                  <TextField fx:id="speed" prefHeight="25.0" prefWidth="29.0" text="X2" />
+                  <TextField fx:id="speed" alignment="CENTER" prefHeight="25.0" prefWidth="29.0" text="2" />
                </children>
             </HBox>
             <Slider fx:id="timeLine" styleClass="sliderTimeLine">
