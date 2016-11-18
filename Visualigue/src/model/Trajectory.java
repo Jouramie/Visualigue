@@ -17,6 +17,11 @@ public class Trajectory
 
     public void setPosition(double time, double interpolation, Vector2D position)
     {
+        if (positions.isEmpty()){
+            positions.put(0d, position);
+            positions.put(time, position);
+            return;
+        }
         double beginTime = Math.max(0, time - interpolation);
         double endTime = Math.min(0, time - interpolation);
 
@@ -32,6 +37,11 @@ public class Trajectory
 
     public void setOrientation(double time, double interpolation, Vector2D orientation)
     {
+        if (positions.isEmpty()){
+            positions.put(0d, orientation);
+            positions.put(time, orientation);
+            return;
+        }
         double beginTime = Math.max(0, time - interpolation);
         double endTime = Math.min(0, time - interpolation);
 
