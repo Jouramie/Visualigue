@@ -55,6 +55,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private List<UIElement> uiElements;
     private UIElement selectedUIElement;
     private Toolbox selectedTool;
+    private boolean draggingElement;
 
     @FXML
     private Pane scenePane;
@@ -96,6 +97,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.selectedTool = Toolbox.MOVE;
         this.controller = controller;
         this.uiElements = new ArrayList();
+        this.draggingElement = false;
 
         try
         {
@@ -342,6 +344,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             if (selectedUIElement != null)
             {
+                draggingElement = true;
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
                 selectedUIElement.move(point.getX(), point.getY());
                 updateRightPane(point.getX(), point.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
@@ -351,10 +354,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onMouseReleasedElement(MouseEvent e)
     {
-        if (selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE && draggingElement)
         {
             if (selectedUIElement != null)
             {
+                draggingElement = false;
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
                 controller.setCurrentElemPosition(new Vector2D(point.getX(), point.getY()));
             }
