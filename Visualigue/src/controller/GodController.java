@@ -247,6 +247,12 @@ public class GodController
             playing = false;
         }
     }
+    
+    public Vector2D getCourtDimensions()
+    {
+        //TODO: Fix this...
+        return new Vector2D(1000, 400);
+    }
 
     public void setWindow(Updatable window)
     {

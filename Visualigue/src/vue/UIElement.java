@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import model.Element;
+import model.Vector2D;
 
 public class UIElement
 {
@@ -79,6 +80,13 @@ public class UIElement
     {
         group.setTranslateX(x - element.getElementDescription().getSize().getX()/2);
         group.setTranslateY(y - element.getElementDescription().getSize().getY()/2);
+    }
+    
+    public Vector2D getPosition()
+    {
+        double x = group.getTranslateX() + element.getElementDescription().getSize().getX() / 2;
+        double y = group.getTranslateY() + element.getElementDescription().getSize().getY() / 2;
+        return new Vector2D(x, y);
     }
     
     static private Image getImage(String image)

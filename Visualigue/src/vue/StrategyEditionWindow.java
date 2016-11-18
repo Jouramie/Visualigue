@@ -375,8 +375,24 @@ public class StrategyEditionWindow implements Initializable, Updatable
             if (selectedUIElement != null)
             {
                 draggingElement = true;
+                
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-                selectedUIElement.move(point.getX(), point.getY());
+                Vector2D dimensions = controller.getCourtDimensions();
+                
+                double x = selectedUIElement.getPosition().getX();
+                double y = selectedUIElement.getPosition().getY();
+                Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
+                
+                if(point.getX() - elementDimensions.getX()/2 >= 0 && point.getX() + elementDimensions.getX()/2 <= dimensions.getX())
+                {
+                    x = point.getX();
+                }
+                if(point.getY() - elementDimensions.getY()/2 >= 0 && point.getY() + elementDimensions.getY()/2 <= dimensions.getY())
+                {
+                    y = point.getY();
+                }
+                
+                selectedUIElement.move(x, y);
                 updateRightPane(point.getX(), point.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
             }
         }
@@ -389,8 +405,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             if (selectedUIElement != null)
             {
                 draggingElement = false;
-                Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-                controller.setCurrentElemPosition(new Vector2D(point.getX(), point.getY()));
+                controller.setCurrentElemPosition(selectedUIElement.getPosition());
             }
         }
     }
@@ -480,8 +495,30 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             try
             {
-                double x = Double.parseDouble(positionX.getText());
+                double newX = Double.parseDouble(positionX.getText());
+                
+                double x;
                 double y = selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY();
+                
+                Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
+                Vector2D dimensions = controller.getCourtDimensions();
+                
+                if(newX - elementDimensions.getX()/2 >= 0)
+                {
+                    if(newX + elementDimensions.getX()/2 <= dimensions.getX())
+                    {
+                        x = newX;
+                    }
+                    else
+                    {
+                        x = dimensions.getX() - elementDimensions.getX()/2;
+                    }
+                }
+                else
+                {
+                    x = elementDimensions.getX()/2;
+                }
+                
                 controller.setCurrentElemPosition(new Vector2D(x, y));
                 update();
             }
@@ -497,8 +534,30 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             try
             {
+                double newY = Double.parseDouble(positionY.getText());
+                
                 double x = selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX();
-                double y = Double.parseDouble(positionY.getText());
+                double y;
+                
+                Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
+                Vector2D dimensions = controller.getCourtDimensions();
+                
+                if(newY - elementDimensions.getY()/2 >= 0)
+                {
+                    if(newY + elementDimensions.getY()/2 <= dimensions.getY())
+                    {
+                        y = newY;
+                    }
+                    else
+                    {
+                        y = dimensions.getY() - elementDimensions.getY()/2;
+                    }
+                }
+                else
+                {
+                    y = elementDimensions.getY()/2;
+                }
+                
                 controller.setCurrentElemPosition(new Vector2D(x, y));
                 update();
             }
