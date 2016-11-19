@@ -158,4 +158,9 @@ public class Vector2D implements Cloneable
     public boolean equals(Vector2D v){
         return x == v.x && y == v.y;
     }
+    
+    @Override
+    public String toString(){
+        return "[" + x + ", " + y + "]";
+    }
 }

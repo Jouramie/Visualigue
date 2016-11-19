@@ -84,7 +84,7 @@ public class GodController
             }
 
             elem.setPosition(time, pos, 0.0);
-            elem.setOrientation(time, new Vector2D(), 0.0);
+            elem.setOrientation(time, new Vector2D(1, 0), 0.0);
         }
         return elem;
     }

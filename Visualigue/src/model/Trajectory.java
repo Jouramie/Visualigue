@@ -37,9 +37,9 @@ public class Trajectory
 
     public void setOrientation(double time, double interpolation, Vector2D orientation)
     {
-        if (positions.isEmpty()){
-            positions.put(0d, orientation);
-            positions.put(time, orientation);
+        if (orientations.isEmpty()){
+            orientations.put(0d, orientation);
+            orientations.put(time, orientation);
             return;
         }
         double beginTime = Math.max(0, time - interpolation);
