@@ -88,10 +88,10 @@ public class GodController
         }
         return elem;
     }
-    
+
     public void deleteCurrentElement()
     {
-        if(selectedElement != null)
+        if (selectedElement != null)
         {
             strategy.deleteElement(selectedElement);
             selectedElement = null;
@@ -205,26 +205,34 @@ public class GodController
     private class StrategyPlayer extends Task<Void>
     {
 
-        private long start;
         private boolean playing;
+        private double speed;
+        
+        public StrategyPlayer(){
+            speed = 1;
+        }
+        
+        public StrategyPlayer(double speed){
+            this.speed = speed;
+        }
 
         @Override
         protected Void call() throws Exception
         {
             playing = true;
-            start = System.currentTimeMillis();
-            long previousTimeMillis;
+            long previousTimeMillis = System.currentTimeMillis();
 
-            while (time <= strategy.getDuration())
+            while (time < strategy.getDuration())
             {
+
                 previousTimeMillis = System.currentTimeMillis();
                 Thread.sleep((long) (1000 / FPS_PLAY));
-                if (playing)
-                {
-                    time += (double) (System.currentTimeMillis() - previousTimeMillis) / 1000;
-                    window.update();
+                time += (double) (System.currentTimeMillis() - previousTimeMillis) / 1000 * speed;
+                if(time > strategy.getDuration()){
+                    time = strategy.getDuration();
                 }
-                else
+                window.update();
+                if (!playing)
                 {
                     break;
                 }
@@ -233,7 +241,7 @@ public class GodController
             // Arrondissement
             time = ((int) (time * FPS_PLAY)) / FPS_PLAY;
             sp = null;
-            window.wasLastUpdate();
+            window.lastUpdate();
             return null;
         }
 
@@ -247,7 +255,7 @@ public class GodController
             playing = false;
         }
     }
-    
+
     public Vector2D getCourtDimensions()
     {
         //TODO: Fix this...

@@ -1,7 +1,5 @@
 package vue;
 
-import com.sun.javafx.binding.StringFormatter;
-import com.sun.org.apache.xpath.internal.operations.UnaryOperation;
 import controller.GodController;
 import controller.Updatable;
 import java.io.IOException;
@@ -9,13 +7,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -406,6 +402,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 draggingElement = false;
                 controller.setCurrentElemPosition(selectedUIElement.getPosition());
+                update();
             }
         }
     }
@@ -469,6 +466,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
             Vector2D result = mousePosition.substract(elementPosition);
             controller.setCurrentElemOrientation(result.normaliser());
+            update();
         }
     }
     
@@ -696,7 +694,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionRestart()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionRestart()");
+        controller.setCurrentTime(0);
+        update();
     }
 
     @FXML
@@ -714,13 +713,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionGoToEnd()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionGoToEnd()");
+        controller.setCurrentTime(controller.getDuration());
+        update();
     }
 
     @FXML
     private void onActionNextFrame()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionNextFrame()");
         controller.setCurrentTime(controller.getCurrentTime() + (1f / GodController.FPS));
         update();
     }
@@ -728,14 +727,14 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionPrevFrame()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionLastFrame()");
         controller.setCurrentTime(controller.getCurrentTime() - (1f / GodController.FPS));
         update();
     }
 
     @Override
-    public void wasLastUpdate()
+    public void lastUpdate()
     {
+        update();
         playPauseButton.setOnAction(this::onActionPlay);
         Platform.runLater(() ->
         {
