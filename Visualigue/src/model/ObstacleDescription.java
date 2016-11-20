@@ -9,9 +9,9 @@ package model;
  *
  * @author emile
  */
-public class StaticElementDescription extends ElementDescription
+public class ObstacleDescription extends ElementDescription
 {
-    public StaticElementDescription(String name, Vector2D size, String image)
+    public ObstacleDescription(String name, Vector2D size, String image)
     {
         super(name, size, image);
     }

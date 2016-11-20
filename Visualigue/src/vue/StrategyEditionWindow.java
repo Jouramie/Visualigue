@@ -10,7 +10,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -26,12 +25,9 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -39,7 +35,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.StringConverter;
 import model.Element;
 import model.Player;
 import model.PlayerDescription;
@@ -78,7 +73,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private Button ballButton;
     @FXML
-    private Button staticButton;
+    private Button obstacleButton;
     @FXML
     private Label xCoordinate;
     @FXML
@@ -623,7 +618,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.moveButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
-        this.staticButton.setStyle("-fx-background-color: inherit;");
+        this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.MOVE;
     }
 
@@ -634,7 +629,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.playerButton.setStyle("-fx-background-color: lightblue;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
-        this.staticButton.setStyle("-fx-background-color: inherit;");
+        this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_PLAYER;
     }
 
@@ -645,16 +640,16 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
-        this.staticButton.setStyle("-fx-background-color: inherit;");
+        this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_BALL;
     }
 
     @FXML
-    private void onActionStaticDescription()
+    private void onActionObstacleDescription()
     {
-        this.controller.selectElementDescription("Static");
+        this.controller.selectElementDescription("Obstacle");
         this.moveButton.setStyle("-fx-background-color: inherit;");
-        this.staticButton.setStyle("-fx-background-color: lightblue;");
+        this.obstacleButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_OBSTACLE;

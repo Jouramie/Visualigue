@@ -57,7 +57,7 @@
             <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onActionMoveTool" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
             <Button fx:id="playerButton" mnemonicParsing="false" onAction="#onActionPlayerDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Joueur" />
             <Button fx:id="ballButton" mnemonicParsing="false" onAction="#onActionBallDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Balle" />
-            <Button fx:id="staticButton" layoutX="10.0" layoutY="130.0" mnemonicParsing="false" onAction="#onActionStaticDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Obstacle" />
+            <Button fx:id="obstacleButton" layoutX="10.0" layoutY="130.0" mnemonicParsing="false" onAction="#onActionObstacleDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Obstacle" />
             <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom" />
          </children>
          <BorderPane.margin>

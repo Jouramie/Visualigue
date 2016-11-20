@@ -9,7 +9,7 @@ import model.ElementDescription;
 import model.Player;
 import model.PlayerDescription;
 import model.Sport;
-import model.StaticElementDescription;
+import model.ObstacleDescription;
 import model.Strategy;
 import model.Vector2D;
 
@@ -27,7 +27,7 @@ public class GodController
 
     private PlayerDescription playerDescription;
     private BallDescription ballDescription;
-    private StaticElementDescription staticDescription;
+    private ObstacleDescription obstacleDescription;
 
     private Updatable window;
 
@@ -45,15 +45,15 @@ public class GodController
         this.strategy = new Strategy("Test", sport);
         
         // Tests values
-        this.strategy.getSport().createObstacleDescription("static", new Vector2D(20, 20), "/res/cone.png");
-        this.strategy.getSport().createBallDescription("ball", new Vector2D(20, 20), "/res/test.png");
-        this.strategy.getSport().createPlayerDescription("player", new Vector2D(40, 40), "/res/player.png");
+        this.strategy.getSport().createObstacleDescription("Obstacle", new Vector2D(20, 20), "/res/cone.png");
+        this.strategy.getSport().createBallDescription("Ball", new Vector2D(20, 20), "/res/test.png");
+        this.strategy.getSport().createPlayerDescription("Player", new Vector2D(40, 40), "/res/player.png");
         this.strategy.getSport().createPlayerDescription("Hulk", new Vector2D(60, 60), "/res/player.png");
         
         //Should not need to do this
-        staticDescription = this.strategy.getSport().getObstacleDescription("static");
-        ballDescription = this.strategy.getSport().getBallDescription("ball");
-        playerDescription = this.strategy.getSport().getPlayerDescription("player");
+        obstacleDescription = this.strategy.getSport().getObstacleDescription("Obstacle");
+        ballDescription = this.strategy.getSport().getBallDescription("Ball");
+        playerDescription = this.strategy.getSport().getPlayerDescription("Player");
     }
 
     public void createStrategy(Sport sport, String name)
@@ -77,9 +77,9 @@ public class GodController
 
         if (currentElementDescription != null)
         {
-            if (currentElementDescription instanceof StaticElementDescription)
+            if (currentElementDescription instanceof ObstacleDescription)
             {
-                elem = this.strategy.createStaticElement((StaticElementDescription) currentElementDescription);
+                elem = this.strategy.createObstacle((ObstacleDescription) currentElementDescription);
             }
             else if (currentElementDescription instanceof BallDescription)
             {
@@ -112,6 +112,7 @@ public class GodController
 
     public void selectElementDescription(String name)
     {
+        //Should not be done this way
         if (name.equals("Player"))
         {
             this.currentElementDescription = playerDescription;
@@ -120,9 +121,9 @@ public class GodController
         {
             this.currentElementDescription = ballDescription;
         }
-        else if (name.equals("Static"))
+        else if (name.equals("Obstacle"))
         {
-            this.currentElementDescription = staticDescription;
+            this.currentElementDescription = obstacleDescription;
         }
     }
 
@@ -149,7 +150,7 @@ public class GodController
             return this.strategy.getAllElements();
         }
 
-        return new ArrayList<Element>();
+        return new ArrayList<>();
     }
 
     public void addSport(String name, String courtImage, double courtWidth, double courtHeight, int playerNumber)
@@ -209,7 +210,7 @@ public class GodController
         return strategy.getDuration();
     }
     
-    public List<StaticElementDescription> getAllObstacleDescriptions()
+    public List<ObstacleDescription> getAllObstacleDescriptions()
     {
         return this.strategy.getSport().getAllObstacleDescriptions();
     }

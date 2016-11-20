@@ -1,18 +1,18 @@
 package model;
 
-public class StaticElement extends Element
+public class Obstacle extends Element
 {
     private Vector2D position;
     private Vector2D orientation;
     
-    public StaticElement(ElementDescription description)
+    public Obstacle(ElementDescription description)
     {
         super(description);
         this.position = new Vector2D(0, 0);
         this.orientation = new Vector2D(0, 0);
     }
     
-    public StaticElement(Vector2D position, Vector2D orientation, ElementDescription description)
+    public Obstacle(Vector2D position, Vector2D orientation, ElementDescription description)
     {
         super(description);
         this.position = position;

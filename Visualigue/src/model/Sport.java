@@ -19,7 +19,7 @@ public class Sport
     private int maxPlayer;
     private String courtImage;
     private Vector2D courtSize;
-    private HashMap<String, StaticElementDescription> obstacleDescriptions;
+    private HashMap<String, ObstacleDescription> obstacleDescriptions;
     private HashMap<String, BallDescription> ballDescriptions;
     private HashMap<String, PlayerDescription> playerDescriptions;
     
@@ -76,7 +76,7 @@ public class Sport
     
     public void createObstacleDescription(String name, Vector2D size, String image)
     {
-        this.obstacleDescriptions.put(name, new StaticElementDescription(name, size, image));
+        this.obstacleDescriptions.put(name, new ObstacleDescription(name, size, image));
     }
     
     public void createBallDescription(String name, Vector2D size, String image)
@@ -89,11 +89,11 @@ public class Sport
         this.playerDescriptions.put(name, new PlayerDescription(name, size, image));
     }
     
-    public StaticElementDescription getObstacleDescription(String name)
+    public ObstacleDescription getObstacleDescription(String name)
     {
-        StaticElementDescription obstacleDescription = null;
+        ObstacleDescription obstacleDescription = null;
         
-        for(StaticElementDescription description : this.obstacleDescriptions.values())
+        for(ObstacleDescription description : this.obstacleDescriptions.values())
         {
             if(description.getName().equals(name))
             {
@@ -134,7 +134,7 @@ public class Sport
         return playerDescription;
     }
     
-    public List<StaticElementDescription> getAllObstacleDescriptions()
+    public List<ObstacleDescription> getAllObstacleDescriptions()
     {
         return new ArrayList<>(obstacleDescriptions.values());
     }
