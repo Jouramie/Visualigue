@@ -42,6 +42,7 @@ import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import model.Element;
 import model.Player;
+import model.PlayerDescription;
 import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
@@ -163,8 +164,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
         ice.setTranslateX(-1000 / 2);
         ice.setTranslateY(-400 / 2);
         scenePane.getChildren().add(ice);
-
-        role.getItems().add("Role Example");
+        
+        for(PlayerDescription description : controller.getAllPlayerDescriptions())
+        {
+            role.getItems().add(description.getName());
+        }
         team.getItems().add("Team Example");
 
         update();
@@ -251,11 +255,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 Player player = (Player) selectedUIElement.getElement();
                 nameLabel.setText("PlayerName");
                 elementNameCheckBox.setSelected(selectedUIElement.isElementNameVisible());
+                role.getSelectionModel().select(player.getElementDescription().getName());
             }
             else
             {
                 nameLabel.setText(selectedUIElement.getElement().getElementDescription().getName());
                 elementNameCheckBox.setSelected(false);
+                role.getSelectionModel().clearSelection();
             }
 
             role.setDisable(!elementIsPlayer);
@@ -269,7 +275,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         else
         {
             nameLabel.setText("Nom joueur / obstacle");
-
+            role.getSelectionModel().clearSelection();
             role.setDisable(true);
             team.setDisable(true);
             positionX.setDisable(true);
@@ -462,7 +468,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         if (selectedUIElement != null)
         {
-            System.out.println("role ChoiceBox");
+            controller.setSelectedPlayerRole((String)((ChoiceBox)e.getSource()).getValue());
+            selectedUIElement.refreshNode(controller.getCurrentTime());
         }
 
     }

@@ -6,6 +6,7 @@ import javafx.concurrent.Task;
 import model.BallDescription;
 import model.Element;
 import model.ElementDescription;
+import model.Player;
 import model.PlayerDescription;
 import model.Sport;
 import model.StaticElementDescription;
@@ -34,19 +35,25 @@ public class GodController
 
     public GodController()
     {
-        this.sports = new ArrayList<Sport>();
+        this.sports = new ArrayList<>();
         this.strategy = null;
         this.time = 0.0;
         this.currentElementDescription = null;
         this.selectedElement = null;
-
+        Sport sport = new Sport("Hockey", "hockey.png", 1000, 400, 5);
+        this.sports.add(sport);
+        this.strategy = new Strategy("Test", sport);
+        
         // Tests values
-        playerDescription = new PlayerDescription("player", new Vector2D(40, 40), "/res/player.png");
-        ballDescription = new BallDescription("ball", new Vector2D(20, 20), "/res/test.png");
-        staticDescription = new StaticElementDescription("static", new Vector2D(20, 20), "/res/cone.png");
-        this.strategy = new Strategy("Test", null);
-
-        this.sports.add(new Sport("Hockey", "hockey.png", 1000, 400, 5));
+        this.strategy.getSport().createObstacleDescription("static", new Vector2D(20, 20), "/res/cone.png");
+        this.strategy.getSport().createBallDescription("ball", new Vector2D(20, 20), "/res/test.png");
+        this.strategy.getSport().createPlayerDescription("player", new Vector2D(40, 40), "/res/player.png");
+        this.strategy.getSport().createPlayerDescription("Hulk", new Vector2D(60, 60), "/res/player.png");
+        
+        //Should not need to do this
+        staticDescription = this.strategy.getSport().getObstacleDescription("static");
+        ballDescription = this.strategy.getSport().getBallDescription("ball");
+        playerDescription = this.strategy.getSport().getPlayerDescription("player");
     }
 
     public void createStrategy(Sport sport, String name)
@@ -201,6 +208,42 @@ public class GodController
     {
         return strategy.getDuration();
     }
+    
+    public List<StaticElementDescription> getAllObstacleDescriptions()
+    {
+        return this.strategy.getSport().getAllObstacleDescriptions();
+    }
+    
+    public List<BallDescription> getAllBallDescriptions()
+    {
+        return this.strategy.getSport().getAllBallDescriptions();
+    }
+    
+    public List<PlayerDescription> getAllPlayerDescriptions()
+    {
+        return this.strategy.getSport().getAllPlayerDescriptions();
+    }
+    
+    public void setSelectedPlayerRole(String newElementDescription)
+    {   
+        if(selectedElement instanceof Player)
+        {
+            PlayerDescription description = null;
+            
+            for(PlayerDescription playerDesc : this.strategy.getSport().getAllPlayerDescriptions())
+            {
+                if(playerDesc.getName().equals(newElementDescription))
+                {
+                    description = playerDesc;
+                }
+            }
+            
+            if(description != null)
+            {
+                ((Player)selectedElement).setPlayerDescription(description);
+            }
+        }
+    }
 
     private class StrategyPlayer extends Task<Void>
     {
@@ -258,8 +301,7 @@ public class GodController
 
     public Vector2D getCourtDimensions()
     {
-        //TODO: Fix this...
-        return new Vector2D(1000, 400);
+        return this.strategy.getSport().getCourtSize();
     }
 
     public void setWindow(Updatable window)

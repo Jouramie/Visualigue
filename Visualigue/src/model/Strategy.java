@@ -104,4 +104,9 @@ public class Strategy
         
         return result;
     }
+    
+    public Sport getSport()
+    {
+        return this.sport;
+    }
 }

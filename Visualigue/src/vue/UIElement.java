@@ -55,6 +55,24 @@ public class UIElement
         move(element.getPosition(time).getX(), element.getPosition(time).getY());
     }
     
+    public void refreshNode(double time)
+    {
+        image.setImage(UIElement.getImage(element.getElementDescription().getImage()));
+        image.setFitWidth(element.getElementDescription().getSize().getX());
+        image.setFitHeight(element.getElementDescription().getSize().getY());
+        
+        orientation.setImage(UIElement.getImage("/res/orientation.png"));
+        orientation.setFitWidth(4*element.getElementDescription().getSize().getX());
+        orientation.setFitHeight(4*element.getElementDescription().getSize().getY());
+        orientation.setTranslateX(-1.5*element.getElementDescription().getSize().getX());
+        orientation.setTranslateY(-1.5*element.getElementDescription().getSize().getY());
+        
+        elementName.setTranslateY(element.getElementDescription().getSize().getY());
+        update(time);
+        
+        setElementName(elementName.getText());
+    }
+    
     public void update(double time)
     {
         move(element.getPosition(time).getX(), element.getPosition(time).getY());
