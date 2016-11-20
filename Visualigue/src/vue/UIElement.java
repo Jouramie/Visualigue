@@ -29,16 +29,8 @@ public class UIElement
         rotating = false;
         
         image = new ImageView();
-        image.setImage(UIElement.getImage(element.getElementDescription().getImage()));
-        image.setFitWidth(element.getElementDescription().getSize().getX());
-        image.setFitHeight(element.getElementDescription().getSize().getY());
         
         orientation = new ImageView();
-        orientation.setImage(UIElement.getImage("/res/orientation.png"));
-        orientation.setFitWidth(4*element.getElementDescription().getSize().getX());
-        orientation.setFitHeight(4*element.getElementDescription().getSize().getY());
-        orientation.setTranslateX(-1.5*element.getElementDescription().getSize().getX());
-        orientation.setTranslateY(-1.5*element.getElementDescription().getSize().getY());
         orientation.setVisible(false);
         
         node = new Group();
@@ -46,13 +38,12 @@ public class UIElement
         node.getChildren().add(orientation);
         
         elementName = new Label();
-        elementName.setTranslateY(element.getElementDescription().getSize().getY());
         
         group = new Group();
         group.getChildren().add(elementName);
         group.getChildren().add(node);
         
-        move(element.getPosition(time).getX(), element.getPosition(time).getY());
+        refreshNode(time);
     }
     
     public void refreshNode(double time)
