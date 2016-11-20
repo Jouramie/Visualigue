@@ -46,7 +46,7 @@ public class GodController
         staticDescription = new StaticElementDescription("static", new Vector2D(20, 20), "/res/cone.png");
         this.strategy = new Strategy("Test", null);
 
-        this.sports.add(new Sport("Hockey", "hockey.png", 400, 1000, 5));
+        this.sports.add(new Sport("Hockey", "hockey.png", 1000, 400, 5));
     }
 
     public void createStrategy(Sport sport, String name)
@@ -145,13 +145,13 @@ public class GodController
         return new ArrayList<Element>();
     }
 
-    public void addSport(String name, String courtImage, double courtHeight, double courtWidth, int playerNumber)
+    public void addSport(String name, String courtImage, double courtWidth, double courtHeight, int playerNumber)
     {
-        Sport sport = new Sport(name, courtImage, courtHeight, courtWidth, playerNumber);
+        Sport sport = new Sport(name, courtImage, courtWidth, courtHeight, playerNumber);
         sports.add(sport);
     }
 
-    public void saveSport(String oldName, String newName, String courtImage, double courtHeight, double courtWidth, int playerNumber)
+    public void saveSport(String oldName, String newName, String courtImage, double courtWidth, double courtHeight, int playerNumber)
     {
         for (Sport sport : sports)
         {
@@ -159,7 +159,7 @@ public class GodController
             {
                 sport.setName(newName);
                 sport.setCourtImage(courtImage);
-                sport.setCourtSize(new Vector2D(courtHeight, courtWidth));
+                sport.setCourtSize(new Vector2D(courtWidth, courtHeight));
                 sport.setMaxPlayer(playerNumber);
             }
         }

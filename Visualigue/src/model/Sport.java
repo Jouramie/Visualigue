@@ -16,7 +16,7 @@ public class Sport
     private String courtImage;
     private Vector2D courtSize;
     
-    public Sport(String name, String courtImage, double courtHeight, double courtWidth, int maxPLayer)
+    public Sport(String name, String courtImage, double courtWidth, double courtHeight, int maxPLayer)
     {
         this.name = name;
         this.courtImage = courtImage;
