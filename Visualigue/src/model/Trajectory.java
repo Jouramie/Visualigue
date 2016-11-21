@@ -17,6 +17,11 @@ public class Trajectory
 
     public void setPosition(double time, double interpolation, Vector2D position)
     {
+        if (positions.isEmpty()){
+            positions.put(0d, position);
+            positions.put(time, position);
+            return;
+        }
         double beginTime = Math.max(0, time - interpolation);
         double endTime = Math.min(0, time - interpolation);
 
@@ -32,6 +37,11 @@ public class Trajectory
 
     public void setOrientation(double time, double interpolation, Vector2D orientation)
     {
+        if (orientations.isEmpty()){
+            orientations.put(0d, orientation);
+            orientations.put(time, orientation);
+            return;
+        }
         double beginTime = Math.max(0, time - interpolation);
         double endTime = Math.min(0, time - interpolation);
 
@@ -72,8 +82,12 @@ public class Trajectory
         Vector2D result = floorEntry.getValue().clone();
         double delta = (time - floorEntry.getKey()) / (ceilingEntry.getKey() - floorEntry.getKey());
         Vector2D diff = ceilingEntry.getValue().substract(floorEntry.getValue());
-        diff.multiply(delta);
-        result.add(diff);
+        if (diff.equals(new Vector2D()))
+        {
+            return result;
+        }
+        diff = diff.multiply(delta);
+        result = result.add(diff);
         return result;
     }
 
@@ -105,8 +119,12 @@ public class Trajectory
         Vector2D result = floorEntry.getValue().clone();
         double delta = (time - floorEntry.getKey()) / (ceilingEntry.getKey() - floorEntry.getKey());
         Vector2D diff = ceilingEntry.getValue().substract(floorEntry.getValue());
-        diff.multiply(delta);
-        result.add(diff);
+        if (diff.equals(new Vector2D()))
+        {
+            return result;
+        }
+        diff = diff.multiply(delta);
+        result = result.add(diff);
         return result;
     }
 

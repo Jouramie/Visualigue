@@ -57,7 +57,7 @@
             <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onActionMoveTool" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
             <Button fx:id="playerButton" mnemonicParsing="false" onAction="#onActionPlayerDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Joueur" />
             <Button fx:id="ballButton" mnemonicParsing="false" onAction="#onActionBallDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Balle" />
-            <Button fx:id="staticButton" layoutX="10.0" layoutY="130.0" mnemonicParsing="false" onAction="#onActionStaticDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Obstacle" />
+            <Button fx:id="obstacleButton" layoutX="10.0" layoutY="130.0" mnemonicParsing="false" onAction="#onActionObstacleDescription" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Obstacle" />
             <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom" />
          </children>
          <BorderPane.margin>
@@ -66,9 +66,9 @@
       </VBox>
    </left>
    <right>
-      <VBox styleClass="background" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" spacing="10.0" styleClass="background" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Nom joueur / obstacle">
+            <Label fx:id="nameLabel" text="Nom joueur / obstacle">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin></Label>
@@ -92,7 +92,7 @@
             </HBox>
             <HBox>
                <children>
-                  <Label prefHeight="17.0" prefWidth="70.0" text="Position X: " />
+                  <Label text="Position X: " />
                   <TextField fx:id="positionX" prefWidth="80.0" />
                </children>
                <VBox.margin>
@@ -101,7 +101,7 @@
             </HBox>
             <HBox>
                <children>
-                  <Label prefWidth="70.0" text="Position Y: " />
+                  <Label text="Position Y: " />
                   <TextField fx:id="positionY" prefWidth="80.0" />
                </children>
                <VBox.margin>
@@ -110,10 +110,12 @@
             </HBox>
             <HBox>
                <children>
-                  <Label prefWidth="70.0" text="Orientation: " />
-                  <TextField fx:id="orientation" prefHeight="25.0" prefWidth="80.0" />
+                  <Label text="Orientation: " />
+                  <TextField fx:id="orientation" prefWidth="80.0" />
                </children>
             </HBox>
+            <CheckBox fx:id="elementNameCheckBox" mnemonicParsing="false" onAction="#onActionElementNameVisible" text="Étiquette visible" />
+            <Button fx:id="deleteButton" alignment="CENTER" mnemonicParsing="false" onAction="#onActionDelete" text="Supprimer" />
          </children>
          <BorderPane.margin>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -132,11 +134,11 @@
                   <Button mnemonicParsing="false" onAction="#onActionRestart" styleClass="btnTimeLine" text="⏮" />
                   <Button mnemonicParsing="false" onAction="#onActionRewind" styleClass="btnTimeLine" text="⏪" />
                   <Button mnemonicParsing="false" onAction="#onActionPrevFrame" styleClass="btnTimeLine" text="⮜" />
-                  <Button mnemonicParsing="false" onAction="#onActionPlay" styleClass="btnTimeLine" text="▶" />
+                  <Button fx:id="playPauseButton" mnemonicParsing="false" onAction="#onActionPlay" styleClass="btnTimeLine" text="▶" />
                   <Button mnemonicParsing="false" onAction="#onActionNextFrame" styleClass="btnTimeLine" text="⮞" />
                   <Button mnemonicParsing="false" onAction="#onActionFastForward" styleClass="btnTimeLine" text="⏩" />
                   <Button mnemonicParsing="false" onAction="#onActionGoToEnd" styleClass="btnTimeLine" text="⏭" />
-                  <TextField fx:id="speed" prefHeight="25.0" prefWidth="29.0" text="X2" />
+                  <TextField fx:id="speed" alignment="CENTER" prefHeight="25.0" prefWidth="29.0" text="2" />
                </children>
             </HBox>
             <Slider fx:id="timeLine" styleClass="sliderTimeLine">

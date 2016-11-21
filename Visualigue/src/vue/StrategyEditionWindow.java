@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -18,11 +20,14 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -31,10 +36,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Element;
+import model.Player;
+import model.PlayerDescription;
 import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
 {
+
+    private static final char PAUSE_ICON = '⏸';
+    private static final char PLAY_ICON = '⏵';
 
     private enum Toolbox
     {
@@ -47,9 +57,15 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private List<UIElement> uiElements;
     private UIElement selectedUIElement;
     private Toolbox selectedTool;
+    private boolean draggingElement;
+    private boolean userChange;
 
     @FXML
     private Pane scenePane;
+    @FXML
+    private CheckBox elementNameCheckBox;
+    @FXML
+    private Button deleteButton;
     @FXML
     private Button moveButton;
     @FXML
@@ -57,7 +73,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private Button ballButton;
     @FXML
-    private Button staticButton;
+    private Button obstacleButton;
     @FXML
     private Label xCoordinate;
     @FXML
@@ -74,12 +90,19 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private TextField positionY;
     @FXML
     private TextField orientation;
-    
+    @FXML
+    private TextField speed;
+    @FXML
+    private Button playPauseButton;
+    @FXML
+    private Label nameLabel;
+
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
         this.selectedTool = Toolbox.MOVE;
         this.controller = controller;
         this.uiElements = new ArrayList();
+        this.draggingElement = false;
 
         try
         {
@@ -116,13 +139,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
         positionX.setOnAction(this::onActionPositionX);
         positionY.setOnAction(this::onActionPositionY);
         orientation.setOnAction(this::onActionOrientation);
-        
-        timeLine.setMinorTickCount(4);
-        
+
         Rectangle clipRect = new Rectangle(scenePane.getWidth(), scenePane.getHeight());
         clipRect.heightProperty().bind(scenePane.heightProperty());
         clipRect.widthProperty().bind(scenePane.widthProperty());
         scenePane.setClip(clipRect);
+
+        userChange = true;
+        timeLine.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
+        {
+            onSliderValueChange();
+        });
 
         ImageView ice = new ImageView("/res/hockey.png");
         ice.setX(500);
@@ -133,7 +160,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
         ice.setTranslateY(-400 / 2);
         scenePane.getChildren().add(ice);
         
-        role.getItems().add("Role Example");
+        for(PlayerDescription description : controller.getAllPlayerDescriptions())
+        {
+            role.getItems().add(description.getName());
+        }
         team.getItems().add("Team Example");
 
         update();
@@ -142,8 +172,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @Override
     public void update()
     {
-        System.out.println("vue.StrategyEditionWindow.update()");
         double t = controller.getCurrentTime();
+        userChange = false;
         timeLine.setValue(t * GodController.FPS);
         timeLine.setMax((controller.getDuration() * GodController.FPS) + 10);
 
@@ -166,50 +196,104 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
             if (!found)
             {
-                UIElement newUIElement = new UIElement(elem);
+                UIElement newUIElement = new UIElement(elem, controller.getCurrentTime());
                 uiElements.add(newUIElement);
-                scenePane.getChildren().add(newUIElement.getNode());
+                scenePane.getChildren().add(newUIElement.getGroup());
                 newUIElement.getNode().setOnMousePressed(this::onMouseClickedElement);
+                newUIElement.getNode().setOnKeyPressed(this::onKeyPressedElement);
                 newUIElement.getElementImage().setOnMouseDragged(this::onMouseDraggedElement);
                 newUIElement.getElementImage().setOnMouseReleased(this::onMouseReleasedElement);
                 newUIElement.getNode().setOnMouseEntered(this::onMouseEnteredElement);
                 newUIElement.getElementOrientationArrow().setOnMouseExited(this::onMouseExitedElement);
                 newUIElement.getElementOrientationArrow().setOnMouseDragged(this::onMouseRotatingElement);
                 newUIElement.getElementOrientationArrow().setOnMouseReleased(this::onMouseReleasedRotatingElement);
+
+                if (elem instanceof Player)
+                {
+                    Player player = (Player) elem;
+                    newUIElement.setElementName("PlayerName");
+                }
             }
         }
 
         for (UIElement uiElem : elemToDelete)
         {
             uiElements.remove(uiElem);
+            scenePane.getChildren().remove(uiElem.getGroup());
         }
-        
-        //Update the text of the pane on the right
-        if(selectedUIElement != null)
+
+        if (selectedUIElement != null)
         {
-            Element elem = selectedUIElement.getElement();
-            //set role here
-            //set team here
-            positionX.setText("" + elem.getPosition(controller.getCurrentTime()).getX());
-            positionY.setText("" + elem.getPosition(controller.getCurrentTime()).getY());
-            orientation.setText("" + Math.toDegrees(elem.getOrientation(controller.getCurrentTime()).getAngle()));
+            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
+        }
+        else
+        {
+            updateRightPane(0, 0, 0);
         }
     }
-    
+
+    private void updateRightPane(double x, double y, double ori)
+    {
+        //set role here
+        //set team here
+        positionX.setText("" + x);
+        positionY.setText("" + y);
+        orientation.setText("" + ori);
+
+        if (selectedUIElement != null)
+        {
+            boolean elementIsPlayer = selectedUIElement.getElement() instanceof Player;
+
+            if (elementIsPlayer)
+            {
+                Player player = (Player) selectedUIElement.getElement();
+                nameLabel.setText("PlayerName");
+                elementNameCheckBox.setSelected(selectedUIElement.isElementNameVisible());
+                role.getSelectionModel().select(player.getElementDescription().getName());
+            }
+            else
+            {
+                nameLabel.setText(selectedUIElement.getElement().getElementDescription().getName());
+                elementNameCheckBox.setSelected(false);
+                role.getSelectionModel().clearSelection();
+            }
+
+            role.setDisable(!elementIsPlayer);
+            team.setDisable(!elementIsPlayer);
+            positionX.setDisable(false);
+            positionY.setDisable(false);
+            orientation.setDisable(false);
+            elementNameCheckBox.setDisable(!elementIsPlayer);
+            deleteButton.setDisable(false);
+        }
+        else
+        {
+            nameLabel.setText("Nom joueur / obstacle");
+            role.getSelectionModel().clearSelection();
+            role.setDisable(true);
+            team.setDisable(true);
+            positionX.setDisable(true);
+            positionY.setDisable(true);
+            orientation.setDisable(true);
+            elementNameCheckBox.setSelected(false);
+            elementNameCheckBox.setDisable(true);
+            deleteButton.setDisable(true);
+        }
+    }
+
     @Override
     public void updateOnRecord()
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     private void onMouseMoved(MouseEvent e)
     {
         Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
         xCoordinate.setText("" + point.getX());
         yCoordinate.setText("" + point.getY());
     }
-    
-    
 
     private void onMouseExited(MouseEvent e)
     {
@@ -235,7 +319,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onMouseClickedElement(MouseEvent e)
     {
-        if(selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE)
         {
             Node node = (Node) e.getSource();
 
@@ -245,7 +329,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 {
                     selectedUIElement = uiElement;
                     controller.selectElement(uiElement.getElement());
-
+                    uiElement.getNode().requestFocus();
                     uiElement.glow();
                 }
                 else
@@ -254,6 +338,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 }
             }
 
+            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
+        }
+    }
+
+    private void onKeyPressedElement(KeyEvent e)
+    {
+        if (e.getCode() == KeyCode.DELETE)
+        {
+            controller.deleteCurrentElement();
+            selectedUIElement = null;
             update();
         }
     }
@@ -264,31 +359,48 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             if (selectedUIElement != null)
             {
+                draggingElement = true;
+
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-                selectedUIElement.move(point.getX(), point.getY());
+                Vector2D dimensions = controller.getCourtDimensions();
+
+                double x = selectedUIElement.getPosition().getX();
+                double y = selectedUIElement.getPosition().getY();
+                Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
+
+                if (point.getX() - elementDimensions.getX() / 2 >= 0 && point.getX() + elementDimensions.getX() / 2 <= dimensions.getX())
+                {
+                    x = point.getX();
+                }
+                if (point.getY() - elementDimensions.getY() / 2 >= 0 && point.getY() + elementDimensions.getY() / 2 <= dimensions.getY())
+                {
+                    y = point.getY();
+                }
+
+                selectedUIElement.move(x, y);
+                updateRightPane(point.getX(), point.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
             }
         }
     }
 
     private void onMouseReleasedElement(MouseEvent e)
     {
-        if (selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE && draggingElement)
         {
             if (selectedUIElement != null)
             {
-                Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-                controller.setCurrentElemPosition(new Vector2D(point.getX(), point.getY()));
+                draggingElement = false;
+                controller.setCurrentElemPosition(selectedUIElement.getPosition());
+                update();
             }
-            
-            update();
         }
     }
-    
+
     private void onMouseEnteredElement(MouseEvent e)
     {
-        if(selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE)
         {
-            Node node = (Node)e.getSource();
+            Node node = (Node) e.getSource();
 
             for (UIElement uiElem : uiElements)
             {
@@ -299,12 +411,12 @@ public class StrategyEditionWindow implements Initializable, Updatable
             }
         }
     }
-    
+
     private void onMouseExitedElement(MouseEvent e)
     {
-        if(selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE)
         {
-            Node node = (Node)e.getSource();
+            Node node = (Node) e.getSource();
 
             for (UIElement uiElem : uiElements)
             {
@@ -315,10 +427,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
             }
         }
     }
-    
+
     private void onMouseRotatingElement(MouseEvent e)
     {
-        if(selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE)
         {
             selectedUIElement.setRotating(true);
             Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
@@ -326,12 +438,15 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
             Vector2D result = mousePosition.substract(elementPosition);
             selectedUIElement.getNode().setRotate(Math.toDegrees(result.getAngle()));
+
+            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(result.getAngle()));
         }
     }
-    
+
     private void onMouseReleasedRotatingElement(MouseEvent e)
     {
-        if(selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE)
         {
             selectedUIElement.setRotating(false);
             selectedUIElement.hideOrientationArrow();
@@ -343,61 +458,104 @@ public class StrategyEditionWindow implements Initializable, Updatable
             update();
         }
     }
-    
+
     private void onActionRole(Event e)
     {
-        if(selectedUIElement != null)
+        if (selectedUIElement != null)
         {
-            System.out.println("role ChoiceBox");
+            controller.setSelectedPlayerRole((String)((ChoiceBox)e.getSource()).getValue());
+            selectedUIElement.refreshNode(controller.getCurrentTime());
         }
-        
+
     }
-    
+
     private void onActionTeam(Event e)
     {
-        if(selectedUIElement != null)
+        if (selectedUIElement != null)
         {
             System.out.println("team ChoiceBox");
         }
     }
-    
+
     private void onActionPositionX(ActionEvent e)
     {
-        if(selectedUIElement != null)
+        if (selectedUIElement != null)
         {
             try
             {
-                double x = Double.parseDouble(positionX.getText());
+                double newX = Double.parseDouble(positionX.getText());
+
+                double x;
                 double y = selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY();
+
+                Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
+                Vector2D dimensions = controller.getCourtDimensions();
+
+                if (newX - elementDimensions.getX() / 2 >= 0)
+                {
+                    if (newX + elementDimensions.getX() / 2 <= dimensions.getX())
+                    {
+                        x = newX;
+                    }
+                    else
+                    {
+                        x = dimensions.getX() - elementDimensions.getX() / 2;
+                    }
+                }
+                else
+                {
+                    x = elementDimensions.getX() / 2;
+                }
+
                 controller.setCurrentElemPosition(new Vector2D(x, y));
                 update();
-            }
-            catch(Exception exception)
+            } catch (Exception exception)
             {
             }
         }
     }
-    
+
     private void onActionPositionY(ActionEvent e)
     {
-        if(selectedUIElement != null)
+        if (selectedUIElement != null)
         {
             try
             {
+                double newY = Double.parseDouble(positionY.getText());
+
                 double x = selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX();
-                double y = Double.parseDouble(positionY.getText());
+                double y;
+
+                Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
+                Vector2D dimensions = controller.getCourtDimensions();
+
+                if (newY - elementDimensions.getY() / 2 >= 0)
+                {
+                    if (newY + elementDimensions.getY() / 2 <= dimensions.getY())
+                    {
+                        y = newY;
+                    }
+                    else
+                    {
+                        y = dimensions.getY() - elementDimensions.getY() / 2;
+                    }
+                }
+                else
+                {
+                    y = elementDimensions.getY() / 2;
+                }
+
                 controller.setCurrentElemPosition(new Vector2D(x, y));
                 update();
-            }
-            catch(Exception exception)
+            } catch (Exception exception)
             {
             }
         }
     }
-    
+
     private void onActionOrientation(ActionEvent e)
     {
-        if(selectedUIElement != null)
+        if (selectedUIElement != null)
         {
             try
             {
@@ -406,10 +564,29 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 ori.setAngle(Math.toRadians(angle));
                 controller.setCurrentElemOrientation(ori);
                 update();
-            }
-            catch(Exception exception)
+            } catch (Exception exception)
             {
             }
+        }
+    }
+
+    @FXML
+    private void onActionElementNameVisible(ActionEvent e)
+    {
+        if (selectedUIElement != null)
+        {
+            selectedUIElement.setElementNameVisible(elementNameCheckBox.isSelected());
+        }
+    }
+
+    @FXML
+    private void onActionDelete(ActionEvent e)
+    {
+        if (selectedUIElement != null)
+        {
+            controller.deleteCurrentElement();
+            selectedUIElement = null;
+            update();
         }
     }
 
@@ -441,7 +618,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.moveButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
-        this.staticButton.setStyle("-fx-background-color: inherit;");
+        this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.MOVE;
     }
 
@@ -452,7 +629,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.playerButton.setStyle("-fx-background-color: lightblue;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
-        this.staticButton.setStyle("-fx-background-color: inherit;");
+        this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_PLAYER;
     }
 
@@ -463,27 +640,36 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
-        this.staticButton.setStyle("-fx-background-color: inherit;");
+        this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_BALL;
     }
 
     @FXML
-    private void onActionStaticDescription()
+    private void onActionObstacleDescription()
     {
-        this.controller.selectElementDescription("Static");
+        this.controller.selectElementDescription("Obstacle");
         this.moveButton.setStyle("-fx-background-color: inherit;");
-        this.staticButton.setStyle("-fx-background-color: lightblue;");
+        this.obstacleButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_OBSTACLE;
     }
 
     @FXML
-    private void onActionPlay()
+    private void onActionPlay(ActionEvent e)
     {
         System.out.println("vue.StrategyEditionWindow.onActionPlay()");
         controller.playStrategy();
-        
+        playPauseButton.setOnAction(this::onActionPause);
+        playPauseButton.setText("" + PAUSE_ICON);
+    }
+
+    private void onActionPause(ActionEvent e)
+    {
+        System.out.println("vue.StrategyEditionWindow.onActionPause()");
+        controller.pauseStrategy();
+        playPauseButton.setOnAction(this::onActionPlay);
+        playPauseButton.setText("" + PLAY_ICON);
     }
 
     @FXML
@@ -495,7 +681,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionRestart()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionRestart()");
+        controller.setCurrentTime(0);
+        update();
     }
 
     @FXML
@@ -513,22 +700,45 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionGoToEnd()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionGoToEnd()");
-    }    
+        controller.setCurrentTime(controller.getDuration());
+        update();
+    }
 
     @FXML
     private void onActionNextFrame()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionNextFrame()");
-        controller.setCurrentTime(controller.getCurrentTime() + (1f / controller.FPS));
+        controller.setCurrentTime(controller.getCurrentTime() + (1f / GodController.FPS));
         update();
     }
 
     @FXML
     private void onActionPrevFrame()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionLastFrame()");
-        controller.setCurrentTime(controller.getCurrentTime() - (1f / controller.FPS));
+        controller.setCurrentTime(controller.getCurrentTime() - (1f / GodController.FPS));
         update();
+    }
+
+    @Override
+    public void lastUpdate()
+    {
+        update();
+        playPauseButton.setOnAction(this::onActionPlay);
+        Platform.runLater(() ->
+        {
+            playPauseButton.setText("" + PLAY_ICON);
+        });
+    }
+
+    public void onSliderValueChange()
+    {
+        if (userChange)
+        {
+            controller.setCurrentTime(timeLine.getValue() / controller.FPS);
+            update();
+        }
+        else
+        {
+            userChange = true;
+        }
     }
 }

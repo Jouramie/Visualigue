@@ -11,7 +11,7 @@ package model;
  */
 public class PlayerDescription extends ElementDescription
 {
-    public PlayerDescription(String name, Vector2D size, String image)
+    public PlayerDescription(String name, Vector2D size, String image) throws ValidationException
     {
         super(name, size, image);
     }

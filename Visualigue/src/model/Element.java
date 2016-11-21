@@ -37,6 +37,6 @@ public abstract class Element
     
     protected void setElementDescription(ElementDescription description)
     {
-        
+        this.description = description;
     }
 }

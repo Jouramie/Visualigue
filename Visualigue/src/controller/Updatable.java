@@ -13,4 +13,5 @@ public interface Updatable
 {
     public void update();
     public void updateOnRecord();
+    public void lastUpdate();
 }

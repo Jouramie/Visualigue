@@ -10,7 +10,9 @@ import javafx.concurrent.Task;
 import model.BallDescription;
 import model.Element;
 import model.ElementDescription;
+import static model.ElementDescription.TypeDescription.Player;
 import model.ObstacleDescription;
+import model.Player;
 import model.PlayerDescription;
 import model.Sport;
 import model.Strategy;
@@ -21,6 +23,7 @@ public class GodController
 {
 
     public static final double FPS = 2;
+    public static final double FPS_PLAY = 10;
 
     private Map<String, Sport> sports;
     private Strategy strategy;
@@ -33,7 +36,7 @@ public class GodController
     private ObstacleDescription obstacleDescription;
 
     private Updatable window;
-    
+
     private StrategyPlayer sp;
 
     public GodController()
@@ -43,16 +46,16 @@ public class GodController
         this.time = 0.0;
         this.currentElementDescription = null;
         this.selectedElement = null;
-
-        // Tests values
-        playerDescription = new PlayerDescription("player", new Vector2D(40, 40), "/res/player.png");
-        ballDescription = new BallDescription("ball", new Vector2D(20, 20), "/res/test.png");
-        obstacleDescription = new ObstacleDescription("obstacle", new Vector2D(20, 20), "/res/cone.png");
-        this.strategy = new Strategy("Test", null);
-
+        
         try 
         {
-            saveSport(null, "Hockey", "hockey.png", 400, 1000, 5, 2);
+            Sport sport = saveSport(null, "Hockey", "hockey.png", 400, 1000, 5, 2);       
+            this.strategy = new Strategy("Test", sport);
+
+            // Tests values
+            playerDescription = new PlayerDescription("player", new Vector2D(40, 40), "/res/player.png");
+            ballDescription = new BallDescription("ball", new Vector2D(20, 20), "/res/test.png");
+            obstacleDescription = new ObstacleDescription("obstacle", new Vector2D(20, 20), "/res/cone.png");
         }
         catch (ValidationException ex)
         {
@@ -95,9 +98,18 @@ public class GodController
             }
 
             elem.setPosition(time, pos, 0.0);
-            elem.setOrientation(time, new Vector2D(), 0.0);
+            elem.setOrientation(time, new Vector2D(1, 0), 0.0);
         }
         return elem;
+    }
+
+    public void deleteCurrentElement()
+    {
+        if (selectedElement != null)
+        {
+            strategy.deleteElement(selectedElement);
+            selectedElement = null;
+        }
     }
 
     public void selectElement(Element elem)
@@ -107,13 +119,16 @@ public class GodController
 
     public void selectElementDescription(String name)
     {
+        //Should not be done this way
         if (name.equals("Player"))
         {
             this.currentElementDescription = playerDescription;
-        } else if (name.equals("Ball"))
+        }
+        else if (name.equals("Ball"))
         {
             this.currentElementDescription = ballDescription;
-        } else if (name.equals("Static"))
+        }
+        else if (name.equals("Obstacle"))
         {
             this.currentElementDescription = obstacleDescription;
         }
@@ -142,10 +157,10 @@ public class GodController
             return this.strategy.getAllElements();
         }
 
-        return new ArrayList<Element>();
+        return new ArrayList<>();
     }
 
-    public void saveSport(String oldName, String newName, String courtImage, double courtHeight, double courtWidth, int playerNumber, int numTeams) throws ValidationException
+    public Sport saveSport(String oldName, String newName, String courtImage, double courtHeight, double courtWidth, int playerNumber, int numTeams) throws ValidationException
     {
         Sport sport = null;
         if(oldName != null)
@@ -167,6 +182,8 @@ public class GodController
             sport = new Sport(newName, courtImage, courtHeight, courtWidth, playerNumber, numTeams);
             sports.put(newName, sport);
         }
+        
+        return sport;
     }
     
     public Sport getSport(String name)
@@ -370,7 +387,8 @@ public class GodController
         if (time >= 0)
         {
             this.time = time;
-        } else
+        }
+        else
         {
             this.time = 0;
         }
@@ -390,41 +408,131 @@ public class GodController
     {
         return strategy.getDuration();
     }
+    
+    public List<ObstacleDescription> getAllObstacleDescriptions()
+    {
+        return this.strategy.getSport().getAllObstacleDescriptions();
+    }
+    
+    public List<BallDescription> getAllBallDescriptions()
+    {
+        return this.strategy.getSport().getAllBallDescriptions();
+    }
+    
+    public List<PlayerDescription> getAllPlayerDescriptions()
+    {
+        return this.strategy.getSport().getAllPlayerDescriptions();
+    }
+    
+    public void setSelectedPlayerRole(String newElementDescription)
+    {   
+        if(selectedElement instanceof Player)
+        {
+            PlayerDescription description = null;
+            
+            for(PlayerDescription playerDesc : this.strategy.getSport().getAllPlayerDescriptions())
+            {
+                if(playerDesc.getName().equals(newElementDescription))
+                {
+                    description = playerDesc;
+                }
+            }
+            
+            if(description != null)
+            {
+                ((Player)selectedElement).setPlayerDescription(description);
+            }
+        }
+    }
 
     private class StrategyPlayer extends Task<Void>
     {
 
-        private long start;
+        private boolean playing;
+        private double speed;
+        
+        public StrategyPlayer(){
+            speed = 1;
+        }
+        
+        public StrategyPlayer(double speed){
+            this.speed = speed;
+        }
 
         @Override
         protected Void call() throws Exception
         {
-            start = System.currentTimeMillis();
-            long currentTime;
+            playing = true;
+            long previousTimeMillis = System.currentTimeMillis();
 
-            do
+            while (time < strategy.getDuration())
             {
-                currentTime = System.currentTimeMillis();
-                time = (double)(currentTime - start) / 1000;
-                window.update();
-                Thread.sleep((long)(1000 / FPS));
-            } while (time <= strategy.getDuration());
 
-            time = ((int)(time*FPS))/FPS;
+                previousTimeMillis = System.currentTimeMillis();
+                Thread.sleep((long) (1000 / FPS_PLAY));
+                time += (double) (System.currentTimeMillis() - previousTimeMillis) / 1000 * speed;
+                if(time > strategy.getDuration()){
+                    time = strategy.getDuration();
+                }
+                window.update();
+                if (!playing)
+                {
+                    break;
+                }
+            }
+
+            // Arrondissement
+            time = ((int) (time * FPS_PLAY)) / FPS_PLAY;
+            sp = null;
+            window.lastUpdate();
             return null;
         }
+
+        public void play()
+        {
+            playing = true;
+        }
+
+        public void pause()
+        {
+            playing = false;
+        }
+    }
+
+    public Vector2D getCourtDimensions()
+    {
+        return this.strategy.getSport().getCourtSize();
     }
 
     public void setWindow(Updatable window)
     {
         this.window = window;
     }
-    
+
     public void playStrategy()
     {
-        sp = new StrategyPlayer();
-        Thread th = new Thread(sp);
-        th.setDaemon(true);
-        th.start();
+        if (sp == null)
+        {
+            sp = new StrategyPlayer();
+            Thread th = new Thread(sp);
+            th.setDaemon(true);
+            th.start();
+        }
+        else
+        {
+            sp.play();
+        }
+    }
+
+    public void pauseStrategy()
+    {
+        if (sp == null)
+        {
+            throw new IllegalStateException("Something went wrong...");
+        }
+        else
+        {
+            sp.pause();
+        }
     }
 }

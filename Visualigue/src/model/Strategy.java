@@ -14,7 +14,7 @@ public class Strategy
     {
         this.name = name;
         this.sport = sport;
-        this.elements = new ArrayList<Element>();
+        this.elements = new ArrayList<>();
         this.nbPlayer = 0;
     }
     
@@ -103,5 +103,10 @@ public class Strategy
         }
         
         return result;
+    }
+    
+    public Sport getSport()
+    {
+        return this.sport;
     }
 }

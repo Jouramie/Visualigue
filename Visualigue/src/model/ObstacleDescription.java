@@ -11,7 +11,7 @@ package model;
  */
 public class ObstacleDescription extends ElementDescription
 {
-    public ObstacleDescription(String name, Vector2D size, String image)
+    public ObstacleDescription(String name, Vector2D size, String image) throws ValidationException
     {
         super(name, size, image);
     }
