@@ -18,9 +18,9 @@ public class Strategy
         this.nbPlayer = 0;
     }
     
-    public StaticElement createStaticElement(StaticElementDescription desc)
+    public ObstacleElement createObstacle(ObstacleDescription desc)
     {
-        StaticElement elem = new StaticElement(desc);
+        ObstacleElement elem = new ObstacleElement(desc);
         elements.add(elem);
         return elem;
     }

@@ -15,4 +15,10 @@ public class PlayerDescription extends ElementDescription
     {
         super(name, size, image);
     }
+    
+    @Override
+    public TypeDescription getType()
+    {
+        return TypeDescription.Player;
+    }
 }

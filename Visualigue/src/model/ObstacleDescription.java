@@ -15,4 +15,10 @@ public class ObstacleDescription extends ElementDescription
     {
         super(name, size, image);
     }
+    
+    @Override
+    public TypeDescription getType()
+    {
+        return TypeDescription.Obstacle;
+    }
 }

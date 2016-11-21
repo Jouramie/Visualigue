@@ -101,7 +101,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
 
-        StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
+        SportEditionDialog sportEdition = new SportEditionDialog(controller, dialog);
     }
 
     @Override
