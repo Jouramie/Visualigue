@@ -10,7 +10,6 @@ import javafx.concurrent.Task;
 import model.BallDescription;
 import model.Element;
 import model.ElementDescription;
-import static model.ElementDescription.TypeDescription.Player;
 import model.ObstacleDescription;
 import model.Player;
 import model.PlayerDescription;
@@ -26,6 +25,7 @@ public class GodController
     public static final double FPS_PLAY = 10;
 
     private Map<String, Sport> sports;
+    private Map<String, Strategy> strategies;
     private Strategy strategy;
     private double time;
     private ElementDescription currentElementDescription;
@@ -42,6 +42,7 @@ public class GodController
     public GodController()
     {
         this.sports = new TreeMap();
+        this.strategies = new TreeMap();
         this.strategy = null;
         this.time = 0.0;
         this.currentElementDescription = null;
@@ -49,33 +50,17 @@ public class GodController
         
         try 
         {
-            Sport sport = saveSport(null, "Hockey", "hockey.png", 400, 1000, 5, 2);       
-            this.strategy = new Strategy("Test", sport);
-
-            // Tests values
-            playerDescription = new PlayerDescription("player", new Vector2D(40, 40), "/res/player.png");
-            ballDescription = new BallDescription("ball", new Vector2D(20, 20), "/res/test.png");
-            obstacleDescription = new ObstacleDescription("obstacle", new Vector2D(20, 20), "/res/cone.png");
+            Sport sport = saveSport(null, "Hockey", "/res/hockey.png", 400, 1000, 5, 2);
+            sport.addPlayerDescription(new PlayerDescription("Joueur", new Vector2D(60,60), "/res/player.png"));
+            sport.addBallDescription(new BallDescription("Balle", new Vector2D(20, 20), "/res/test.png"));
+            sport.addObstacleDescription(new ObstacleDescription("Obstacle", new Vector2D(20, 20), "/res/cone.png"));
+            
+            createStrategy("Test", "Hockey");
         }
         catch (ValidationException ex)
         {
             Logger.getLogger(GodController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void createStrategy(Sport sport, String name)
-    {
-        //this.strategy = new Strategy(name, sport);
-    }
-
-    public void saveStrategy()
-    {
-        // TODO
-    }
-
-    public void loadStrategy(String path)
-    {
-
     }
 
     public Element addElement(Vector2D pos) throws Exception
@@ -117,20 +102,19 @@ public class GodController
         this.selectedElement = elem;
     }
 
-    public void selectElementDescription(String name)
+    public void selectElementDescription(ElementDescription.TypeDescription type, String name)
     {
-        //Should not be done this way
-        if (name.equals("Player"))
+        switch(type)
         {
-            this.currentElementDescription = playerDescription;
-        }
-        else if (name.equals("Ball"))
-        {
-            this.currentElementDescription = ballDescription;
-        }
-        else if (name.equals("Obstacle"))
-        {
-            this.currentElementDescription = obstacleDescription;
+            case Player:
+                this.currentElementDescription = getPlayerDescription(strategy.getSport().getName(), name);
+                break;
+            case Ball:
+                this.currentElementDescription = getBallDescription(strategy.getSport().getName(), name);
+                break;
+            case Obstacle:
+                this.currentElementDescription = getObstacleDescription(strategy.getSport().getName(), name);
+                break;
         }
     }
 
@@ -207,6 +191,44 @@ public class GodController
         {
             sports.remove(sportName);
         }
+    }
+    
+    public void createStrategy(String name, String sport) throws ValidationException
+    {
+        Sport s = getSport(sport);
+        if(s == null)
+        {
+            throw new ValidationException("Sport invalide.");
+        }
+        
+        Strategy strat = new Strategy(name, s);
+        this.strategies.put(name, strat);
+        loadStrategy(name);
+    }
+    
+    public void loadStrategy(String name)
+    {
+        Strategy strat = getStrategy(name);
+        
+        if(strat != null)
+        {
+            this.strategy = strat;
+        }
+    }
+    
+    public Strategy getStrategy(String name)
+    {
+        if(name == null)
+        {
+            return null;
+        }
+        
+        return strategies.get(name);
+    }
+
+    public List<Strategy> getStrategies()
+    {
+        return new ArrayList<Strategy>(strategies.values());
     }
     
     public void saveBallDescription(String sportName, String oldName, String newName, String image, double height, double width) throws ValidationException
