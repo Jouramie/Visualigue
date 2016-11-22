@@ -520,6 +520,11 @@ public class GodController
             playing = false;
         }
     }
+    
+    public String getCourtImage()
+    {
+        return this.strategy.getSport().getCourtImage();
+    }
 
     public Vector2D getCourtDimensions()
     {

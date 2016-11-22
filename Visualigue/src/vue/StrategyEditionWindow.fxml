@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onScroll="#zoom" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <MenuBar styleClass="background">
         <menus>
@@ -55,7 +55,7 @@
             <ChoiceBox fx:id="playerButton" prefHeight="60.0" prefWidth="60.0" />
             <ChoiceBox fx:id="ballButton" layoutX="10.0" layoutY="70.0" prefHeight="60.0" prefWidth="60.0" />
             <ChoiceBox fx:id="obstacleButton" layoutX="10.0" layoutY="370.0" prefHeight="60.0" prefWidth="60.0" />
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom" />
+            <Button fx:id="zoomButton" mnemonicParsing="false" onAction="#onActionZoom" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom" />
          </children>
          <BorderPane.margin>
             <Insets />
@@ -157,6 +157,9 @@
       </VBox>
    </bottom>
    <center>
-      <Pane fx:id="scenePane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="paneScene" BorderPane.alignment="CENTER" />
+      <Pane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="paneScene" BorderPane.alignment="CENTER">
+         <children>
+            <Pane fx:id="scenePane" />
+         </children></Pane>
    </center>
 </BorderPane>
