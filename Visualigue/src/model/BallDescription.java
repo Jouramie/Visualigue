@@ -11,8 +11,14 @@ package model;
  */
 public class BallDescription extends ElementDescription
 {
-    public BallDescription(String name, Vector2D size, String image)
+    public BallDescription(String name, Vector2D size, String image) throws ValidationException
     {
         super(name, size, image);
+    }
+    
+    @Override
+    public TypeDescription getType()
+    {
+        return TypeDescription.Ball;
     }
 }

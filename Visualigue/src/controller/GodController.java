@@ -2,21 +2,30 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.concurrent.Task;
 import model.BallDescription;
 import model.Element;
 import model.ElementDescription;
-import model.MobileElement;
+import model.ObstacleDescription;
+import model.Player;
 import model.PlayerDescription;
 import model.Sport;
-import model.StaticElementDescription;
 import model.Strategy;
+import model.ValidationException;
 import model.Vector2D;
 
 public class GodController
 {
 
-    private List<Sport> sports;
+    public static final double FPS = 2;
+    public static final double FPS_PLAY = 10;
+
+    private Map<String, Sport> sports;
+    private Map<String, Strategy> strategies;
     private Strategy strategy;
     private double time;
     private ElementDescription currentElementDescription;
@@ -24,40 +33,34 @@ public class GodController
 
     private PlayerDescription playerDescription;
     private BallDescription ballDescription;
-    private StaticElementDescription staticDescription;
+    private ObstacleDescription obstacleDescription;
 
     private Updatable window;
 
+    private StrategyPlayer sp;
+
     public GodController()
     {
-        this.sports = new ArrayList<Sport>();
+        this.sports = new TreeMap();
+        this.strategies = new TreeMap();
         this.strategy = null;
         this.time = 0.0;
         this.currentElementDescription = null;
         this.selectedElement = null;
-
-        // Tests values
-        playerDescription = new PlayerDescription("player", new Vector2D(40, 40), "/res/player.png");
-        ballDescription = new BallDescription("ball", new Vector2D(20, 20), "/res/test.png");
-        staticDescription = new StaticElementDescription("static", new Vector2D(20, 20), "/res/cone.png");
-        this.strategy = new Strategy("Test", null);
-
-        this.sports.add(new Sport("Hockey", "hockey.png", 400, 1000, 5));
-    }
-
-    public void createStrategy(Sport sport, String name)
-    {
-        //this.strategy = new Strategy(name, sport);
-    }
-
-    public void saveStrategy(String path)
-    {
-        // TODO
-    }
-
-    public void loadStrategy(String path)
-    {
-
+        
+        try 
+        {
+            Sport sport = saveSport(null, "Hockey", "/res/hockey.png", 400, 1000, 5, 2);
+            sport.addPlayerDescription(new PlayerDescription("Joueur", new Vector2D(60,60), "/res/player.png"));
+            sport.addBallDescription(new BallDescription("Balle", new Vector2D(20, 20), "/res/test.png"));
+            sport.addObstacleDescription(new ObstacleDescription("Obstacle", new Vector2D(20, 20), "/res/cone.png"));
+            
+            createStrategy("Test", "Hockey");
+        }
+        catch (ValidationException ex)
+        {
+            Logger.getLogger(GodController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public Element addElement(Vector2D pos) throws Exception
@@ -66,20 +69,32 @@ public class GodController
 
         if (currentElementDescription != null)
         {
-            if (currentElementDescription instanceof StaticElementDescription)
+            if (currentElementDescription instanceof ObstacleDescription)
             {
-                elem = this.strategy.createStaticElement((StaticElementDescription) currentElementDescription);
-            } else if (currentElementDescription instanceof BallDescription)
+                elem = this.strategy.createObstacle((ObstacleDescription) currentElementDescription);
+            }
+            else if (currentElementDescription instanceof BallDescription)
             {
                 elem = this.strategy.createBall((BallDescription) currentElementDescription);
-            } else if (currentElementDescription instanceof PlayerDescription)
+            }
+            else if (currentElementDescription instanceof PlayerDescription)
             {
                 elem = this.strategy.createPlayer((PlayerDescription) currentElementDescription);
             }
 
-            elem.setPosition(this.time, pos, 0.0);
+            elem.setPosition(time, pos, 0.0);
+            elem.setOrientation(time, new Vector2D(1, 0), 0.0);
         }
         return elem;
+    }
+
+    public void deleteCurrentElement()
+    {
+        if (selectedElement != null)
+        {
+            strategy.deleteElement(selectedElement);
+            selectedElement = null;
+        }
     }
 
     public void selectElement(Element elem)
@@ -87,17 +102,19 @@ public class GodController
         this.selectedElement = elem;
     }
 
-    public void selectElementDescription(String name)
+    public void selectElementDescription(ElementDescription.TypeDescription type, String name)
     {
-        if (name.equals("Player"))
+        switch(type)
         {
-            this.currentElementDescription = playerDescription;
-        } else if (name.equals("Ball"))
-        {
-            this.currentElementDescription = ballDescription;
-        } else if (name.equals("Static"))
-        {
-            this.currentElementDescription = staticDescription;
+            case Player:
+                this.currentElementDescription = getPlayerDescription(strategy.getSport().getName(), name);
+                break;
+            case Ball:
+                this.currentElementDescription = getBallDescription(strategy.getSport().getName(), name);
+                break;
+            case Obstacle:
+                this.currentElementDescription = getObstacleDescription(strategy.getSport().getName(), name);
+                break;
         }
     }
 
@@ -108,15 +125,15 @@ public class GodController
             this.selectedElement.setPosition(this.time, pos, 0.0);
         }
     }
-    
+
     public void setCurrentElemOrientation(Vector2D ori)
     {
-        if(this.selectedElement != null)
+        if (this.selectedElement != null)
         {
             this.selectedElement.setOrientation(time, ori, 0.0);
         }
     }
-    
+
     public List<Element> getAllElements()
     {
         if (this.strategy != null)
@@ -124,32 +141,262 @@ public class GodController
             return this.strategy.getAllElements();
         }
 
-        return new ArrayList<Element>();
+        return new ArrayList<>();
     }
 
-    public void addSport(String name, String courtImage, double courtHeight, double courtWidth, int playerNumber)
+    public Sport saveSport(String oldName, String newName, String courtImage, double courtHeight, double courtWidth, int playerNumber, int numTeams) throws ValidationException
     {
-        Sport sport = new Sport(name, courtImage, courtHeight, courtWidth, playerNumber);
-        sports.add(sport);
-    }
-
-    public void saveSport(String oldName, String newName, String courtImage, double courtHeight, double courtWidth, int playerNumber)
-    {
-        for (Sport sport : sports)
+        Sport sport = null;
+        if(oldName != null)
         {
-            if (sport.getName().equals(oldName))
-            {
-                sport.setName(newName);
-                sport.setCourtImage(courtImage);
-                sport.setCourtSize(new Vector2D(courtHeight, courtWidth));
-                sport.setMaxPlayer(playerNumber);
-            }
+            sport = sports.get(oldName);
         }
+        
+        if(sport != null)
+        {
+            sport.setName(newName);
+            sport.setCourtImage(courtImage);
+            sport.setCourtSize(new Vector2D(courtWidth, courtHeight));
+            sport.setMaxPlayer(playerNumber);
+            sport.setMaxTeam(numTeams);
+        }
+        
+        else
+        {
+            sport = new Sport(newName, courtImage, courtHeight, courtWidth, playerNumber, numTeams);
+            sports.put(newName, sport);
+        }
+        
+        return sport;
+    }
+    
+    public Sport getSport(String name)
+    {
+        if(name == null)
+        {
+            return null;
+        }
+        
+        return sports.get(name);
     }
 
     public List<Sport> getSports()
     {
-        return this.sports;
+        return new ArrayList<Sport>(sports.values());
+    }
+    
+    public void deleteSport(String sportName)
+    {
+        if(sportName != null)
+        {
+            sports.remove(sportName);
+        }
+    }
+    
+    public void createStrategy(String name, String sport) throws ValidationException
+    {
+        Sport s = getSport(sport);
+        if(s == null)
+        {
+            throw new ValidationException("Sport invalide.");
+        }
+        
+        Strategy strat = new Strategy(name, s);
+        this.strategies.put(name, strat);
+        loadStrategy(name);
+    }
+    
+    public void loadStrategy(String name)
+    {
+        Strategy strat = getStrategy(name);
+        
+        if(strat != null)
+        {
+            this.strategy = strat;
+        }
+    }
+    
+    public Strategy getStrategy(String name)
+    {
+        if(name == null)
+        {
+            return null;
+        }
+        
+        return strategies.get(name);
+    }
+
+    public List<Strategy> getStrategies()
+    {
+        return new ArrayList<Strategy>(strategies.values());
+    }
+    
+    public void saveBallDescription(String sportName, String oldName, String newName, String image, double height, double width) throws ValidationException
+    {
+        Sport sport = getSport(sportName);
+        if(sport != null)
+        {
+            BallDescription desc = null;
+            
+            if(oldName != null)
+            {
+                desc = sport.getBallDescription(oldName);
+            }
+
+            if(desc != null)
+            {
+                desc.setName(newName);
+                desc.setImage(image);
+                desc.setSize(new Vector2D(width, height));
+            }
+
+            else
+            {
+                desc = new BallDescription(newName, new Vector2D(width, height), image);
+                sport.addBallDescription(desc);
+            }
+        }
+    }
+    
+    public BallDescription getBallDescription(String sportName, String name)
+    {
+        BallDescription desc = null;
+        Sport sport = getSport(sportName);
+        if(sport != null)
+        {         
+            if(name != null)
+            {
+                desc = sport.getBallDescription(name);
+            }
+        }
+        
+        return desc;
+    }
+    
+    public void deleteBallDescription(String sportName, String name)
+    {
+        BallDescription desc = null;
+        Sport sport = getSport(sportName);
+        if(sport != null)
+        {         
+            if(name != null)
+            {
+                desc = sport.getBallDescription(name);
+                sport.deleteElementDescription(desc);
+            }
+        }
+    }
+    
+    public void savePlayerDescription(String sportName, String oldName, String newName, String image, double height, double width) throws ValidationException
+    {
+        Sport sport = getSport(sportName);
+        if(sport != null)
+        {
+            PlayerDescription desc = null;
+            
+            if(oldName != null)
+            {
+                desc = sport.getPlayerDescription(oldName);
+            }
+
+            if(desc != null)
+            {
+                desc.setName(newName);
+                desc.setImage(image);
+                desc.setSize(new Vector2D(width, height));
+            }
+
+            else
+            {
+                desc = new PlayerDescription(newName, new Vector2D(width, height), image);
+                sport.addPlayerDescription(desc);
+            }
+        }
+    }
+    
+    public PlayerDescription getPlayerDescription(String sportName, String name)
+    {
+        PlayerDescription desc = null;
+        Sport sport = getSport(sportName);
+        if(sport != null)
+        {         
+            if(name != null)
+            {
+                desc = sport.getPlayerDescription(name);
+            }
+        }
+        
+        return desc;
+    }
+    
+    public void deletePlayerDescription(String sportName, String name)
+    {
+        PlayerDescription desc = null;
+        Sport sport = getSport(sportName);
+        if(sport != null)
+        {         
+            if(name != null)
+            {
+                desc = sport.getPlayerDescription(name);
+                sport.deleteElementDescription(desc);
+            }
+        }
+    }
+    
+    public void saveObstacleDescription(String sportName, String oldName, String newName, String image, double height, double width) throws ValidationException
+    {
+        Sport sport = getSport(sportName);
+        if(sport != null)
+        {
+            ObstacleDescription desc = null;
+            
+            if(oldName != null)
+            {
+                desc = sport.getObstacleDescription(oldName);
+            }
+
+            if(desc != null)
+            {
+                desc.setName(newName);
+                desc.setImage(image);
+                desc.setSize(new Vector2D(width, height));
+            }
+
+            else
+            {
+                desc = new ObstacleDescription(newName, new Vector2D(width, height), image);
+                sport.addObstacleDescription(desc);
+            }
+        }
+    }
+    
+    public ObstacleDescription getObstacleDescription(String sportName, String name)
+    {
+        ObstacleDescription desc = null;
+        Sport sport = getSport(sportName);
+        if(sport != null)
+        {         
+            if(name != null)
+            {
+                desc = sport.getObstacleDescription(name);
+            }
+        }
+        
+        return desc;
+    }
+    
+    public void deleteObstacleDescription(String sportName, String name)
+    {
+        ObstacleDescription desc = null;
+        Sport sport = getSport(sportName);
+        if(sport != null)
+        {         
+            if(name != null)
+            {
+                desc = sport.getObstacleDescription(name);
+                sport.deleteElementDescription(desc);
+            }
+        }
     }
 
     public double getCurrentTime()
@@ -162,7 +409,8 @@ public class GodController
         if (time >= 0)
         {
             this.time = time;
-        } else
+        }
+        else
         {
             this.time = 0;
         }
@@ -182,39 +430,136 @@ public class GodController
     {
         return strategy.getDuration();
     }
+    
+    public List<ObstacleDescription> getAllObstacleDescriptions()
+    {
+        return this.strategy.getSport().getAllObstacleDescriptions();
+    }
+    
+    public List<BallDescription> getAllBallDescriptions()
+    {
+        return this.strategy.getSport().getAllBallDescriptions();
+    }
+    
+    public List<PlayerDescription> getAllPlayerDescriptions()
+    {
+        return this.strategy.getSport().getAllPlayerDescriptions();
+    }
+    
+    public void setSelectedPlayerRole(String newElementDescription)
+    {   
+        if(selectedElement instanceof Player)
+        {
+            PlayerDescription description = null;
+            
+            for(PlayerDescription playerDesc : this.strategy.getSport().getAllPlayerDescriptions())
+            {
+                if(playerDesc.getName().equals(newElementDescription))
+                {
+                    description = playerDesc;
+                }
+            }
+            
+            if(description != null)
+            {
+                ((Player)selectedElement).setPlayerDescription(description);
+            }
+        }
+    }
 
     private class StrategyPlayer extends Task<Void>
     {
 
-        private long start;
-        private double strategyLenght;
+        private boolean playing;
         private double speed;
-
-        public StrategyPlayer(double speed)
-        {
+        
+        public StrategyPlayer(){
+            speed = 1;
+        }
+        
+        public StrategyPlayer(double speed){
             this.speed = speed;
-            strategyLenght = strategy.getDuration();
         }
 
+        @Override
         protected Void call() throws Exception
         {
-            start = System.currentTimeMillis();
-            long currentTime = start;
+            playing = true;
+            long previousTimeMillis = System.currentTimeMillis();
 
-            do
+            while (time < strategy.getDuration())
             {
-                currentTime = System.currentTimeMillis();
-                time = (currentTime - start) * speed / 1000;
-                window.update();
-                Thread.sleep(100);
-            } while (time != strategyLenght);
 
+                previousTimeMillis = System.currentTimeMillis();
+                Thread.sleep((long) (1000 / FPS_PLAY));
+                time += (double) (System.currentTimeMillis() - previousTimeMillis) / 1000 * speed;
+                if(time > strategy.getDuration()){
+                    time = strategy.getDuration();
+                }
+                window.update();
+                if (!playing)
+                {
+                    break;
+                }
+            }
+
+            // Arrondissement
+            time = ((int) (time * FPS_PLAY)) / FPS_PLAY;
+            sp = null;
+            window.lastUpdate();
             return null;
         }
+
+        public void play()
+        {
+            playing = true;
+        }
+
+        public void pause()
+        {
+            playing = false;
+        }
+    }
+    
+    public String getCourtImage()
+    {
+        return this.strategy.getSport().getCourtImage();
+    }
+
+    public Vector2D getCourtDimensions()
+    {
+        return this.strategy.getSport().getCourtSize();
     }
 
     public void setWindow(Updatable window)
     {
         this.window = window;
+    }
+
+    public void playStrategy()
+    {
+        if (sp == null)
+        {
+            sp = new StrategyPlayer();
+            Thread th = new Thread(sp);
+            th.setDaemon(true);
+            th.start();
+        }
+        else
+        {
+            sp.play();
+        }
+    }
+
+    public void pauseStrategy()
+    {
+        if (sp == null)
+        {
+            throw new IllegalStateException("Something went wrong...");
+        }
+        else
+        {
+            sp.pause();
+        }
     }
 }

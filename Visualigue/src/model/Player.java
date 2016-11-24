@@ -15,4 +15,9 @@ public class Player extends MobileElement
     {
         super(desc);
     }
+    
+    public void setPlayerDescription(PlayerDescription description)
+    {
+        setElementDescription(description);
+    }
 }

@@ -10,17 +10,26 @@ public class Strategy
     private List<Element> elements;
     private Sport sport;
     
-    public Strategy(String name, Sport sport)
+    public Strategy(String name, Sport sport) throws ValidationException
     {
+        if(name == null || name.isEmpty())
+        {
+            throw new ValidationException("Nom invalide.");
+        }
+        if(sport == null)
+        {
+            throw new ValidationException("Sport invalide.");
+        }
+        
         this.name = name;
         this.sport = sport;
-        this.elements = new ArrayList<Element>();
+        this.elements = new ArrayList<>();
         this.nbPlayer = 0;
     }
     
-    public StaticElement createStaticElement(StaticElementDescription desc)
+    public ObstacleElement createObstacle(ObstacleDescription desc)
     {
-        StaticElement elem = new StaticElement(desc);
+        ObstacleElement elem = new ObstacleElement(desc);
         elements.add(elem);
         return elem;
     }
@@ -64,6 +73,11 @@ public class Strategy
         }
     }
     
+    public String getName()
+    {
+        return this.name;
+    }
+    
     public double getDuration()
     {
         double result = 0.0;
@@ -85,11 +99,6 @@ public class Strategy
         return this.elements;
     }
     
-    /*public Sport getSport()
-    {
-        return this.sport;
-    }*/
-    
     public int getNbPlayer()
     {
         int result = 0;
@@ -103,5 +112,10 @@ public class Strategy
         }
         
         return result;
+    }
+    
+    public Sport getSport()
+    {
+        return this.sport;
     }
 }
