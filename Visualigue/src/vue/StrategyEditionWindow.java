@@ -17,7 +17,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -35,6 +34,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Scale;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -68,8 +68,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     @FXML
     private ScrollPane mainPane;
-    private Group zoomingGroup;
+    private Pane zoomingGroup;
     private Pane scenePane;
+    private Scale sceneScale;
     @FXML
     private CheckBox elementNameCheckBox;
     @FXML
@@ -131,23 +132,18 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
         
         onActionNewStrategy(null);
-
-        /*Stage dialog = new Stage(StageStyle.TRANSPARENT);
-        dialog.initStyle(StageStyle.DECORATED);
-        dialog.initModality(Modality.WINDOW_MODAL);
-        dialog.initOwner(stage);
-
-        StrategyCreationDialog creationDialog = new StrategyCreationDialog(controller, dialog);*/
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        zoomingGroup = new Group();
+        zoomingGroup = new Pane();
         scenePane = new Pane();
         zoomingGroup.getChildren().add(scenePane);
         mainPane.setContent(zoomingGroup);
-        zoomingGroup.setAutoSizeChildren(false);
+        
+        sceneScale = new Scale(1.0, 1.0, 0, 0);
+        scenePane.getTransforms().add(sceneScale);
         
         scenePane.setOnMousePressed(this::onMouseClicked);
         scenePane.setOnMouseMoved(this::onMouseMoved);
@@ -194,6 +190,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
         
         terrain = new ImageView();
         scenePane.getChildren().add(terrain);
+        scenePane.boundsInParentProperty().addListener((event) -> {
+            zoomingGroup.setMinWidth(scenePane.getBoundsInParent().getWidth());
+            zoomingGroup.setMinHeight(scenePane.getBoundsInParent().getHeight());
+        });
         updateSport();
         
         team.getItems().add("Team Example");
@@ -744,17 +744,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     public void onActionZoomIn(ActionEvent e)
     {
-        double factor = scenePane.getScaleX() + ZOOM_SPEED;
-        scenePane.setScaleX(factor);
-        scenePane.setScaleY(factor);
+        double factor = sceneScale.getX() + ZOOM_SPEED;
+        sceneScale.setX(factor);
+        sceneScale.setY(factor);
     }
     
     @FXML
     public void onActionZoomOut(ActionEvent e)
     {
-        double factor = scenePane.getScaleX() - ZOOM_SPEED;
-        scenePane.setScaleX(factor);
-        scenePane.setScaleY(factor);
+        double factor = sceneScale.getX() - ZOOM_SPEED;
+        sceneScale.setX(factor);
+        sceneScale.setY(factor);
     }
 
     private void onActionObstacleDescription()
