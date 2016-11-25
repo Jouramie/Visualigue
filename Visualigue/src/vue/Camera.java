@@ -1,5 +1,6 @@
 package vue;
 
+import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
@@ -9,7 +10,7 @@ public class Camera
 {
     public static final double ZOOM_SPEED = 0.005;
 
-    private Pane pane;
+    private Group pane;
     private Scale scale;
     private Translate trans;
     private double width;
@@ -50,7 +51,7 @@ public class Camera
         trans.setY(translation.getY());
     }
     
-    public void setPane(Pane pane)
+    public void setPane(Group pane)
     {
         this.pane = pane;
         pane.getTransforms().add(scale);
