@@ -24,7 +24,7 @@
           <Menu mnemonicParsing="false" text="Fichier">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#onActionNewStrategy" text="Nouvelle stratégie" />
-              <MenuItem mnemonicParsing="false" text="Quitter" />
+              <MenuItem mnemonicParsing="false" onAction="#onClose" text="Quitter" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Édition">
@@ -37,8 +37,8 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Affichage">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Zoom avant" />
-                  <MenuItem mnemonicParsing="false" text="Zoom arrière" />
+                  <MenuItem mnemonicParsing="false" onAction="#onActionZoomIn" text="Zoom avant" />
+                  <MenuItem mnemonicParsing="false" onAction="#onActionZoomOut" text="Zoom arrière" />
                </items></Menu>
           <Menu mnemonicParsing="false" text="Aide">
                <items>

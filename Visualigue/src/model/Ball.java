@@ -9,7 +9,7 @@ package model;
  *
  * @author emile
  */
-public class Ball extends MobileElement
+public class Ball extends MobileElement implements java.io.Serializable
 {
     public Ball(BallDescription desc)
     {

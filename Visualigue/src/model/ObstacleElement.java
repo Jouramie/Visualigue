@@ -1,6 +1,6 @@
 package model;
 
-public class ObstacleElement extends Element
+public class ObstacleElement extends Element implements java.io.Serializable
 {
     private Vector2D position;
     private Vector2D orientation;

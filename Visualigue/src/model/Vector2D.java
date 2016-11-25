@@ -1,6 +1,6 @@
 package model;
 
-public class Vector2D implements Cloneable
+public class Vector2D implements Cloneable, java.io.Serializable
 {
     private double x;
     private double y;

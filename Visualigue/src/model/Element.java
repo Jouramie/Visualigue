@@ -1,9 +1,9 @@
 package model;
 
-public abstract class Element
+public abstract class Element implements java.io.Serializable
 {
     protected ElementDescription description;
-    private boolean changed;
+    private transient boolean changed;
     
     public abstract Vector2D getPosition(double time);
     public abstract Vector2D getOrientation(double time);

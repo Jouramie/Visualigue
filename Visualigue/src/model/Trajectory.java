@@ -3,7 +3,7 @@ package model;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public class Trajectory
+public class Trajectory implements java.io.Serializable
 {
 
     private TreeMap<Double, Vector2D> positions;

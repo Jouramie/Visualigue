@@ -16,7 +16,6 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -35,7 +34,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -123,18 +121,23 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Scene scene = new Scene(root, 1000, 800);
             stage.setScene(scene);
             stage.setTitle("VisuaLigue");
+            stage.setOnCloseRequest((event) -> {
+                controller.save();
+            });
             stage.show();
         } catch (IOException ex)
         {
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        onActionNewStrategy(null);
 
-        Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        /*Stage dialog = new Stage(StageStyle.TRANSPARENT);
         dialog.initStyle(StageStyle.DECORATED);
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
 
-        StrategyCreationDialog creationDialog = new StrategyCreationDialog(controller, dialog);
+        StrategyCreationDialog creationDialog = new StrategyCreationDialog(controller, dialog);*/
     }
 
     @Override
@@ -193,10 +196,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         scenePane.getChildren().add(terrain);
         updateSport();
         
-        for(PlayerDescription description : controller.getAllPlayerDescriptions())
-        {
-            role.getItems().add(description.getName());
-        }
         team.getItems().add("Team Example");
 
         update();
@@ -349,6 +348,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
         
         updateElementDescriptions();
         
+        Object oldSelection = role.getSelectionModel().getSelectedItem();
+        role.getItems().clear();
+        for(PlayerDescription description : controller.getAllPlayerDescriptions())
+        {
+            role.getItems().add(description.getName());
+        }
+        if(role.getItems().contains(oldSelection))
+        {
+            role.getSelectionModel().select(oldSelection);
+        }
+        
         for(UIElement elem : uiElements)
         {
             elem.refreshNode(controller.getCurrentTime());
@@ -359,6 +369,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
     public void updateOnRecord()
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @FXML
+    private void onClose(ActionEvent e)
+    {
+        controller.save();
+        stage.close();
     }
 
     private void onMouseMoved(MouseEvent e)
@@ -672,6 +689,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
         dialog.initOwner(stage);
 
         StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
+        dialog.setOnHidden((event) -> {
+            updateSport();
+            update();
+        });
     }
 
     @FXML

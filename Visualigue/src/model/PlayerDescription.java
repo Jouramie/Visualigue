@@ -9,7 +9,7 @@ package model;
  *
  * @author emile
  */
-public class PlayerDescription extends ElementDescription
+public class PlayerDescription extends ElementDescription implements java.io.Serializable
 {
     public PlayerDescription(String name, Vector2D size, String image) throws ValidationException
     {
