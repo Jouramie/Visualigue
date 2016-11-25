@@ -166,15 +166,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         clipRect.widthProperty().bind(mainPane.widthProperty());
         mainPane.setClip(clipRect);
 
-        mainPane.heightProperty().addListener((event) ->
-        {
-            updateSize();
-        });
-        mainPane.widthProperty().addListener((event) ->
-        {
-            updateSize();
-        });
-
         userChange = true;
         timeLine.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
         {
@@ -310,6 +301,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
 
         playerButton.getItems().clear();
+        Object oldSelection = role.getSelectionModel().getSelectedItem();
         role.getItems().clear();
         for (ElementDescription desc : controller.getAllPlayerDescriptions())
         {
@@ -322,6 +314,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
             }
             playerButton.getItems().add(m);
             role.getItems().add(desc.getName());
+        }
+        if(role.getItems().contains(oldSelection))
+        {
+            role.getSelectionModel().select(oldSelection);
         }
 
         ballButton.getItems().clear();
@@ -340,10 +336,15 @@ public class StrategyEditionWindow implements Initializable, Updatable
             obstacleButton.getItems().add(mi);
         }
 
+        oldSelection = team.getSelectionModel().getSelectedItem();
         team.getItems().clear();
         for (int i = 0; i < controller.getMaxTeam(); i++)
         {
             team.getItems().add(TEAM_LABEL + (i + 1));
+        }
+        if(team.getItems().contains(oldSelection))
+        {
+            team.getSelectionModel().select(oldSelection);
         }
     }
 
@@ -359,19 +360,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         terrain.setFitHeight(y);
         
         updateElementDescriptions();
-        
-        Object oldSelection = role.getSelectionModel().getSelectedItem();
-        role.getItems().clear();
-        for(PlayerDescription description : controller.getAllPlayerDescriptions())
-        {
-            role.getItems().add(description.getName());
-        }
-        if(role.getItems().contains(oldSelection))
-        {
-            role.getSelectionModel().select(oldSelection);
-        }
-
-        // TODO Même chose pour les équipes
         
         for(UIElement elem : uiElements)
         {
