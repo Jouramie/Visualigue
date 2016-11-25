@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sport
+public class Sport implements java.io.Serializable
 {
     private String name;
     private int maxPlayer;

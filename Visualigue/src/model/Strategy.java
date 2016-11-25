@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Strategy
+public class Strategy implements java.io.Serializable
 {
     private int  nbPlayer;
     private final String name;

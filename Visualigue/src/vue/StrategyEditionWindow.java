@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -26,6 +27,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -34,7 +36,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -50,7 +51,7 @@ import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
 {
-
+    private static final double ZOOM_SPEED = 0.1;
     private static final char PAUSE_ICON = '⏸';
     private static final char PLAY_ICON = '⏵';
     private static final String TEAM_LABEL = "Équipe ";
@@ -68,12 +69,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private Toolbox selectedTool;
     private boolean draggingElement;
     private boolean userChange;
-    private Camera camera;
     private ImageView terrain;
 
     @FXML
-    private Pane mainPane;
-    @FXML
+    private ScrollPane mainPane;
+    private Group zoomingGroup;
     private Pane scenePane;
     @FXML
     private CheckBox elementNameCheckBox;
@@ -87,8 +87,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private MenuButton ballButton;
     @FXML
     private MenuButton obstacleButton;
-    @FXML
-    private Button zoomButton;
     @FXML
     private Label xCoordinate;
     @FXML
@@ -118,7 +116,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.controller = controller;
         this.uiElements = new ArrayList();
         this.draggingElement = false;
-        this.camera = new Camera();
 
         try
         {
@@ -129,26 +126,34 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Scene scene = new Scene(root, 1000, 800);
             stage.setScene(scene);
             stage.setTitle("VisuaLigue");
+            stage.setOnCloseRequest((event) -> {
+                controller.save();
+            });
             stage.show();
         } catch (IOException ex)
         {
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        onActionNewStrategy(null);
 
-        Stage dialog = new Stage(StageStyle.TRANSPARENT);
+        /*Stage dialog = new Stage(StageStyle.TRANSPARENT);
         dialog.initStyle(StageStyle.DECORATED);
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
 
-        StrategyCreationDialog creationDialog = new StrategyCreationDialog(controller, dialog);
+        StrategyCreationDialog creationDialog = new StrategyCreationDialog(controller, dialog);*/
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        camera.setPane(scenePane);
-        camera.setSize(mainPane.getWidth(), mainPane.getHeight());
-
+        zoomingGroup = new Group();
+        scenePane = new Pane();
+        zoomingGroup.getChildren().add(scenePane);
+        mainPane.setContent(zoomingGroup);
+        zoomingGroup.setAutoSizeChildren(false);
+        
         scenePane.setOnMousePressed(this::onMouseClicked);
         scenePane.setOnMouseMoved(this::onMouseMoved);
         scenePane.setOnMouseExited(this::onMouseExited);
@@ -159,7 +164,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         positionY.setOnAction(this::onActionPositionY);
         orientation.setOnAction(this::onActionOrientation);
 
-        // Clipping and camera
+        // Clipping
         Rectangle clipRect = new Rectangle(mainPane.getWidth(), mainPane.getHeight());
         clipRect.heightProperty().bind(mainPane.heightProperty());
         clipRect.widthProperty().bind(mainPane.widthProperty());
@@ -349,25 +354,29 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
         double x = controller.getCourtDimensions().getX();
         double y = controller.getCourtDimensions().getY();
-
-        terrain.setX(x / 2.0);
-        terrain.setY(y / 2.0);
+        
         terrain.setFitWidth(x);
         terrain.setFitHeight(y);
-        terrain.setTranslateX(-x / 2);
-        terrain.setTranslateY(-y / 2);
-
+        
         updateElementDescriptions();
+        
+        Object oldSelection = role.getSelectionModel().getSelectedItem();
+        role.getItems().clear();
+        for(PlayerDescription description : controller.getAllPlayerDescriptions())
+        {
+            role.getItems().add(description.getName());
+        }
+        if(role.getItems().contains(oldSelection))
+        {
+            role.getSelectionModel().select(oldSelection);
+        }
 
-        for (UIElement elem : uiElements)
+        // TODO Même chose pour les équipes
+        
+        for(UIElement elem : uiElements)
         {
             elem.refreshNode(controller.getCurrentTime());
         }
-    }
-
-    private void updateSize()
-    {
-        camera.setSize(mainPane.getWidth(), mainPane.getHeight());
     }
 
     @Override
@@ -377,10 +386,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
     }
 
     @FXML
-    public void zoom(ScrollEvent e)
+    private void onClose(ActionEvent e)
     {
-        double delta = e.getDeltaY();
-        camera.zoom(delta);
+        controller.save();
+        stage.close();
     }
 
     private void onMouseMoved(MouseEvent e)
@@ -409,10 +418,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 // TODO
             }
             update();
-        }
-        else if (selectedTool == Toolbox.ZOOM)
-        {
-            camera.move(e.getSceneX(), e.getSceneY());
         }
     }
 
@@ -709,6 +714,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
         dialog.initOwner(stage);
 
         StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
+        dialog.setOnHidden((event) -> {
+            updateSport();
+            update();
+        });
     }
 
     @FXML
@@ -733,7 +742,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
         this.obstacleButton.setStyle("-fx-background-color: inherit;");
-        this.zoomButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.MOVE;
     }
 
@@ -747,7 +755,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.playerButton.setStyle("-fx-background-color: lightblue;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
         this.obstacleButton.setStyle("-fx-background-color: inherit;");
-        this.zoomButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_PLAYER;
     }
 
@@ -759,19 +766,23 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.ballButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.obstacleButton.setStyle("-fx-background-color: inherit;");
-        this.zoomButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_BALL;
     }
 
     @FXML
-    private void onActionZoom(ActionEvent e)
+    public void onActionZoomIn(ActionEvent e)
     {
-        this.moveButton.setStyle("-fx-background-color: inherit;");
-        this.ballButton.setStyle("-fx-background-color: inherit;");
-        this.playerButton.setStyle("-fx-background-color: inherit;");
-        this.obstacleButton.setStyle("-fx-background-color: inherit;");
-        this.zoomButton.setStyle("-fx-background-color: lightblue;");
-        selectedTool = Toolbox.ZOOM;
+        double factor = scenePane.getScaleX() + ZOOM_SPEED;
+        scenePane.setScaleX(factor);
+        scenePane.setScaleY(factor);
+    }
+    
+    @FXML
+    public void onActionZoomOut(ActionEvent e)
+    {
+        double factor = scenePane.getScaleX() - ZOOM_SPEED;
+        scenePane.setScaleX(factor);
+        scenePane.setScaleY(factor);
     }
 
     private void onActionObstacleDescription(ActionEvent e)

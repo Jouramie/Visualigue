@@ -151,6 +151,8 @@ public class StrategyCreationDialog implements Initializable
     
     private void updateStrategyList()
     {
+        listViewStrategies.getItems().clear();
+        
         String currentSport = (String)listViewSports.getSelectionModel().getSelectedItem();
         
         if(currentSport != null)

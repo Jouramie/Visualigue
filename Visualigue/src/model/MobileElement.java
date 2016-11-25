@@ -1,6 +1,6 @@
 package model;
 
-public abstract class MobileElement extends Element
+public abstract class MobileElement extends Element implements java.io.Serializable
 {
     private Trajectory trajectory;
     

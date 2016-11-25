@@ -1,6 +1,6 @@
 package model;
 
-public abstract class ElementDescription
+public abstract class ElementDescription implements java.io.Serializable
 {
     public enum TypeDescription
     {

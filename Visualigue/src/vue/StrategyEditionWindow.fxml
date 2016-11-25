@@ -13,22 +13,22 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onScroll="#zoom" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <MenuBar styleClass="background">
         <menus>
           <Menu mnemonicParsing="false" text="Fichier">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#onActionNewStrategy" text="Nouvelle stratégie" />
-              <MenuItem mnemonicParsing="false" text="Quitter" />
+              <MenuItem mnemonicParsing="false" onAction="#onClose" text="Quitter" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Édition">
@@ -41,8 +41,8 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Affichage">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Zoom avant" />
-                  <MenuItem mnemonicParsing="false" text="Zoom arrière" />
+                  <MenuItem mnemonicParsing="false" onAction="#onActionZoomIn" text="Zoom avant" />
+                  <MenuItem mnemonicParsing="false" onAction="#onActionZoomOut" text="Zoom arrière" />
                </items></Menu>
           <Menu mnemonicParsing="false" text="Aide">
                <items>
@@ -87,7 +87,8 @@
                   </ContextMenu>
                </contextMenu>
             </MenuButton>
-            <Button fx:id="zoomButton" mnemonicParsing="false" onAction="#onActionZoom" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom" />
+            <Button mnemonicParsing="false" onAction="#onActionZoomIn" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom +" />
+            <Button layoutX="10.0" layoutY="250.0" mnemonicParsing="false" onAction="#onActionZoomOut" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom -" />
          </children>
          <BorderPane.margin>
             <Insets />
@@ -189,9 +190,6 @@
       </VBox>
    </bottom>
    <center>
-      <Pane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="paneScene" BorderPane.alignment="CENTER">
-         <children>
-            <Pane fx:id="scenePane" />
-         </children></Pane>
+      <ScrollPane fx:id="mainPane" fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

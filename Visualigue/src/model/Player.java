@@ -9,7 +9,7 @@ package model;
  *
  * @author emile
  */
-public class Player extends MobileElement
+public class Player extends MobileElement implements java.io.Serializable
 {
     
     private int team;

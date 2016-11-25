@@ -1,5 +1,11 @@
 package controller;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +24,8 @@ import model.Strategy;
 import model.ValidationException;
 import model.Vector2D;
 
-public class GodController
+public class GodController implements java.io.Serializable 
 {
-
     public static final double FPS = 2;
     public static final double FPS_PLAY = 10;
 
@@ -36,9 +41,9 @@ public class GodController
     private BallDescription ballDescription;
     private ObstacleDescription obstacleDescription;
 
-    private Updatable window;
+    private transient Updatable window;
 
-    private StrategyPlayer sp;
+    private transient StrategyPlayer sp;
 
     public GodController()
     {
@@ -61,6 +66,22 @@ public class GodController
         } catch (ValidationException ex)
         {
             Logger.getLogger(GodController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void save()
+    {
+        try
+        {
+            FileOutputStream fileOut = new FileOutputStream("visualigue.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            out.close();
+            fileOut.close();
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
         }
     }
 
