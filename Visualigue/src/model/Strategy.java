@@ -43,15 +43,21 @@ public class Strategy
      
     public Player createPlayer(PlayerDescription desc) throws Exception
     {
-        /*if(this.nbPlayer >= this.sport.getMaxPlayer())
+        return createPlayer(desc, 0);
+    }
+    
+    public Player createPlayer(PlayerDescription desc, int team) throws Exception
+    {
+         /*if(this.nbPlayer >= this.sport.getMaxPlayer())
         {
             throw new Exception("Votre sport ne peut pas contenir plus de " + this.sport.getMaxPlayer() + " joueurs.");
         }*/
         
-        Player elem = new Player(desc);
+        Player elem = new Player(desc, team);
         elements.add(elem);
         this.nbPlayer++;
         return elem;
+        
     }
     
     public void deleteElement(Element elem)
