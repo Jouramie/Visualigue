@@ -17,14 +17,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -35,6 +38,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Scale;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -50,6 +54,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private static final double ZOOM_SPEED = 0.1;
     private static final char PAUSE_ICON = '⏸';
     private static final char PLAY_ICON = '⏵';
+    private static final String TEAM_LABEL = "Équipe ";
 
     private enum Toolbox
     {
@@ -68,8 +73,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     @FXML
     private ScrollPane mainPane;
-    private Group zoomingGroup;
+    private Pane zoomingGroup;
     private Pane scenePane;
+    private Scale sceneScale;
     @FXML
     private CheckBox elementNameCheckBox;
     @FXML
@@ -77,11 +83,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private Button moveButton;
     @FXML
-    private ChoiceBox playerButton;
+    private MenuButton playerButton;
     @FXML
-    private ChoiceBox ballButton;
+    private MenuButton ballButton;
     @FXML
-    private ChoiceBox obstacleButton;
+    private MenuButton obstacleButton;
     @FXML
     private Label xCoordinate;
     @FXML
@@ -131,23 +137,18 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
         
         onActionNewStrategy(null);
-
-        /*Stage dialog = new Stage(StageStyle.TRANSPARENT);
-        dialog.initStyle(StageStyle.DECORATED);
-        dialog.initModality(Modality.WINDOW_MODAL);
-        dialog.initOwner(stage);
-
-        StrategyCreationDialog creationDialog = new StrategyCreationDialog(controller, dialog);*/
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        zoomingGroup = new Group();
+        zoomingGroup = new Pane();
         scenePane = new Pane();
         zoomingGroup.getChildren().add(scenePane);
         mainPane.setContent(zoomingGroup);
-        zoomingGroup.setAutoSizeChildren(false);
+        
+        sceneScale = new Scale(1.0, 1.0, 0, 0);
+        scenePane.getTransforms().add(sceneScale);
         
         scenePane.setOnMousePressed(this::onMouseClicked);
         scenePane.setOnMouseMoved(this::onMouseMoved);
@@ -170,34 +171,14 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             onSliderValueChange();
         });
-        
-        playerButton.setOnMouseClicked((event) -> {
-            this.onActionPlayerDescription();
-        });
-        playerButton.getSelectionModel().selectedItemProperty().addListener((event) -> {
-            this.onActionPlayerDescription();
-        });
-        
-        ballButton.setOnMouseClicked((event) -> {
-            this.onActionBallDescription();
-        });
-        ballButton.getSelectionModel().selectedItemProperty().addListener((event) -> {
-            this.onActionBallDescription();
-        });
-        
-        obstacleButton.setOnMouseClicked((event) -> {
-            this.onActionObstacleDescription();
-        });
-        obstacleButton.getSelectionModel().selectedItemProperty().addListener((event) -> {
-            this.onActionObstacleDescription();
-        });
-        
+
         terrain = new ImageView();
         scenePane.getChildren().add(terrain);
+        scenePane.boundsInParentProperty().addListener((event) -> {
+            zoomingGroup.setMinWidth(scenePane.getBoundsInParent().getWidth());
+            zoomingGroup.setMinHeight(scenePane.getBoundsInParent().getHeight());
+        });
         updateSport();
-        
-        team.getItems().add("Team Example");
-
         update();
     }
 
@@ -283,12 +264,14 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 nameLabel.setText("PlayerName");
                 elementNameCheckBox.setSelected(selectedUIElement.isElementNameVisible());
                 role.getSelectionModel().select(player.getElementDescription().getName());
+                team.getSelectionModel().select(TEAM_LABEL + player.getTeam());
             }
             else
             {
                 nameLabel.setText(selectedUIElement.getElement().getElementDescription().getName());
                 elementNameCheckBox.setSelected(false);
                 role.getSelectionModel().clearSelection();
+                team.getSelectionModel().clearSelection();
             }
 
             role.setDisable(!elementIsPlayer);
@@ -313,33 +296,63 @@ public class StrategyEditionWindow implements Initializable, Updatable
             deleteButton.setDisable(true);
         }
     }
-    
+
     private void updateElementDescriptions()
     {
+
         playerButton.getItems().clear();
-        for(ElementDescription desc : controller.getAllPlayerDescriptions())
+        Object oldSelection = role.getSelectionModel().getSelectedItem();
+        role.getItems().clear();
+        for (ElementDescription desc : controller.getAllPlayerDescriptions())
         {
-            playerButton.getItems().add(desc.getName());
+            Menu m = new Menu(desc.getName());
+            for (int i = 0; i < controller.getMaxTeam(); i++)
+            {
+                MenuItem mi = new MenuItem(TEAM_LABEL + (i + 1));
+                mi.setOnAction(this::onActionPlayerDescription);
+                m.getItems().add(mi);
+            }
+            playerButton.getItems().add(m);
+            role.getItems().add(desc.getName());
         }
-        
+        if(role.getItems().contains(oldSelection))
+        {
+            role.getSelectionModel().select(oldSelection);
+        }
+
         ballButton.getItems().clear();
-        for(ElementDescription desc : controller.getAllBallDescriptions())
+        for (ElementDescription desc : controller.getAllBallDescriptions())
         {
-            ballButton.getItems().add(desc.getName());
+            MenuItem mi = new MenuItem(desc.getName());
+            mi.setOnAction(this::onActionBallDescription);
+            ballButton.getItems().add(mi);
         }
-        
+
         obstacleButton.getItems().clear();
-        for(ElementDescription desc : controller.getAllObstacleDescriptions())
+        for (ElementDescription desc : controller.getAllObstacleDescriptions())
         {
-            obstacleButton.getItems().add(desc.getName());
+            MenuItem mi = new MenuItem(desc.getName());
+            mi.setOnAction(this::onActionObstacleDescription);
+            obstacleButton.getItems().add(mi);
+        }
+
+        oldSelection = team.getSelectionModel().getSelectedItem();
+        team.getItems().clear();
+        for (int i = 0; i < controller.getMaxTeam(); i++)
+        {
+            team.getItems().add(TEAM_LABEL + (i + 1));
+        }
+        if(team.getItems().contains(oldSelection))
+        {
+            team.getSelectionModel().select(oldSelection);
         }
     }
-    
+
     private void updateSport()
     {
         Image img = new Image(controller.getCourtImage());
         terrain.setImage(img);
-        
+
         double x = controller.getCourtDimensions().getX();
         double y = controller.getCourtDimensions().getY();
         
@@ -347,17 +360,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         terrain.setFitHeight(y);
         
         updateElementDescriptions();
-        
-        Object oldSelection = role.getSelectionModel().getSelectedItem();
-        role.getItems().clear();
-        for(PlayerDescription description : controller.getAllPlayerDescriptions())
-        {
-            role.getItems().add(description.getName());
-        }
-        if(role.getItems().contains(oldSelection))
-        {
-            role.getSelectionModel().select(oldSelection);
-        }
         
         for(UIElement elem : uiElements)
         {
@@ -370,7 +372,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @FXML
     private void onClose(ActionEvent e)
     {
@@ -553,8 +555,12 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         if (selectedUIElement != null)
         {
-            controller.setSelectedPlayerRole((String)((ChoiceBox)e.getSource()).getValue());
-            selectedUIElement.refreshNode(controller.getCurrentTime());
+            String choix = (String) ((ChoiceBox) e.getSource()).getValue();
+            if (choix != null)
+            {
+                controller.setSelectedPlayerRole((String) ((ChoiceBox) e.getSource()).getValue());
+                selectedUIElement.refreshNode(controller.getCurrentTime());
+            }
         }
 
     }
@@ -563,7 +569,14 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         if (selectedUIElement != null)
         {
-            System.out.println("team ChoiceBox");
+            String choix = (String) ((ChoiceBox) e.getSource()).getValue();
+            if (choix != null)
+            {
+                int team = Integer.parseInt(choix.substring(TEAM_LABEL.length()));
+
+                controller.setSelectedPlayerTeam(team);
+                selectedUIElement.refreshNode(controller.getCurrentTime());
+            }
         }
     }
 
@@ -704,7 +717,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
         dialog.initOwner(stage);
 
         SportEditionDialog sportEdition = new SportEditionDialog(controller, dialog);
-        sportEdition.stage.setOnHidden((event) -> {
+        sportEdition.stage.setOnHidden((event) ->
+        {
             updateSport();
         });
     }
@@ -719,10 +733,12 @@ public class StrategyEditionWindow implements Initializable, Updatable
         selectedTool = Toolbox.MOVE;
     }
 
-    private void onActionPlayerDescription()
+    private void onActionPlayerDescription(ActionEvent e)
     {
-        String player = (String)playerButton.getSelectionModel().getSelectedItem();
+        MenuItem mi = (MenuItem) e.getSource();
+        String player = mi.getParentMenu().getText();
         this.controller.selectElementDescription(TypeDescription.Player, player);
+        this.controller.selectTeam(Integer.parseInt(mi.getText().substring(TEAM_LABEL.length())));
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.playerButton.setStyle("-fx-background-color: lightblue;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
@@ -730,9 +746,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
         selectedTool = Toolbox.ADD_PLAYER;
     }
 
-    private void onActionBallDescription()
+    private void onActionBallDescription(ActionEvent e)
     {
-        String ball = (String)ballButton.getSelectionModel().getSelectedItem();
+        String ball = ((MenuItem) e.getSource()).getText();
         this.controller.selectElementDescription(TypeDescription.Ball, ball);
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: lightblue;");
@@ -740,26 +756,26 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_BALL;
     }
-    
+
     @FXML
     public void onActionZoomIn(ActionEvent e)
     {
-        double factor = scenePane.getScaleX() + ZOOM_SPEED;
-        scenePane.setScaleX(factor);
-        scenePane.setScaleY(factor);
+        double factor = sceneScale.getX() + ZOOM_SPEED;
+        sceneScale.setX(factor);
+        sceneScale.setY(factor);
     }
     
     @FXML
     public void onActionZoomOut(ActionEvent e)
     {
-        double factor = scenePane.getScaleX() - ZOOM_SPEED;
-        scenePane.setScaleX(factor);
-        scenePane.setScaleY(factor);
+        double factor = sceneScale.getX() - ZOOM_SPEED;
+        sceneScale.setX(factor);
+        sceneScale.setY(factor);
     }
 
-    private void onActionObstacleDescription()
+    private void onActionObstacleDescription(ActionEvent e)
     {
-        String obstacle = (String)obstacleButton.getSelectionModel().getSelectedItem();
+        String obstacle = ((MenuItem) e.getSource()).getText();
         this.controller.selectElementDescription(TypeDescription.Obstacle, obstacle);
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.obstacleButton.setStyle("-fx-background-color: lightblue;");

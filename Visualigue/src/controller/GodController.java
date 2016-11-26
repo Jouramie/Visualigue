@@ -1,11 +1,8 @@
 package controller;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +31,7 @@ public class GodController implements java.io.Serializable
     private Strategy strategy;
     private double time;
     private ElementDescription currentElementDescription;
+    private int currentTeam;
     private Element selectedElement;
 
     private PlayerDescription playerDescription;
@@ -51,18 +49,18 @@ public class GodController implements java.io.Serializable
         this.strategy = null;
         this.time = 0.0;
         this.currentElementDescription = null;
+        this.currentTeam = 0;
         this.selectedElement = null;
-        
-        try 
+
+        try
         {
             Sport sport = saveSport(null, "Hockey", "/res/hockey.png", 400, 1000, 5, 2);
-            sport.addPlayerDescription(new PlayerDescription("Joueur", new Vector2D(60,60), "/res/player.png"));
+            sport.addPlayerDescription(new PlayerDescription("Joueur", new Vector2D(60, 60), "/res/player.png"));
             sport.addBallDescription(new BallDescription("Balle", new Vector2D(20, 20), "/res/test.png"));
             sport.addObstacleDescription(new ObstacleDescription("Obstacle", new Vector2D(20, 20), "/res/cone.png"));
-            
+
             createStrategy("Test", "Hockey");
-        }
-        catch (ValidationException ex)
+        } catch (ValidationException ex)
         {
             Logger.getLogger(GodController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -100,7 +98,7 @@ public class GodController implements java.io.Serializable
             }
             else if (currentElementDescription instanceof PlayerDescription)
             {
-                elem = this.strategy.createPlayer((PlayerDescription) currentElementDescription);
+                elem = this.strategy.createPlayer((PlayerDescription) currentElementDescription, currentTeam);
             }
 
             elem.setPosition(time, pos, 0.0);
@@ -125,18 +123,25 @@ public class GodController implements java.io.Serializable
 
     public void selectElementDescription(ElementDescription.TypeDescription type, String name)
     {
-        switch(type)
+        switch (type)
         {
             case Player:
                 this.currentElementDescription = getPlayerDescription(strategy.getSport().getName(), name);
                 break;
             case Ball:
                 this.currentElementDescription = getBallDescription(strategy.getSport().getName(), name);
+                currentTeam = 0;
                 break;
             case Obstacle:
                 this.currentElementDescription = getObstacleDescription(strategy.getSport().getName(), name);
+                currentTeam = 0;
                 break;
         }
+    }
+
+    public void selectTeam(int team)
+    {
+        currentTeam = team;
     }
 
     public void setCurrentElemPosition(Vector2D pos)
@@ -168,12 +173,12 @@ public class GodController implements java.io.Serializable
     public Sport saveSport(String oldName, String newName, String courtImage, double courtHeight, double courtWidth, int playerNumber, int numTeams) throws ValidationException
     {
         Sport sport = null;
-        if(oldName != null)
+        if (oldName != null)
         {
             sport = sports.get(oldName);
         }
-        
-        if(sport != null)
+
+        if (sport != null)
         {
             sport.setName(newName);
             sport.setCourtImage(courtImage);
@@ -181,23 +186,23 @@ public class GodController implements java.io.Serializable
             sport.setMaxPlayer(playerNumber);
             sport.setMaxTeam(numTeams);
         }
-        
+
         else
         {
             sport = new Sport(newName, courtImage, courtHeight, courtWidth, playerNumber, numTeams);
             sports.put(newName, sport);
         }
-        
+
         return sport;
     }
-    
+
     public Sport getSport(String name)
     {
-        if(name == null)
+        if (name == null)
         {
             return null;
         }
-        
+
         return sports.get(name);
     }
 
@@ -205,45 +210,45 @@ public class GodController implements java.io.Serializable
     {
         return new ArrayList<Sport>(sports.values());
     }
-    
+
     public void deleteSport(String sportName)
     {
-        if(sportName != null)
+        if (sportName != null)
         {
             sports.remove(sportName);
         }
     }
-    
+
     public void createStrategy(String name, String sport) throws ValidationException
     {
         Sport s = getSport(sport);
-        if(s == null)
+        if (s == null)
         {
             throw new ValidationException("Sport invalide.");
         }
-        
+
         Strategy strat = new Strategy(name, s);
         this.strategies.put(name, strat);
         loadStrategy(name);
     }
-    
+
     public void loadStrategy(String name)
     {
         Strategy strat = getStrategy(name);
-        
-        if(strat != null)
+
+        if (strat != null)
         {
             this.strategy = strat;
         }
     }
-    
+
     public Strategy getStrategy(String name)
     {
-        if(name == null)
+        if (name == null)
         {
             return null;
         }
-        
+
         return strategies.get(name);
     }
 
@@ -251,20 +256,20 @@ public class GodController implements java.io.Serializable
     {
         return new ArrayList<Strategy>(strategies.values());
     }
-    
+
     public void saveBallDescription(String sportName, String oldName, String newName, String image, double height, double width) throws ValidationException
     {
         Sport sport = getSport(sportName);
-        if(sport != null)
+        if (sport != null)
         {
             BallDescription desc = null;
-            
-            if(oldName != null)
+
+            if (oldName != null)
             {
                 desc = sport.getBallDescription(oldName);
             }
 
-            if(desc != null)
+            if (desc != null)
             {
                 desc.setName(newName);
                 desc.setImage(image);
@@ -278,49 +283,49 @@ public class GodController implements java.io.Serializable
             }
         }
     }
-    
+
     public BallDescription getBallDescription(String sportName, String name)
     {
         BallDescription desc = null;
         Sport sport = getSport(sportName);
-        if(sport != null)
-        {         
-            if(name != null)
+        if (sport != null)
+        {
+            if (name != null)
             {
                 desc = sport.getBallDescription(name);
             }
         }
-        
+
         return desc;
     }
-    
+
     public void deleteBallDescription(String sportName, String name)
     {
         BallDescription desc = null;
         Sport sport = getSport(sportName);
-        if(sport != null)
-        {         
-            if(name != null)
+        if (sport != null)
+        {
+            if (name != null)
             {
                 desc = sport.getBallDescription(name);
                 sport.deleteElementDescription(desc);
             }
         }
     }
-    
+
     public void savePlayerDescription(String sportName, String oldName, String newName, String image, double height, double width) throws ValidationException
     {
         Sport sport = getSport(sportName);
-        if(sport != null)
+        if (sport != null)
         {
             PlayerDescription desc = null;
-            
-            if(oldName != null)
+
+            if (oldName != null)
             {
                 desc = sport.getPlayerDescription(oldName);
             }
 
-            if(desc != null)
+            if (desc != null)
             {
                 desc.setName(newName);
                 desc.setImage(image);
@@ -334,49 +339,49 @@ public class GodController implements java.io.Serializable
             }
         }
     }
-    
+
     public PlayerDescription getPlayerDescription(String sportName, String name)
     {
         PlayerDescription desc = null;
         Sport sport = getSport(sportName);
-        if(sport != null)
-        {         
-            if(name != null)
+        if (sport != null)
+        {
+            if (name != null)
             {
                 desc = sport.getPlayerDescription(name);
             }
         }
-        
+
         return desc;
     }
-    
+
     public void deletePlayerDescription(String sportName, String name)
     {
         PlayerDescription desc = null;
         Sport sport = getSport(sportName);
-        if(sport != null)
-        {         
-            if(name != null)
+        if (sport != null)
+        {
+            if (name != null)
             {
                 desc = sport.getPlayerDescription(name);
                 sport.deleteElementDescription(desc);
             }
         }
     }
-    
+
     public void saveObstacleDescription(String sportName, String oldName, String newName, String image, double height, double width) throws ValidationException
     {
         Sport sport = getSport(sportName);
-        if(sport != null)
+        if (sport != null)
         {
             ObstacleDescription desc = null;
-            
-            if(oldName != null)
+
+            if (oldName != null)
             {
                 desc = sport.getObstacleDescription(oldName);
             }
 
-            if(desc != null)
+            if (desc != null)
             {
                 desc.setName(newName);
                 desc.setImage(image);
@@ -390,29 +395,29 @@ public class GodController implements java.io.Serializable
             }
         }
     }
-    
+
     public ObstacleDescription getObstacleDescription(String sportName, String name)
     {
         ObstacleDescription desc = null;
         Sport sport = getSport(sportName);
-        if(sport != null)
-        {         
-            if(name != null)
+        if (sport != null)
+        {
+            if (name != null)
             {
                 desc = sport.getObstacleDescription(name);
             }
         }
-        
+
         return desc;
     }
-    
+
     public void deleteObstacleDescription(String sportName, String name)
     {
         ObstacleDescription desc = null;
         Sport sport = getSport(sportName);
-        if(sport != null)
-        {         
-            if(name != null)
+        if (sport != null)
+        {
+            if (name != null)
             {
                 desc = sport.getObstacleDescription(name);
                 sport.deleteElementDescription(desc);
@@ -451,40 +456,48 @@ public class GodController implements java.io.Serializable
     {
         return strategy.getDuration();
     }
-    
+
     public List<ObstacleDescription> getAllObstacleDescriptions()
     {
         return this.strategy.getSport().getAllObstacleDescriptions();
     }
-    
+
     public List<BallDescription> getAllBallDescriptions()
     {
         return this.strategy.getSport().getAllBallDescriptions();
     }
-    
+
     public List<PlayerDescription> getAllPlayerDescriptions()
     {
         return this.strategy.getSport().getAllPlayerDescriptions();
     }
-    
+
     public void setSelectedPlayerRole(String newElementDescription)
-    {   
-        if(selectedElement instanceof Player)
+    {
+        if (selectedElement instanceof Player)
         {
             PlayerDescription description = null;
-            
-            for(PlayerDescription playerDesc : this.strategy.getSport().getAllPlayerDescriptions())
+
+            for (PlayerDescription playerDesc : this.strategy.getSport().getAllPlayerDescriptions())
             {
-                if(playerDesc.getName().equals(newElementDescription))
+                if (playerDesc.getName().equals(newElementDescription))
                 {
                     description = playerDesc;
                 }
             }
-            
-            if(description != null)
+
+            if (description != null)
             {
-                ((Player)selectedElement).setPlayerDescription(description);
+                ((Player) selectedElement).setPlayerDescription(description);
             }
+        }
+    }
+    
+    public void setSelectedPlayerTeam(int team)
+    {
+        if (selectedElement instanceof Player)
+        {
+            ((Player) selectedElement).setTeam(team);
         }
     }
 
@@ -493,12 +506,14 @@ public class GodController implements java.io.Serializable
 
         private boolean playing;
         private double speed;
-        
-        public StrategyPlayer(){
+
+        public StrategyPlayer()
+        {
             speed = 1;
         }
-        
-        public StrategyPlayer(double speed){
+
+        public StrategyPlayer(double speed)
+        {
             this.speed = speed;
         }
 
@@ -514,7 +529,8 @@ public class GodController implements java.io.Serializable
                 previousTimeMillis = System.currentTimeMillis();
                 Thread.sleep((long) (1000 / FPS_PLAY));
                 time += (double) (System.currentTimeMillis() - previousTimeMillis) / 1000 * speed;
-                if(time > strategy.getDuration()){
+                if (time > strategy.getDuration())
+                {
                     time = strategy.getDuration();
                 }
                 window.update();
@@ -541,7 +557,7 @@ public class GodController implements java.io.Serializable
             playing = false;
         }
     }
-    
+
     public String getCourtImage()
     {
         return this.strategy.getSport().getCourtImage();
@@ -582,5 +598,10 @@ public class GodController implements java.io.Serializable
         {
             sp.pause();
         }
+    }
+
+    public int getMaxTeam()
+    {
+        return strategy.getSport().getMaxTeam();
     }
 }
