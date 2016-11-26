@@ -11,13 +11,26 @@ package model;
  */
 public class Player extends MobileElement implements java.io.Serializable
 {
+    private String name;
+    
     public Player(PlayerDescription desc)
     {
         super(desc);
+        name = "PlayerName";
     }
     
     public void setPlayerDescription(PlayerDescription description)
     {
         setElementDescription(description);
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public void setName(String newName)
+    {
+        this.name = newName;
     }
 }

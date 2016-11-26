@@ -104,7 +104,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private Button playPauseButton;
     @FXML
-    private Label nameLabel;
+    private TextField nameTextField;
 
     public StrategyEditionWindow(GodController controller, Stage primaryStage)
     {
@@ -149,6 +149,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         scenePane.setOnMouseMoved(this::onMouseMoved);
         scenePane.setOnMouseExited(this::onMouseExited);
 
+        nameTextField.setOnAction(this::onActionName);
         role.setOnAction(this::onActionRole);
         team.setOnAction(this::onActionTeam);
         positionX.setOnAction(this::onActionPositionX);
@@ -239,12 +240,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 newUIElement.getElementOrientationArrow().setOnMouseExited(this::onMouseExitedElement);
                 newUIElement.getElementOrientationArrow().setOnMouseDragged(this::onMouseRotatingElement);
                 newUIElement.getElementOrientationArrow().setOnMouseReleased(this::onMouseReleasedRotatingElement);
-
-                if (elem instanceof Player)
-                {
-                    Player player = (Player) elem;
-                    newUIElement.setElementName("PlayerName");
-                }
             }
         }
 
@@ -267,7 +262,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void updateRightPane(double x, double y, double ori)
     {
-        //set role here
         //set team here
         positionX.setText("" + x);
         positionY.setText("" + y);
@@ -280,13 +274,15 @@ public class StrategyEditionWindow implements Initializable, Updatable
             if (elementIsPlayer)
             {
                 Player player = (Player) selectedUIElement.getElement();
-                nameLabel.setText("PlayerName");
+                nameTextField.setDisable(false);
+                nameTextField.setText(player.getName());
                 elementNameCheckBox.setSelected(selectedUIElement.isElementNameVisible());
                 role.getSelectionModel().select(player.getElementDescription().getName());
             }
             else
             {
-                nameLabel.setText(selectedUIElement.getElement().getElementDescription().getName());
+                nameTextField.setDisable(true);
+                nameTextField.setText(selectedUIElement.getElement().getElementDescription().getName());
                 elementNameCheckBox.setSelected(false);
                 role.getSelectionModel().clearSelection();
             }
@@ -301,7 +297,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
         else
         {
-            nameLabel.setText("Nom joueur / obstacle");
+            nameTextField.setText("Nom joueur / obstacle");
+            nameTextField.setDisable(true);
             role.getSelectionModel().clearSelection();
             role.setDisable(true);
             team.setDisable(true);
@@ -398,12 +395,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
             try
             {
-                Element elem = controller.addElement(new Vector2D(point.getX(), point.getY()));
+                controller.addElement(new Vector2D(point.getX(), point.getY()));
             } catch (Exception exception)
             {
                 // TODO
             }
-            update();
         }
     }
 
@@ -437,9 +433,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         if (e.getCode() == KeyCode.DELETE)
         {
-            controller.deleteCurrentElement();
             selectedUIElement = null;
-            update();
+            controller.deleteCurrentElement();
         }
     }
 
@@ -481,7 +476,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 draggingElement = false;
                 controller.setCurrentElemPosition(selectedUIElement.getPosition());
-                update();
             }
         }
     }
@@ -545,10 +539,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
             Vector2D result = mousePosition.substract(elementPosition);
             controller.setCurrentElemOrientation(result.normaliser());
-            update();
         }
     }
 
+    private void onActionName(Event e)
+    {
+        if(selectedUIElement != null && selectedUIElement.getElement() instanceof Player)
+        {
+            controller.setSelectedPlayerName(nameTextField.getText());
+        }
+    }
+    
     private void onActionRole(Event e)
     {
         if (selectedUIElement != null)
@@ -598,7 +599,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 }
 
                 controller.setCurrentElemPosition(new Vector2D(x, y));
-                update();
             } catch (Exception exception)
             {
             }
@@ -636,7 +636,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 }
 
                 controller.setCurrentElemPosition(new Vector2D(x, y));
-                update();
             } catch (Exception exception)
             {
             }
@@ -653,7 +652,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 Vector2D ori = new Vector2D(1, 0);
                 ori.setAngle(Math.toRadians(angle));
                 controller.setCurrentElemOrientation(ori);
-                update();
             } catch (Exception exception)
             {
             }
@@ -674,9 +672,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         if (selectedUIElement != null)
         {
-            controller.deleteCurrentElement();
             selectedUIElement = null;
-            update();
+            controller.deleteCurrentElement();
         }
     }
 
@@ -690,6 +687,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
         StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
         dialog.setOnHidden((event) -> {
+            selectedUIElement = null;
             updateSport();
             update();
         });
@@ -795,7 +793,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionRestart()
     {
         controller.setCurrentTime(0);
-        update();
     }
 
     @FXML
@@ -814,21 +811,18 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionGoToEnd()
     {
         controller.setCurrentTime(controller.getDuration());
-        update();
     }
 
     @FXML
     private void onActionNextFrame()
     {
         controller.setCurrentTime(controller.getCurrentTime() + (1f / GodController.FPS));
-        update();
     }
 
     @FXML
     private void onActionPrevFrame()
     {
         controller.setCurrentTime(controller.getCurrentTime() - (1f / GodController.FPS));
-        update();
     }
 
     @Override
@@ -847,7 +841,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         if (userChange)
         {
             controller.setCurrentTime(timeLine.getValue() / controller.FPS);
-            update();
         }
         else
         {

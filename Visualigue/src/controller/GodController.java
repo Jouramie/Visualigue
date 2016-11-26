@@ -102,6 +102,8 @@ public class GodController implements java.io.Serializable
 
             elem.setPosition(time, pos, 0.0);
             elem.setOrientation(time, new Vector2D(1, 0), 0.0);
+            
+            window.update();
         }
         return elem;
     }
@@ -112,6 +114,7 @@ public class GodController implements java.io.Serializable
         {
             strategy.deleteElement(selectedElement);
             selectedElement = null;
+            window.update();
         }
     }
 
@@ -141,6 +144,7 @@ public class GodController implements java.io.Serializable
         if (this.selectedElement != null)
         {
             this.selectedElement.setPosition(this.time, pos, 0.0);
+            window.update();
         }
     }
 
@@ -149,6 +153,7 @@ public class GodController implements java.io.Serializable
         if (this.selectedElement != null)
         {
             this.selectedElement.setOrientation(time, ori, 0.0);
+            window.update();
         }
     }
 
@@ -432,6 +437,7 @@ public class GodController implements java.io.Serializable
         {
             this.time = 0;
         }
+        window.update();
     }
 
     public void nextFrame()
@@ -482,6 +488,15 @@ public class GodController implements java.io.Serializable
             {
                 ((Player)selectedElement).setPlayerDescription(description);
             }
+        }
+    }
+    
+    public void setSelectedPlayerName(String name)
+    {
+        if(selectedElement instanceof Player)
+        {
+            ((Player)selectedElement).setName(name);
+            window.update();
         }
     }
 
