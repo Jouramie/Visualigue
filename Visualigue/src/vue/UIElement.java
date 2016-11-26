@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import model.Element;
 import model.Player;
 import model.Vector2D;
@@ -81,6 +82,10 @@ public class UIElement
     {
         move(element.getPosition(time).getX(), element.getPosition(time).getY());
         node.setRotate(Math.toDegrees(element.getOrientation(time).getAngle()));
+        if(element instanceof Player)
+        {
+            setElementName(element.getElementDescription().getName() + "\n" + ((Player)element).getName());
+        }
     }
 
     public Node getGroup()
@@ -162,8 +167,18 @@ public class UIElement
     public void setElementName(String name)
     {
         elementName.setText(name);
-        Text text = new Text(name);
-        elementName.setTranslateX(element.getElementDescription().getSize().getX() / 2 - text.getLayoutBounds().getWidth() / 2);
+        double maxWidth = 0;
+        
+        for(String line : name.split("\n"))
+        {
+            Text text = new Text(name);
+            if(text.getLayoutBounds().getWidth() > maxWidth)
+            {
+                maxWidth = text.getLayoutBounds().getWidth();
+            }
+        }
+        elementName.setTranslateX(element.getElementDescription().getSize().getX()/2 - maxWidth/2);
+        elementName.setTextAlignment(TextAlignment.CENTER);
     }
 
     public void setRotating(boolean value)

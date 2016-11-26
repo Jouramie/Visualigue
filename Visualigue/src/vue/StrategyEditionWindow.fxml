@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -21,7 +23,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <MenuBar styleClass="background">
         <menus>
@@ -53,7 +55,7 @@
       </MenuBar>
    </top>
    <left>
-      <VBox styleClass="background">
+      <VBox alignment="TOP_CENTER" styleClass="background">
          <children>
             <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onActionMoveTool" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
             <MenuButton fx:id="playerButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Joueur" textAlignment="CENTER">
@@ -89,6 +91,12 @@
             </MenuButton>
             <Button mnemonicParsing="false" onAction="#onActionZoomIn" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom +" />
             <Button layoutX="10.0" layoutY="250.0" mnemonicParsing="false" onAction="#onActionZoomOut" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom -" />
+            <Label text="Nb joueurs&#10;max&#10;" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="nbMaxPlayerCheckBox" mnemonicParsing="false" onAction="#onActionNbMaxPlayer" />
          </children>
          <BorderPane.margin>
             <Insets />
@@ -98,10 +106,7 @@
    <right>
       <VBox alignment="TOP_CENTER" spacing="10.0" styleClass="background" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="nameLabel" text="Nom joueur / obstacle">
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin></Label>
+            <TextField fx:id="nameTextField" />
             <HBox>
                <children>
                   <Label prefWidth="70.0" text="Rôle:" />

@@ -37,6 +37,7 @@ public class GodController implements java.io.Serializable
     private PlayerDescription playerDescription;
     private BallDescription ballDescription;
     private ObstacleDescription obstacleDescription;
+    private boolean respectMaxNbOfPlayers;
 
     private transient Updatable window;
 
@@ -51,6 +52,7 @@ public class GodController implements java.io.Serializable
         this.currentElementDescription = null;
         this.currentTeam = 0;
         this.selectedElement = null;
+        this.respectMaxNbOfPlayers = false;
 
         try
         {
@@ -91,28 +93,76 @@ public class GodController implements java.io.Serializable
             if (currentElementDescription instanceof ObstacleDescription)
             {
                 elem = this.strategy.createObstacle((ObstacleDescription) currentElementDescription);
+                elem.setPosition(time, pos, 0.0);
+                elem.setOrientation(time, new Vector2D(1, 0), 0.0);
             }
             else if (currentElementDescription instanceof BallDescription)
             {
                 elem = this.strategy.createBall((BallDescription) currentElementDescription);
+                elem.setPosition(time, pos, 0.0);
+                elem.setOrientation(time, new Vector2D(1, 0), 0.0);
             }
-            else if (currentElementDescription instanceof PlayerDescription)
+            else if (currentElementDescription instanceof PlayerDescription && (!respectMaxNbOfPlayers || getNbOfPlayersInTeam(currentTeam) < getMaxNbOfPlayers()))
             {
                 elem = this.strategy.createPlayer((PlayerDescription) currentElementDescription, currentTeam);
+                elem.setPosition(time, pos, 0.0);
+                elem.setOrientation(time, new Vector2D(1, 0), 0.0);
             }
-
-            elem.setPosition(time, pos, 0.0);
-            elem.setOrientation(time, new Vector2D(1, 0), 0.0);
+            
+            window.update();
         }
         return elem;
     }
+    
+    public boolean getRespectMaxNbOfPlayers()
+    {
+        return respectMaxNbOfPlayers;
+    }
 
+    public void setRespectMaxNbOfPlayers(boolean isRespected)
+    {
+        respectMaxNbOfPlayers = isRespected;
+    }
+    
+    public int getNbOfPlayersInTeam(int team)
+    {
+        int result = 0;
+        
+        for(Element e : strategy.getAllElements())
+        {
+            if(e instanceof Player && ((Player)e).getTeam() == team)
+            {
+                result ++;
+            }
+        }
+        
+        return result;
+    }
+    
+    public int[] getTeams()
+    {
+        int[] result = new int[strategy.getSport().getMaxTeam()];
+        
+        for(int i = 0; i < result.length; i ++)
+        {
+            result[i] = i + 1;
+        }
+        
+        return result;
+    }
+    
+    public int getMaxNbOfPlayers()
+    {
+        return strategy.getSport().getMaxPlayer();
+    }
+    
     public void deleteCurrentElement()
     {
         if (selectedElement != null)
         {
             strategy.deleteElement(selectedElement);
             selectedElement = null;
+            window.update();
         }
     }
 
@@ -149,6 +199,7 @@ public class GodController implements java.io.Serializable
         if (this.selectedElement != null)
         {
             this.selectedElement.setPosition(this.time, pos, 0.0);
+            window.update();
         }
     }
 
@@ -157,6 +208,7 @@ public class GodController implements java.io.Serializable
         if (this.selectedElement != null)
         {
             this.selectedElement.setOrientation(time, ori, 0.0);
+            window.update();
         }
     }
 
@@ -440,6 +492,7 @@ public class GodController implements java.io.Serializable
         {
             this.time = 0;
         }
+        window.update();
     }
 
     public void nextFrame()
@@ -493,6 +546,15 @@ public class GodController implements java.io.Serializable
         }
     }
     
+    public void setSelectedPlayerName(String name)
+    {
+        if(selectedElement instanceof Player)
+        {
+            ((Player)selectedElement).setName(name);
+            window.update();
+        }
+    }
+            
     public void setSelectedPlayerTeam(int team)
     {
         if (selectedElement instanceof Player)
