@@ -141,8 +141,13 @@ public class GodController implements java.io.Serializable
     
     public int[] getTeams()
     {
-        //TODO: Fix this in later versions
-        int[] result = {1,2};
+        int[] result = new int[strategy.getSport().getMaxTeam()];
+        
+        for(int i = 0; i < result.length; i ++)
+        {
+            result[i] = i + 1;
+        }
+        
         return result;
     }
     
