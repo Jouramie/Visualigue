@@ -56,9 +56,37 @@
       <VBox styleClass="background">
          <children>
             <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onActionMoveTool" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
-            <ChoiceBox fx:id="playerButton" prefHeight="60.0" prefWidth="60.0" />
-            <ChoiceBox fx:id="ballButton" layoutX="10.0" layoutY="70.0" prefHeight="60.0" prefWidth="60.0" />
-            <ChoiceBox fx:id="obstacleButton" layoutX="10.0" layoutY="370.0" prefHeight="60.0" prefWidth="60.0" />
+            <MenuButton fx:id="playerButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Joueur" textAlignment="CENTER">
+               <items>
+                  <Menu mnemonicParsing="false" text="Unspecified Menu">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                    </items>
+                  </Menu>
+               </items>
+            </MenuButton>
+            <MenuButton fx:id="ballButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Ball" textAlignment="CENTER">
+               <contextMenu>
+                  <ContextMenu>
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                     </items>
+                  </ContextMenu>
+               </contextMenu>
+            </MenuButton>
+            <MenuButton fx:id="obstacleButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Obstacle" textAlignment="CENTER">
+               <contextMenu>
+                  <ContextMenu>
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                     </items>
+                  </ContextMenu>
+               </contextMenu>
+            </MenuButton>
             <Button mnemonicParsing="false" onAction="#onActionZoomIn" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom +" />
             <Button layoutX="10.0" layoutY="250.0" mnemonicParsing="false" onAction="#onActionZoomOut" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom -" />
          </children>
