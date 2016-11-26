@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -53,7 +55,7 @@
       </MenuBar>
    </top>
    <left>
-      <VBox styleClass="background">
+      <VBox alignment="TOP_CENTER" styleClass="background">
          <children>
             <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onActionMoveTool" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
             <MenuButton fx:id="playerButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Joueur" textAlignment="CENTER">
@@ -89,6 +91,12 @@
             </MenuButton>
             <Button mnemonicParsing="false" onAction="#onActionZoomIn" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom +" />
             <Button layoutX="10.0" layoutY="250.0" mnemonicParsing="false" onAction="#onActionZoomOut" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom -" />
+            <Label text="Nb joueurs&#10;max&#10;" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="nbMaxPlayerCheckBox" mnemonicParsing="false" onAction="#onActionNbMaxPlayer" />
          </children>
          <BorderPane.margin>
             <Insets />

@@ -19,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -46,7 +47,6 @@ import model.Element;
 import model.ElementDescription;
 import model.ElementDescription.TypeDescription;
 import model.Player;
-import model.PlayerDescription;
 import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
@@ -78,6 +78,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private Scale sceneScale;
     @FXML
     private CheckBox elementNameCheckBox;
+    @FXML
+    private CheckBox nbMaxPlayerCheckBox;
     @FXML
     private Button deleteButton;
     @FXML
@@ -243,6 +245,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void updateRightPane(double x, double y, double ori)
     {
+        nbMaxPlayerCheckBox.setSelected(controller.getRespectMaxNbOfPlayers());
         positionX.setText("" + x);
         positionY.setText("" + y);
         orientation.setText("" + ori);
@@ -677,6 +680,36 @@ public class StrategyEditionWindow implements Initializable, Updatable
         if (selectedUIElement != null)
         {
             selectedUIElement.setElementNameVisible(elementNameCheckBox.isSelected());
+        }
+    }
+    
+    @FXML
+    private void onActionNbMaxPlayer(ActionEvent e)
+    {
+        boolean nbOfPlayersRespected = true;
+        
+        for(int teamId : controller.getTeams())
+        {
+            if(controller.getNbOfPlayersInTeam(teamId) > controller.getMaxNbOfPlayers())
+            {
+                nbOfPlayersRespected = false;
+            }
+        }
+        
+        if(nbOfPlayersRespected)
+        {
+            controller.setRespectMaxNbOfPlayers(nbMaxPlayerCheckBox.isSelected());
+        }
+        else
+        {
+            nbMaxPlayerCheckBox.setSelected(false);
+            
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Erreur");
+            alert.setContentText("Le nombre de joueurs maximum est de " + controller.getMaxNbOfPlayers() + " par équipe.");
+
+            alert.showAndWait();
         }
     }
 
