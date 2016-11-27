@@ -232,11 +232,15 @@ public class GodController implements java.io.Serializable
 
         if (sport != null)
         {
+            sports.remove(oldName);
+            
             sport.setName(newName);
             sport.setCourtImage(courtImage);
             sport.setCourtSize(new Vector2D(courtWidth, courtHeight));
             sport.setMaxPlayer(playerNumber);
             sport.setMaxTeam(numTeams);
+            
+            sports.put(newName, sport);
         }
 
         else
