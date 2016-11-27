@@ -1,0 +1,88 @@
+\documentclass[ULlof]{ULrapport}
+
+% Chargement des packages
+\usepackage[utf8]{inputenc}
+\usepackage[autolanguage]{numprint}
+\usepackage{icomma}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{pbox}
+\usepackage{float}
+\usepackage{pifont}
+
+\setcounter{tocdepth}{2}
+
+% Definition d'une commande pour presenter des cellules multilignes dans un tableau
+%\newcommand{\cellulemultiligne}[1]{\begin{tabular}{@{}c@{}}#1\end{tabular}}
+
+% Definition de colonnes en mode paragraphe avec alignement ajustable
+% Cette definition requiert le chargement du package "array"
+%    - alignement horizontal, parametre #1 : - \raggedright (aligne a gauche)
+%                                            - \centering (centre)
+%                                            - \raggedleft (aligne a droite)
+%    - alignement vertical, parametre #2 : - p (aligne en haut)
+%                                          - m (centre)
+%                                          - b (aligne en bas)
+%    - largeur, parametre #3 : longueur
+%\newcolumntype{Z}[3]{>{#1\hspace{0pt}\arraybackslash}#2{#3}}
+
+% Page titre
+\TitreProjet{Tableau de hockey interactif}
+\TitreRapport{Document de conception -- Remise 3}
+\Destinataire{Martin Savoie}
+\NomEquipe{The Javangers}
+\TableauMembres{
+   111\,127\,868  & Jérémie Bolduc & \\\hline
+   111\,126\,228  & Simon-Pierre Deschênes & \\\hline
+   111\,121\,082  & Émile Grégoire & \\\hline
+   111\,130\,693  & Alexandre McCune & \\\hline
+}
+\DateRemise{27 novembre 2016}
+
+
+\HistoriqueVersions{
+   0.0 & 19 septembre 2016 & Création du document \\\hline
+   0.1 & 2 octobre 2016 & Première version après la phase d'inception et le début de l'élaboration \\\hline
+   1.0 & 6 novembre 2016 & Version pour la remise 2 \\\hline
+   2.0 & 27 novembre 2016 & Version pour la remise 3 \\\hline
+}
+
+\begin{document}
+
+\chapter{Diagrammes d'états}
+
+Cette section présente les deux diagrammes d'états demandés pour l'application.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams3/Diagramme etats joueur"}.png}
+	\caption{Diagramme d'états pour un joueur}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams3/Diagramme etats rondelle"}.png}
+	\caption{Diagramme d'états pour la rondelle}
+\end{figure}
+
+\chapter{Diagramme d'activité}
+
+Cette section présente le diagramme d'activité pour la création d'une stratégie en mode image par image.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=4in]{{"fig/diagrams3/Diagramme activite"}.png}
+	\caption{Diagramme d'activité pour la création d'une stratégie image par image}
+\end{figure}
+
+\chapter{Diagramme de classe}
+
+Cette section présente le diagramme de classe mis à jour pour le livrable 3.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{{"fig/diagrams3/Diagramme de classe"}.png}
+	\caption{Diagramme de classe de conception avec packages}
+\end{figure}
+
+\end{document}
