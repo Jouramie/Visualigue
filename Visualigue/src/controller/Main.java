@@ -20,22 +20,7 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage)
     {
-        File f = new File("visualigue.ser");
-        if(f.exists() && !f.isDirectory())
-        {
-            try
-            {
-                FileInputStream fileIn = new FileInputStream("visualigue.ser");
-                ObjectInputStream in = new ObjectInputStream(fileIn);
-                controller = (GodController)in.readObject();
-                in.close();
-                fileIn.close();
-            }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }
+        controller = GodController.load("visualigue.ser");
         
         if(controller == null)
         {

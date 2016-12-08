@@ -18,7 +18,6 @@ import model.Vector2D;
 
 public class UIElement
 {
-
     private Group node;
     private ImageView image;
     private ImageView orientation;

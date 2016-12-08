@@ -1,7 +1,10 @@
 package controller;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +71,40 @@ public class GodController implements java.io.Serializable
         }
     }
     
-    public void save()
+    public static GodController load(String path)
+    {
+        GodController result = null;
+        
+        File f = new File(path);
+        if(f.exists() && !f.isDirectory())
+        {
+            try
+            {
+                FileInputStream fileIn = new FileInputStream(path);
+                ObjectInputStream in = new ObjectInputStream(fileIn);
+                result = (GodController)in.readObject();
+                in.close();
+                fileIn.close();
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+        
+        return result;
+    }
+    
+    public void save(String path)
     {
         try
         {
-            FileOutputStream fileOut = new FileOutputStream("visualigue.ser");
+            if(path == null || path.isEmpty())
+            {
+                path = "visualigue.ser";
+            }
+            
+            FileOutputStream fileOut = new FileOutputStream(path);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(this);
             out.close();

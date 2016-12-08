@@ -27,6 +27,11 @@
           <Menu mnemonicParsing="false" text="Fichier">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#onActionNewStrategy" text="Nouvelle stratégie" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Ouvrir..." />
+                  <MenuItem mnemonicParsing="false" onAction="#onSave" text="Enregistrer" />
+                  <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Enregistrer sous..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#onClose" text="Quitter" />
             </items>
           </Menu>
