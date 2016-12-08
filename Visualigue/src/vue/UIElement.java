@@ -10,7 +10,6 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import model.Element;
@@ -62,7 +61,8 @@ public class UIElement
 
         if (element instanceof Player)
         {
-            InnerShadow innerShadow = new InnerShadow(35, getColor(((Player) element).getTeam()));
+            Player player = (Player)element;
+            InnerShadow innerShadow = new InnerShadow((double)player.getElementDescription().getSize().getX()/1.8, getColor(player.getTeam()));
             image.setEffect(innerShadow);
         }
 

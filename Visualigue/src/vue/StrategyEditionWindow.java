@@ -36,6 +36,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -51,7 +52,7 @@ import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
 {
-    private static final double ZOOM_SPEED = 0.1;
+    private static final double ZOOM_SPEED = 0.3;
     private static final char PAUSE_ICON = '⏸';
     private static final char PLAY_ICON = '⏵';
     private static final String TEAM_LABEL = "Équipe ";
@@ -151,6 +152,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
         
         sceneScale = new Scale(1.0, 1.0, 0, 0);
         scenePane.getTransforms().add(sceneScale);
+        
+        mainPane.addEventFilter(ScrollEvent.ANY, (e) -> {
+            onScroll(e);
+        });
         
         scenePane.setOnMousePressed(this::onMouseClicked);
         scenePane.setOnMouseMoved(this::onMouseMoved);
@@ -359,6 +364,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
         terrain.setFitWidth(x);
         terrain.setFitHeight(y);
         
+        double factor = (double)mainPane.getWidth()/(double)terrain.getBoundsInParent().getMaxX();
+        sceneScale.setX(factor);
+        sceneScale.setY(factor);
+        
         updateElementDescriptions();
         
         for(UIElement elem : uiElements)
@@ -383,8 +392,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onMouseMoved(MouseEvent e)
     {
         Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-        xCoordinate.setText("" + point.getX());
-        yCoordinate.setText("" + point.getY());
+        if(point.getX() <= controller.getCourtDimensions().getX() &&
+           point.getY() <= controller.getCourtDimensions().getY())
+        {
+            xCoordinate.setText("" + point.getX());
+            yCoordinate.setText("" + point.getY());
+        }
+        else
+        {
+            xCoordinate.setText("-");
+            yCoordinate.setText("-"); 
+        }
     }
 
     private void onMouseExited(MouseEvent e)
@@ -787,9 +805,18 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_BALL;
     }
+    
+    private void onScroll(ScrollEvent e)
+    {
+        double factor = sceneScale.getX() + e.getDeltaY() / e.getMultiplierY() * ZOOM_SPEED;
+        sceneScale.setX(factor);
+        sceneScale.setY(factor);
+        
+        e.consume();
+    }
 
     @FXML
-    public void onActionZoomIn(ActionEvent e)
+    private void onActionZoomIn(ActionEvent e)
     {
         double factor = sceneScale.getX() + ZOOM_SPEED;
         sceneScale.setX(factor);
@@ -797,7 +824,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     }
     
     @FXML
-    public void onActionZoomOut(ActionEvent e)
+    private void onActionZoomOut(ActionEvent e)
     {
         double factor = sceneScale.getX() - ZOOM_SPEED;
         sceneScale.setX(factor);
