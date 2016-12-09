@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -154,5 +155,25 @@ public class Trajectory implements java.io.Serializable
             TreeMap<Double, Vector2D> temp = new TreeMap(orientations.subMap(begin, end));
             orientations = temp;
         }
+    }
+    
+    public double getPreviousKeyFrame(double currentTime)
+    {
+        double time = 0.0;
+        if(positions != null && currentTime > 0)
+        {
+            time = positions.lowerKey(currentTime);
+        }
+        return time;
+    }
+    
+    public double getNextKeyFrame(double currentTime)
+    {
+        double time = currentTime;
+        if(positions != null && currentTime < positions.lastKey())
+        {
+            time = positions.higherKey(currentTime);
+        }
+        return time;
     }
 }

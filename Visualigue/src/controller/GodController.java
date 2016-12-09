@@ -1,5 +1,7 @@
 package controller;
 
+import com.sun.org.apache.xerces.internal.dom.ElementImpl;
+import java.awt.geom.Rectangle2D.Double;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -13,7 +15,9 @@ import javafx.concurrent.Task;
 import model.BallDescription;
 import model.Element;
 import model.ElementDescription;
+import model.MobileElement;
 import model.ObstacleDescription;
+import model.ObstacleElement;
 import model.Player;
 import model.PlayerDescription;
 import model.Sport;
@@ -88,13 +92,16 @@ public class GodController implements java.io.Serializable
     {
         Element elem = null;
 
-        if (currentElementDescription != null)
+        if (currentElementDescription != null && isValidCoord(currentElementDescription, pos))
         {
             if (currentElementDescription instanceof ObstacleDescription)
             {
-                elem = this.strategy.createObstacle((ObstacleDescription) currentElementDescription);
-                elem.setPosition(time, pos, 0.0);
-                elem.setOrientation(time, new Vector2D(1, 0), 0.0);
+                if(isObstacleNotInstersectingTrajectory((ObstacleDescription)currentElementDescription, pos))
+                {
+                    elem = this.strategy.createObstacle((ObstacleDescription) currentElementDescription);
+                    elem.setPosition(time, pos, 0.0);
+                    elem.setOrientation(time, new Vector2D(1, 0), 0.0);
+                }
             }
             else if (currentElementDescription instanceof BallDescription)
             {
@@ -196,13 +203,159 @@ public class GodController implements java.io.Serializable
 
     public void setCurrentElemPosition(Vector2D pos)
     {
-        if (this.selectedElement != null)
+        if (this.selectedElement != null && isValidCoord(selectedElement.getElementDescription(), pos))
         {
+            if(selectedElement instanceof MobileElement)
+            {
+                if(!isInterpolationValid(pos))
+                {
+                    window.update();
+                    return;
+                }
+            }
+            else
+            {
+                if(!isObstacleNotInstersectingTrajectory((ObstacleDescription)selectedElement.getElementDescription(), pos))
+                {
+                    window.update();
+                    return;
+                }
+            }
+            
             this.selectedElement.setPosition(this.time, pos, 0.0);
-            window.update();
         }
+        window.update();
     }
+    
+    public boolean isInterpolationValid(Vector2D newPos)
+    {
+        if(selectedElement != null && selectedElement instanceof MobileElement)
+        {
+            for(Element obstacle : getAllElements())
+            {
+                if(obstacle != selectedElement && obstacle instanceof ObstacleElement)
+                {
+                    final int NB_OF_VERIFICATIONS = 30;
+                    MobileElement elem = (MobileElement)selectedElement;
+                    Vector2D pos = elem.getPosition(elem.getPreviousKeyFrame(time));
+                    Vector2D elemSize = elem.getElementDescription().getSize();
+                    Vector2D obstaclePosition = obstacle.getPosition(time);
+                    Vector2D obstacleSize = obstacle.getElementDescription().getSize();
+                    Vector2D dl = newPos.substract(pos);
+                    dl.setLength(dl.getLength()/NB_OF_VERIFICATIONS);
+                    java.awt.geom.Rectangle2D.Double rect1 = new java.awt.geom.Rectangle2D.Double(obstaclePosition.getX() - obstacleSize.getX()/2, obstaclePosition.getY() - obstacleSize.getY()/2, obstacleSize.getX(), obstacleSize.getY());
+                    java.awt.geom.Rectangle2D.Double rect2 = new java.awt.geom.Rectangle2D.Double();
+                    
+                    for(int i = 0; i < NB_OF_VERIFICATIONS; i ++)
+                    {
+                        rect2.setRect(pos.getX() - elemSize.getX()/2, pos.getY() - elemSize.getY()/2, elemSize.getX(), elemSize.getY());
+                        
+                        if(rect1.intersects(rect2))
+                        {
+                            return false;
+                        }
+                        
+                        pos = pos.add(dl);
+                    }
+                    
+                    pos = elem.getPosition(elem.getNextKeyFrame(time));
+                    dl = newPos.substract(pos);
+                    dl.setLength(dl.getLength()/NB_OF_VERIFICATIONS);
+                    
+                    for(int i = 0; i < NB_OF_VERIFICATIONS; i ++)
+                    {
+                        rect2.setRect(pos.getX() - elemSize.getX()/2, pos.getY() - elemSize.getY()/2, elemSize.getX(), elemSize.getY());
+                        
+                        if(rect1.intersects(rect2))
+                        {
+                            return false;
+                        }
+                        
+                        pos = pos.add(dl);
+                    }
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    public boolean isObstacleNotInstersectingTrajectory(ObstacleDescription obstacleDescription, Vector2D newPos)
+    {
+        for(Element element : getAllElements())
+        {
+            if(element instanceof MobileElement)
+            {
+                final double NB_OF_VERIFICATIONS_BY_SECOND = 15;
+                MobileElement mobile = (MobileElement)element;
+                Vector2D mobileSize = mobile.getElementDescription().getSize();
+                Vector2D obstacleSize = obstacleDescription.getSize();
+                
+                double verificationTime = 0;
+                double maxVerfificationTime = (int)(strategy.getDuration() * NB_OF_VERIFICATIONS_BY_SECOND);
+                
+                java.awt.geom.Rectangle2D.Double rect1 = new java.awt.geom.Rectangle2D.Double(newPos.getX() - obstacleSize.getX()/2, newPos.getY() - obstacleSize.getY()/2, obstacleSize.getX(), obstacleSize.getY());
+                java.awt.geom.Rectangle2D.Double rect2 = new java.awt.geom.Rectangle2D.Double();
 
+                while(verificationTime <= maxVerfificationTime)
+                {
+                    rect2.setRect(mobile.getPosition(verificationTime).getX() - mobileSize.getX()/2, mobile.getPosition(verificationTime).getY() - mobileSize.getY()/2, mobileSize.getX(), mobileSize.getY());
+
+                    if(rect1.intersects(rect2))
+                    {
+                        return false;
+                    }
+
+                    verificationTime += (1.0/NB_OF_VERIFICATIONS_BY_SECOND);
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    public boolean isValidCoord(ElementDescription elementDescription, Vector2D pos)
+    {
+        Vector2D elementSize = elementDescription.getSize();
+        
+        for(Element e : getAllElements())
+        {
+            if(e != selectedElement && e instanceof ObstacleElement)
+            {
+                Vector2D obstacleSize = e.getElementDescription().getSize();
+                
+                if(pos.getX() + elementSize.getX()/2 >= e.getPosition(time).getX() - obstacleSize.getX()/2 && pos.getX() - elementSize.getX()/2 <= e.getPosition(time).getX() + obstacleSize.getX()/2)
+                {
+                    if(pos.getY() + elementSize.getY()/2 >= e.getPosition(time).getY() - obstacleSize.getY()/2 && pos.getY() - elementSize.getY()/2 <= e.getPosition(time).getY() + obstacleSize.getY()/2)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        
+        Vector2D courtSize = this.strategy.getSport().getCourtSize();
+        
+        if(pos.getX() + elementSize.getX()/2 > courtSize.getX())
+        {
+            return false;
+        }
+        if(pos.getX() - elementSize.getX()/2 < 0)
+        {
+            return false;
+        }
+        if(pos.getY() + elementSize.getY()/2 > courtSize.getY())
+        {
+            return false;
+        }
+        if(pos.getY() - elementSize.getY()/2 < 0)
+        {
+            return false;
+        }
+        
+        return true;
+    }
+    
     public void setCurrentElemOrientation(Vector2D ori)
     {
         if (this.selectedElement != null)

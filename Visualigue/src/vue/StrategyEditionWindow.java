@@ -23,7 +23,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
@@ -475,13 +474,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 double x = selectedUIElement.getPosition().getX();
                 double y = selectedUIElement.getPosition().getY();
                 Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
-
-                if (point.getX() - elementDimensions.getX() / 2 >= 0 && point.getX() + elementDimensions.getX() / 2 <= dimensions.getX())
+                
+                if(controller.isValidCoord(selectedUIElement.getElement().getElementDescription(), new Vector2D(point.getX(), point.getY())))
                 {
                     x = point.getX();
-                }
-                if (point.getY() - elementDimensions.getY() / 2 >= 0 && point.getY() + elementDimensions.getY() / 2 <= dimensions.getY())
-                {
                     y = point.getY();
                 }
 
