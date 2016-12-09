@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -20,7 +25,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <MenuBar styleClass="background">
         <menus>
@@ -99,6 +104,12 @@
                </font>
             </Label>
             <CheckBox fx:id="nbMaxPlayerCheckBox" mnemonicParsing="false" onAction="#onActionNbMaxPlayer" />
+            <Label text="Afficher&#10;étiquettes" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="visibleLabelsCheckBox" mnemonicParsing="false" onAction="#onActionVisibleLabels" />
          </children>
          <BorderPane.margin>
             <Insets />

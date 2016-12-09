@@ -84,6 +84,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private CheckBox nbMaxPlayerCheckBox;
     @FXML
+    private CheckBox visibleLabelsCheckBox;
+    @FXML
     private Button deleteButton;
     @FXML
     private Button moveButton;
@@ -252,7 +254,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void updateRightPane(double x, double y, double ori)
     {
+        updateVisibleLabelsCheckBox();
         nbMaxPlayerCheckBox.setSelected(controller.getRespectMaxNbOfPlayers());
+        
         positionX.setText("" + x);
         positionY.setText("" + y);
         orientation.setText("" + ori);
@@ -302,6 +306,19 @@ public class StrategyEditionWindow implements Initializable, Updatable
             elementNameCheckBox.setDisable(true);
             deleteButton.setDisable(true);
         }
+    }
+    
+    private void updateVisibleLabelsCheckBox()
+    {
+        boolean visible = false;
+        for(UIElement elem : uiElements)
+        {
+            if(elem.isElementNameVisible())
+            {
+                visible = true;
+            }
+        }
+        visibleLabelsCheckBox.setSelected(visible);
     }
 
     private void updateElementDescriptions()
@@ -704,6 +721,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         if (selectedUIElement != null)
         {
             selectedUIElement.setElementNameVisible(elementNameCheckBox.isSelected());
+            updateVisibleLabelsCheckBox();
         }
     }
     
@@ -734,6 +752,15 @@ public class StrategyEditionWindow implements Initializable, Updatable
             alert.setContentText("Le nombre de joueurs maximum est de " + controller.getMaxNbOfPlayers() + " par équipe.");
 
             alert.showAndWait();
+        }
+    }
+    
+    @FXML
+    private void onActionVisibleLabels(ActionEvent e)
+    {
+        for(UIElement elem : uiElements)
+        {
+            elem.setElementNameVisible(visibleLabelsCheckBox.isSelected());
         }
     }
 
