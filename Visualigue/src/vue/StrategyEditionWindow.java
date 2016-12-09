@@ -2,6 +2,7 @@ package vue;
 
 import controller.GodController;
 import controller.Updatable;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,6 +41,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -130,7 +133,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             stage.setScene(scene);
             stage.setTitle("VisuaLigue");
             stage.setOnCloseRequest((event) -> {
-                controller.save();
+                this.controller.save(null);
             });
             stage.show();
         } catch (IOException ex)
@@ -384,7 +387,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onClose(ActionEvent e)
     {
-        controller.save();
+        controller.save(null);
         stage.close();
     }
 
@@ -734,6 +737,47 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             selectedUIElement = null;
             controller.deleteCurrentElement();
+        }
+    }
+    
+    @FXML
+    private void onOpen(ActionEvent e)
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Charger une stratégie");
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("SER files", "*.ser"));
+        File file = fileChooser.showOpenDialog(stage);
+        
+        if(file != null)
+        {
+            GodController newController = GodController.load(file.getPath());
+            if(newController != null)
+            {
+                this.controller = newController;
+                this.controller.setWindow(this);
+                updateSport();
+                update();
+            }
+        }
+    }
+    
+    @FXML
+    private void onSave(ActionEvent e)
+    {
+        controller.save(null);
+    }
+    
+    @FXML
+    private void onSaveAs(ActionEvent e)
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sauvegarder stratégie");
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("SER files", "*.ser"));
+        File file = fileChooser.showSaveDialog(stage);
+        
+        if(file != null)
+        {
+            controller.save(file.getPath());
         }
     }
 
