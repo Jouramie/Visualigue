@@ -219,7 +219,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
             if (!found)
             {
-                UIElement newUIElement = new UIElement(elem, controller.getCurrentTime());
+                UIElement newUIElement = new UIElement(elem, controller.getCurrentTime(), 1/sceneScale.getX());
                 uiElements.add(newUIElement);
                 scenePane.getChildren().add(newUIElement.getGroup());
                 newUIElement.getNode().setOnMousePressed(this::onMouseClickedElement);
@@ -369,6 +369,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         double factor = (double)mainPane.getWidth()/(double)terrain.getBoundsInParent().getMaxX();
         sceneScale.setX(factor);
         sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
         
         updateElementDescriptions();
         
@@ -851,7 +858,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         double factor = sceneScale.getX() + e.getDeltaY() / e.getMultiplierY() * ZOOM_SPEED;
         sceneScale.setX(factor);
         sceneScale.setY(factor);
-        
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
         e.consume();
     }
 
@@ -861,6 +874,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         double factor = sceneScale.getX() + ZOOM_SPEED;
         sceneScale.setX(factor);
         sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
     }
     
     @FXML
@@ -869,6 +889,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         double factor = sceneScale.getX() - ZOOM_SPEED;
         sceneScale.setX(factor);
         sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
     }
 
     private void onActionObstacleDescription(ActionEvent e)
