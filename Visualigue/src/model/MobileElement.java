@@ -58,4 +58,14 @@ public abstract class MobileElement extends Element implements java.io.Serializa
         this.trajectory.flushPositions(time, this.trajectory.getDuration());
         this.trajectory.flushOrientations(time, this.trajectory.getDuration());
     }
+    
+    public double getPreviousKeyFrame(double currentTime)
+    {
+        return this.trajectory.getPreviousKeyFrame(currentTime);
+    }
+    
+    public double getNextKeyFrame(double currentTime)
+    {
+        return this.trajectory.getNextKeyFrame(currentTime);
+    }
 }

@@ -87,6 +87,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private CheckBox nbMaxPlayerCheckBox;
     @FXML
+    private CheckBox visibleLabelsCheckBox;
+    @FXML
     private Button deleteButton;
     @FXML
     private Button moveButton;
@@ -220,7 +222,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
             if (!found)
             {
-                UIElement newUIElement = new UIElement(elem, GodController.getInstance().getCurrentTime());
+                UIElement newUIElement = new UIElement(elem, GodController.getInstance().getCurrentTime(), 1/sceneScale.getX());
                 uiElements.add(newUIElement);
                 scenePane.getChildren().add(newUIElement.getGroup());
                 newUIElement.getNode().setOnMousePressed(this::onMouseClickedElement);
@@ -274,6 +276,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void updateRightPane(double x, double y, double ori)
     {
         nbMaxPlayerCheckBox.setSelected(GodController.getInstance().getRespectMaxNbOfPlayers());
+        updateVisibleLabelsCheckBox();
+        nbMaxPlayerCheckBox.setSelected(GodController.getInstance().getRespectMaxNbOfPlayers());
+        
         positionX.setText("" + x);
         positionY.setText("" + y);
         orientation.setText("" + ori);
@@ -326,6 +331,19 @@ public class StrategyEditionWindow implements Initializable, Updatable
             elementNameCheckBox.setDisable(true);
             deleteButton.setDisable(true);
         }
+    }
+    
+    private void updateVisibleLabelsCheckBox()
+    {
+        boolean visible = false;
+        for(UIElement elem : uiElements)
+        {
+            if(elem.isElementNameVisible())
+            {
+                visible = true;
+            }
+        }
+        visibleLabelsCheckBox.setSelected(visible);
     }
 
     private void updateElementDescriptions()
@@ -393,6 +411,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         double factor = (double)mainPane.getWidth()/(double)terrain.getBoundsInParent().getMaxX();
         sceneScale.setX(factor);
         sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
         
         updateElementDescriptions();
         
@@ -501,13 +526,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 double x = selectedUIElement.getPosition().getX();
                 double y = selectedUIElement.getPosition().getY();
                 Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
-
-                if (point.getX() - elementDimensions.getX() / 2 >= 0 && point.getX() + elementDimensions.getX() / 2 <= dimensions.getX())
+                
+                if(GodController.getInstance().isValidCoord(selectedUIElement.getElement().getElementDescription(), new Vector2D(point.getX(), point.getY())))
                 {
                     x = point.getX();
-                }
-                if (point.getY() - elementDimensions.getY() / 2 >= 0 && point.getY() + elementDimensions.getY() / 2 <= dimensions.getY())
-                {
                     y = point.getY();
                 }
 
@@ -724,6 +746,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         if (selectedUIElement != null)
         {
             selectedUIElement.setElementNameVisible(elementNameCheckBox.isSelected());
+            updateVisibleLabelsCheckBox();
         }
     }
     
@@ -754,6 +777,15 @@ public class StrategyEditionWindow implements Initializable, Updatable
             alert.setContentText("Le nombre de joueurs maximum est de " + GodController.getInstance().getMaxNbOfPlayers() + " par équipe.");
 
             alert.showAndWait();
+        }
+    }
+    
+    @FXML
+    private void onActionVisibleLabels(ActionEvent e)
+    {
+        for(UIElement elem : uiElements)
+        {
+            elem.setElementNameVisible(visibleLabelsCheckBox.isSelected());
         }
     }
 
@@ -893,7 +925,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         double factor = sceneScale.getX() + e.getDeltaY() / e.getMultiplierY() * ZOOM_SPEED;
         sceneScale.setX(factor);
         sceneScale.setY(factor);
-        
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
         e.consume();
     }
 
@@ -903,6 +941,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         double factor = sceneScale.getX() + ZOOM_SPEED;
         sceneScale.setX(factor);
         sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
     }
     
     @FXML
@@ -911,6 +956,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         double factor = sceneScale.getX() - ZOOM_SPEED;
         sceneScale.setX(factor);
         sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
     }
 
     private void onActionObstacleDescription(ActionEvent e)
