@@ -4,6 +4,7 @@ import controller.GodController;
 import controller.Updatable;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -17,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -37,6 +39,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
@@ -51,6 +54,7 @@ import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
 {
+
     private static final double ZOOM_SPEED = 0.1;
     private static final char PAUSE_ICON = '⏸';
     private static final char PLAY_ICON = '⏵';
@@ -107,7 +111,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private TextField orientation;
     @FXML
-    private TextField speed;
+    private HBox timeButtonHBox;
+    private MaskField speed;
     @FXML
     private Button playPauseButton;
     @FXML
@@ -129,7 +134,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Scene scene = new Scene(root, 1000, 800);
             stage.setScene(scene);
             stage.setTitle("VisuaLigue");
-            stage.setOnCloseRequest((event) -> {
+            stage.setOnCloseRequest((event) ->
+            {
                 controller.save();
             });
             stage.show();
@@ -137,7 +143,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         onActionNewStrategy(null);
     }
 
@@ -148,10 +154,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
         scenePane = new Pane();
         zoomingGroup.getChildren().add(scenePane);
         mainPane.setContent(zoomingGroup);
-        
+
         sceneScale = new Scale(1.0, 1.0, 0, 0);
         scenePane.getTransforms().add(sceneScale);
-        
+
         scenePane.setOnMousePressed(this::onMouseClicked);
         scenePane.setOnMouseMoved(this::onMouseMoved);
         scenePane.setOnMouseExited(this::onMouseExited);
@@ -170,14 +176,38 @@ public class StrategyEditionWindow implements Initializable, Updatable
         mainPane.setClip(clipRect);
 
         userChange = true;
-        timeLine.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
+        timeLine.valueProperty().addListener((observable, oldValue, newValue) ->
         {
             onSliderValueChange();
         });
 
+        timeLine.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            onSliderExiting();
+        });
+
+        speed = new MaskField();
+        speed.setMask("xD");
+        speed.setAlignment(Pos.CENTER);
+        speed.setPrefHeight(25.0);
+        speed.setPrefWidth(29.0);
+        speed.setText("x2");
+        speed.focusedProperty().addListener((observaleValue, oldValue, newValue) ->
+        {
+            if (!newValue)
+            {
+                if (speed.getText().equals("x_"))
+                {
+                    speed.setText("x2");
+                }
+            }
+        });
+        timeButtonHBox.getChildren().add(speed);
+
         terrain = new ImageView();
         scenePane.getChildren().add(terrain);
-        scenePane.boundsInParentProperty().addListener((event) -> {
+        scenePane.boundsInParentProperty().addListener((event) ->
+        {
             zoomingGroup.setMinWidth(scenePane.getBoundsInParent().getWidth());
             zoomingGroup.setMinHeight(scenePane.getBoundsInParent().getHeight());
         });
@@ -315,7 +345,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             playerButton.getItems().add(m);
             role.getItems().add(desc.getName());
         }
-        if(role.getItems().contains(oldSelection))
+        if (role.getItems().contains(oldSelection))
         {
             role.getSelectionModel().select(oldSelection);
         }
@@ -342,7 +372,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             team.getItems().add(TEAM_LABEL + (i + 1));
         }
-        if(team.getItems().contains(oldSelection))
+        if (team.getItems().contains(oldSelection))
         {
             team.getSelectionModel().select(oldSelection);
         }
@@ -355,13 +385,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
         double x = controller.getCourtDimensions().getX();
         double y = controller.getCourtDimensions().getY();
-        
+
         terrain.setFitWidth(x);
         terrain.setFitHeight(y);
-        
+
         updateElementDescriptions();
-        
-        for(UIElement elem : uiElements)
+
+        for (UIElement elem : uiElements)
         {
             elem.refreshNode(controller.getCurrentTime());
         }
@@ -549,12 +579,12 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onActionName(Event e)
     {
-        if(selectedUIElement != null && selectedUIElement.getElement() instanceof Player)
+        if (selectedUIElement != null && selectedUIElement.getElement() instanceof Player)
         {
             controller.setSelectedPlayerName(nameTextField.getText());
         }
     }
-    
+
     private void onActionRole(Event e)
     {
         if (selectedUIElement != null)
@@ -682,28 +712,28 @@ public class StrategyEditionWindow implements Initializable, Updatable
             selectedUIElement.setElementNameVisible(elementNameCheckBox.isSelected());
         }
     }
-    
+
     @FXML
     private void onActionNbMaxPlayer(ActionEvent e)
     {
         boolean nbOfPlayersRespected = true;
-        
-        for(int teamId : controller.getTeams())
+
+        for (int teamId : controller.getTeams())
         {
-            if(controller.getNbOfPlayersInTeam(teamId) > controller.getMaxNbOfPlayers())
+            if (controller.getNbOfPlayersInTeam(teamId) > controller.getMaxNbOfPlayers())
             {
                 nbOfPlayersRespected = false;
             }
         }
-        
-        if(nbOfPlayersRespected)
+
+        if (nbOfPlayersRespected)
         {
             controller.setRespectMaxNbOfPlayers(nbMaxPlayerCheckBox.isSelected());
         }
         else
         {
             nbMaxPlayerCheckBox.setSelected(false);
-            
+
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
             alert.setHeaderText("Erreur");
@@ -732,7 +762,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
         dialog.initOwner(stage);
 
         StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
-        dialog.setOnHidden((event) -> {
+        dialog.setOnHidden((event) ->
+        {
             selectedUIElement = null;
             updateSport();
             update();
@@ -795,7 +826,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         sceneScale.setX(factor);
         sceneScale.setY(factor);
     }
-    
+
     @FXML
     public void onActionZoomOut(ActionEvent e)
     {
@@ -818,15 +849,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionPlay(ActionEvent e)
     {
-        System.out.println("vue.StrategyEditionWindow.onActionPlay()");
-        controller.playStrategy();
+        controller.playStrategy(1);
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
     }
 
     private void onActionPause(ActionEvent e)
     {
-        System.out.println("vue.StrategyEditionWindow.onActionPause()");
         controller.pauseStrategy();
         playPauseButton.setOnAction(this::onActionPlay);
         playPauseButton.setText("" + PLAY_ICON);
@@ -847,13 +876,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionRewind()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionRewind()");
+        controller.playStrategy(- Integer.parseInt(speed.getText().substring(1)));
+        playPauseButton.setOnAction(this::onActionPause);
+        playPauseButton.setText("" + PAUSE_ICON);
     }
 
     @FXML
     private void onActionFastForward()
     {
-        System.out.println("vue.StrategyEditionWindow.onActionFastForward()");
+        controller.playStrategy(Integer.parseInt(speed.getText().substring(1)));
+        playPauseButton.setOnAction(this::onActionPause);
+        playPauseButton.setText("" + PAUSE_ICON);
     }
 
     @FXML
@@ -872,6 +905,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionPrevFrame()
     {
         controller.setCurrentTime(controller.getCurrentTime() - (1f / GodController.FPS));
+    }
+
+    @FXML
+    private void onActionStop(ActionEvent e)
+    {
+        onActionPause(e);
+        controller.setCurrentTime(0);
     }
 
     @Override
@@ -895,5 +935,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             userChange = true;
         }
+    }
+
+    public void onSliderExiting()
+    {
+        timeLine.setValue((int) timeLine.getValue());
+        controller.setCurrentTime(timeLine.getValue() / controller.FPS);
     }
 }

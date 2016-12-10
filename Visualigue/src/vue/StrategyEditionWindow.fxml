@@ -159,7 +159,7 @@
    <bottom>
       <VBox styleClass="background" BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER">
+            <HBox fx:id="timeButtonHBox" alignment="CENTER">
                <children>
                   <Button mnemonicParsing="false" onAction="#onActionRecord" text="⚫">
                      <styleClass>
@@ -170,10 +170,10 @@
                   <Button mnemonicParsing="false" onAction="#onActionRewind" styleClass="btnTimeLine" text="⏪" />
                   <Button mnemonicParsing="false" onAction="#onActionPrevFrame" styleClass="btnTimeLine" text="⮜" />
                   <Button fx:id="playPauseButton" mnemonicParsing="false" onAction="#onActionPlay" styleClass="btnTimeLine" text="▶" />
+                  <Button mnemonicParsing="false" onAction="#onActionStop" styleClass="btnTimeLine" text="■" />
                   <Button mnemonicParsing="false" onAction="#onActionNextFrame" styleClass="btnTimeLine" text="⮞" />
                   <Button mnemonicParsing="false" onAction="#onActionFastForward" styleClass="btnTimeLine" text="⏩" />
                   <Button mnemonicParsing="false" onAction="#onActionGoToEnd" styleClass="btnTimeLine" text="⏭" />
-                  <TextField fx:id="speed" alignment="CENTER" prefHeight="25.0" prefWidth="29.0" text="2" />
                </children>
             </HBox>
             <Slider fx:id="timeLine" styleClass="sliderTimeLine">
