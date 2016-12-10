@@ -10,16 +10,15 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Scale;
 import model.Element;
 import model.Player;
 import model.Vector2D;
 
 public class UIElement
 {
-
     private Group node;
     private ImageView image;
     private ImageView orientation;
@@ -28,10 +27,11 @@ public class UIElement
     private boolean rotating;
     private Group group;
     private Label elementName;
+    private Scale elementNameScale;
     static private HashMap<String, Image> images = new HashMap();
     static private HashMap<Integer, Color> teamColor = new HashMap();
 
-    public UIElement(Element element, double time)
+    public UIElement(Element element, double time, double elementNameScaleFactor)
     {
         this.element = element;
         rotating = false;
@@ -50,6 +50,9 @@ public class UIElement
         group = new Group();
         group.getChildren().add(elementName);
         group.getChildren().add(node);
+        
+        elementNameScale = new Scale(elementNameScaleFactor, elementNameScaleFactor, 0, 0);
+        elementName.getTransforms().add(elementNameScale);
 
         refreshNode(time);
     }
@@ -62,7 +65,8 @@ public class UIElement
 
         if (element instanceof Player)
         {
-            InnerShadow innerShadow = new InnerShadow(35, getColor(((Player) element).getTeam()));
+            Player player = (Player)element;
+            InnerShadow innerShadow = new InnerShadow((double)player.getElementDescription().getSize().getX()/1.8, getColor(player.getTeam()));
             image.setEffect(innerShadow);
         }
 
@@ -172,9 +176,9 @@ public class UIElement
         for(String line : name.split("\n"))
         {
             Text text = new Text(name);
-            if(text.getLayoutBounds().getWidth() > maxWidth)
+            if(text.getLayoutBounds().getWidth() * elementNameScale.getX() > maxWidth)
             {
-                maxWidth = text.getLayoutBounds().getWidth();
+                maxWidth = text.getLayoutBounds().getWidth() * elementNameScale.getX();
             }
         }
         elementName.setTranslateX(element.getElementDescription().getSize().getX()/2 - maxWidth/2);
@@ -245,5 +249,11 @@ public class UIElement
         }
         return result;
     }
-
+    
+    void setElementNameZoomFactor(double factor)
+    {
+        elementNameScale.setX(factor);
+        elementNameScale.setY(factor);
+        setElementName(elementName.getText());
+    }
 }

@@ -2,6 +2,7 @@ package vue;
 
 import controller.GodController;
 import controller.Updatable;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -25,7 +26,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
@@ -38,11 +38,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -54,8 +57,7 @@ import model.Vector2D;
 
 public class StrategyEditionWindow implements Initializable, Updatable
 {
-
-    private static final double ZOOM_SPEED = 0.1;
+    private static final double ZOOM_SPEED = 0.3;
     private static final char PAUSE_ICON = '⏸';
     private static final char PLAY_ICON = '⏵';
     private static final String TEAM_LABEL = "Équipe ";
@@ -65,7 +67,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         ADD_PLAYER, ADD_BALL, ADD_OBSTACLE, MOVE, RECORD, ZOOM
     }
 
-    GodController controller;
     private Stage stage;
     private BorderPane root;
     private List<UIElement> uiElements;
@@ -81,9 +82,15 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private Pane scenePane;
     private Scale sceneScale;
     @FXML
+    MenuItem undoMenu;
+    @FXML
+    MenuItem redoMenu;
+    @FXML
     private CheckBox elementNameCheckBox;
     @FXML
     private CheckBox nbMaxPlayerCheckBox;
+    @FXML
+    private CheckBox visibleLabelsCheckBox;
     @FXML
     private Button deleteButton;
     @FXML
@@ -118,10 +125,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private TextField nameTextField;
 
-    public StrategyEditionWindow(GodController controller, Stage primaryStage)
+    public StrategyEditionWindow(Stage primaryStage)
     {
         this.selectedTool = Toolbox.MOVE;
-        this.controller = controller;
         this.uiElements = new ArrayList();
         this.draggingElement = false;
 
@@ -134,9 +140,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Scene scene = new Scene(root, 1000, 800);
             stage.setScene(scene);
             stage.setTitle("VisuaLigue");
-            stage.setOnCloseRequest((event) ->
-            {
-                controller.save();
+            stage.setOnCloseRequest((event) -> {
+                GodController.save(null);
             });
             stage.show();
         } catch (IOException ex)
@@ -157,17 +162,16 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
         sceneScale = new Scale(1.0, 1.0, 0, 0);
         scenePane.getTransforms().add(sceneScale);
-
+        
+        mainPane.addEventFilter(ScrollEvent.ANY, (e) -> {
+            onScroll(e);
+        });
+        
         scenePane.setOnMousePressed(this::onMouseClicked);
         scenePane.setOnMouseMoved(this::onMouseMoved);
         scenePane.setOnMouseExited(this::onMouseExited);
 
-        nameTextField.setOnAction(this::onActionName);
-        role.setOnAction(this::onActionRole);
-        team.setOnAction(this::onActionTeam);
-        positionX.setOnAction(this::onActionPositionX);
-        positionY.setOnAction(this::onActionPositionY);
-        orientation.setOnAction(this::onActionOrientation);
+        addRightPaneListener();
 
         // Clipping
         Rectangle clipRect = new Rectangle(mainPane.getWidth(), mainPane.getHeight());
@@ -211,6 +215,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             zoomingGroup.setMinWidth(scenePane.getBoundsInParent().getWidth());
             zoomingGroup.setMinHeight(scenePane.getBoundsInParent().getHeight());
         });
+        
         updateSport();
         update();
     }
@@ -218,12 +223,14 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @Override
     public void update()
     {
-        double t = controller.getCurrentTime();
+        updateUndoRedo();
+        
+        double t = GodController.getInstance().getCurrentTime();
         userChange = false;
         timeLine.setValue(t * GodController.FPS);
-        timeLine.setMax((controller.getDuration() * GodController.FPS) + 10);
+        timeLine.setMax((GodController.getInstance().getDuration() * GodController.FPS) + 10);
 
-        List<Element> elements = controller.getAllElements();
+        List<Element> elements = GodController.getInstance().getAllElements();
         List<UIElement> elemToDelete = new ArrayList(uiElements);
 
         for (Element elem : elements)
@@ -233,6 +240,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 if (uiElem.getElement() == elem)
                 {
+                    uiElem.refreshNode(t);
                     uiElem.update(t);
                     elemToDelete.remove(uiElem);
                     found = true;
@@ -242,7 +250,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
             if (!found)
             {
-                UIElement newUIElement = new UIElement(elem, controller.getCurrentTime());
+                UIElement newUIElement = new UIElement(elem, GodController.getInstance().getCurrentTime(), 1/sceneScale.getX());
                 uiElements.add(newUIElement);
                 scenePane.getChildren().add(newUIElement.getGroup());
                 newUIElement.getNode().setOnMousePressed(this::onMouseClickedElement);
@@ -264,18 +272,41 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
         if (selectedUIElement != null)
         {
-            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
-            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
+            Vector2D position = selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(GodController.getInstance().getCurrentTime()).getAngle()));
         }
         else
         {
             updateRightPane(0, 0, 0);
         }
     }
+    
+    private void removeRightPaneListener()
+    {
+        nameTextField.setOnAction(null);
+        role.setOnAction(null);
+        team.setOnAction(null);
+        positionX.setOnAction(null);
+        positionY.setOnAction(null);
+        orientation.setOnAction(null);
+    }
+    
+    private void addRightPaneListener()
+    {
+        nameTextField.setOnAction(this::onActionName);
+        role.setOnAction(this::onActionRole);
+        team.setOnAction(this::onActionTeam);
+        positionX.setOnAction(this::onActionPositionX);
+        positionY.setOnAction(this::onActionPositionY);
+        orientation.setOnAction(this::onActionOrientation);
+    }
 
     private void updateRightPane(double x, double y, double ori)
     {
-        nbMaxPlayerCheckBox.setSelected(controller.getRespectMaxNbOfPlayers());
+        nbMaxPlayerCheckBox.setSelected(GodController.getInstance().getRespectMaxNbOfPlayers());
+        updateVisibleLabelsCheckBox();
+        nbMaxPlayerCheckBox.setSelected(GodController.getInstance().getRespectMaxNbOfPlayers());
+        
         positionX.setText("" + x);
         positionY.setText("" + y);
         orientation.setText("" + ori);
@@ -290,8 +321,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 nameTextField.setDisable(false);
                 nameTextField.setText(player.getName());
                 elementNameCheckBox.setSelected(selectedUIElement.isElementNameVisible());
+                
+                removeRightPaneListener();
                 role.getSelectionModel().select(player.getElementDescription().getName());
                 team.getSelectionModel().select(TEAM_LABEL + player.getTeam());
+                addRightPaneListener();
             }
             else
             {
@@ -326,6 +360,19 @@ public class StrategyEditionWindow implements Initializable, Updatable
             deleteButton.setDisable(true);
         }
     }
+    
+    private void updateVisibleLabelsCheckBox()
+    {
+        boolean visible = false;
+        for(UIElement elem : uiElements)
+        {
+            if(elem.isElementNameVisible())
+            {
+                visible = true;
+            }
+        }
+        visibleLabelsCheckBox.setSelected(visible);
+    }
 
     private void updateElementDescriptions()
     {
@@ -333,10 +380,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
         playerButton.getItems().clear();
         Object oldSelection = role.getSelectionModel().getSelectedItem();
         role.getItems().clear();
-        for (ElementDescription desc : controller.getAllPlayerDescriptions())
+        for (ElementDescription desc : GodController.getInstance().getAllPlayerDescriptions())
         {
             Menu m = new Menu(desc.getName());
-            for (int i = 0; i < controller.getMaxTeam(); i++)
+            for (int i = 0; i < GodController.getInstance().getMaxTeam(); i++)
             {
                 MenuItem mi = new MenuItem(TEAM_LABEL + (i + 1));
                 mi.setOnAction(this::onActionPlayerDescription);
@@ -351,7 +398,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
 
         ballButton.getItems().clear();
-        for (ElementDescription desc : controller.getAllBallDescriptions())
+        for (ElementDescription desc : GodController.getInstance().getAllBallDescriptions())
         {
             MenuItem mi = new MenuItem(desc.getName());
             mi.setOnAction(this::onActionBallDescription);
@@ -359,7 +406,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
 
         obstacleButton.getItems().clear();
-        for (ElementDescription desc : controller.getAllObstacleDescriptions())
+        for (ElementDescription desc : GodController.getInstance().getAllObstacleDescriptions())
         {
             MenuItem mi = new MenuItem(desc.getName());
             mi.setOnAction(this::onActionObstacleDescription);
@@ -368,7 +415,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
         oldSelection = team.getSelectionModel().getSelectedItem();
         team.getItems().clear();
-        for (int i = 0; i < controller.getMaxTeam(); i++)
+        for (int i = 0; i < GodController.getInstance().getMaxTeam(); i++)
         {
             team.getItems().add(TEAM_LABEL + (i + 1));
         }
@@ -380,20 +427,31 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void updateSport()
     {
-        Image img = new Image(controller.getCourtImage());
+        Image img = new Image(GodController.getInstance().getCourtImage());
         terrain.setImage(img);
 
-        double x = controller.getCourtDimensions().getX();
-        double y = controller.getCourtDimensions().getY();
-
+        double x = GodController.getInstance().getCourtDimensions().getX();
+        double y = GodController.getInstance().getCourtDimensions().getY();
+        
         terrain.setFitWidth(x);
         terrain.setFitHeight(y);
-
+        
+        double factor = (double)mainPane.getWidth()/(double)terrain.getBoundsInParent().getMaxX();
+        sceneScale.setX(factor);
+        sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
+        
         updateElementDescriptions();
 
         for (UIElement elem : uiElements)
         {
-            elem.refreshNode(controller.getCurrentTime());
+            elem.refreshNode(GodController.getInstance().getCurrentTime());
         }
     }
 
@@ -406,15 +464,24 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onClose(ActionEvent e)
     {
-        controller.save();
+        GodController.save(null);
         stage.close();
     }
 
     private void onMouseMoved(MouseEvent e)
     {
         Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-        xCoordinate.setText("" + point.getX());
-        yCoordinate.setText("" + point.getY());
+        if(point.getX() <= GodController.getInstance().getCourtDimensions().getX() &&
+           point.getY() <= GodController.getInstance().getCourtDimensions().getY())
+        {
+            xCoordinate.setText("" + point.getX());
+            yCoordinate.setText("" + point.getY());
+        }
+        else
+        {
+            xCoordinate.setText("-");
+            yCoordinate.setText("-"); 
+        }
     }
 
     private void onMouseExited(MouseEvent e)
@@ -430,7 +497,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
             try
             {
-                controller.addElement(new Vector2D(point.getX(), point.getY()));
+                GodController.getInstance().addElement(new Vector2D(point.getX(), point.getY()));
             } catch (Exception exception)
             {
                 // TODO
@@ -449,7 +516,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 if (uiElement.getNode().equals(node))
                 {
                     selectedUIElement = uiElement;
-                    controller.selectElement(uiElement.getElement());
+                    GodController.getInstance().selectElement(uiElement.getElement());
                     uiElement.getNode().requestFocus();
                     uiElement.glow();
                 }
@@ -459,8 +526,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 }
             }
 
-            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
-            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
+            Vector2D position = selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime());
+            updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(GodController.getInstance().getCurrentTime()).getAngle()));
         }
     }
 
@@ -469,7 +536,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         if (e.getCode() == KeyCode.DELETE)
         {
             selectedUIElement = null;
-            controller.deleteCurrentElement();
+            GodController.getInstance().deleteCurrentElement();
         }
     }
 
@@ -482,23 +549,20 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 draggingElement = true;
 
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-                Vector2D dimensions = controller.getCourtDimensions();
+                Vector2D dimensions = GodController.getInstance().getCourtDimensions();
 
                 double x = selectedUIElement.getPosition().getX();
                 double y = selectedUIElement.getPosition().getY();
                 Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
-
-                if (point.getX() - elementDimensions.getX() / 2 >= 0 && point.getX() + elementDimensions.getX() / 2 <= dimensions.getX())
+                
+                if(GodController.getInstance().isValidCoord(selectedUIElement.getElement().getElementDescription(), new Vector2D(point.getX(), point.getY())))
                 {
                     x = point.getX();
-                }
-                if (point.getY() - elementDimensions.getY() / 2 >= 0 && point.getY() + elementDimensions.getY() / 2 <= dimensions.getY())
-                {
                     y = point.getY();
                 }
 
                 selectedUIElement.move(x, y);
-                updateRightPane(point.getX(), point.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(controller.getCurrentTime()).getAngle()));
+                updateRightPane(point.getX(), point.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(GodController.getInstance().getCurrentTime()).getAngle()));
             }
         }
     }
@@ -510,7 +574,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             if (selectedUIElement != null)
             {
                 draggingElement = false;
-                controller.setCurrentElemPosition(selectedUIElement.getPosition());
+                GodController.getInstance().setCurrentElemPosition(selectedUIElement.getPosition());
             }
         }
     }
@@ -554,11 +618,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
             selectedUIElement.setRotating(true);
             Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
             Vector2D mousePosition = new Vector2D(point.getX(), point.getY());
-            Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
+            Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getY());
             Vector2D result = mousePosition.substract(elementPosition);
             selectedUIElement.getNode().setRotate(Math.toDegrees(result.getAngle()));
 
-            Vector2D position = selectedUIElement.getElement().getPosition(controller.getCurrentTime());
+            Vector2D position = selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime());
             updateRightPane(position.getX(), position.getY(), Math.toDegrees(result.getAngle()));
         }
     }
@@ -571,9 +635,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
             selectedUIElement.hideOrientationArrow();
             Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
             Vector2D mousePosition = new Vector2D(point.getX(), point.getY());
-            Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY());
+            Vector2D elementPosition = new Vector2D(selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getX(), selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getY());
             Vector2D result = mousePosition.substract(elementPosition);
-            controller.setCurrentElemOrientation(result.normaliser());
+            GodController.getInstance().setCurrentElemOrientation(result.normaliser());
         }
     }
 
@@ -581,7 +645,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         if (selectedUIElement != null && selectedUIElement.getElement() instanceof Player)
         {
-            controller.setSelectedPlayerName(nameTextField.getText());
+            GodController.getInstance().setSelectedPlayerName(nameTextField.getText());
         }
     }
 
@@ -592,8 +656,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
             String choix = (String) ((ChoiceBox) e.getSource()).getValue();
             if (choix != null)
             {
-                controller.setSelectedPlayerRole((String) ((ChoiceBox) e.getSource()).getValue());
-                selectedUIElement.refreshNode(controller.getCurrentTime());
+                GodController.getInstance().setSelectedPlayerRole((String) ((ChoiceBox) e.getSource()).getValue());
+                //selectedUIElement.refreshNode(GodController.getInstance().getCurrentTime());
             }
         }
 
@@ -608,8 +672,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 int team = Integer.parseInt(choix.substring(TEAM_LABEL.length()));
 
-                controller.setSelectedPlayerTeam(team);
-                selectedUIElement.refreshNode(controller.getCurrentTime());
+                GodController.getInstance().setSelectedPlayerTeam(team);
+                //selectedUIElement.refreshNode(GodController.getInstance().getCurrentTime());
             }
         }
     }
@@ -623,10 +687,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 double newX = Double.parseDouble(positionX.getText());
 
                 double x;
-                double y = selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getY();
+                double y = selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getY();
 
                 Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
-                Vector2D dimensions = controller.getCourtDimensions();
+                Vector2D dimensions = GodController.getInstance().getCourtDimensions();
 
                 if (newX - elementDimensions.getX() / 2 >= 0)
                 {
@@ -644,7 +708,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                     x = elementDimensions.getX() / 2;
                 }
 
-                controller.setCurrentElemPosition(new Vector2D(x, y));
+                GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
             } catch (Exception exception)
             {
             }
@@ -659,11 +723,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 double newY = Double.parseDouble(positionY.getText());
 
-                double x = selectedUIElement.getElement().getPosition(controller.getCurrentTime()).getX();
+                double x = selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getX();
                 double y;
 
                 Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
-                Vector2D dimensions = controller.getCourtDimensions();
+                Vector2D dimensions = GodController.getInstance().getCourtDimensions();
 
                 if (newY - elementDimensions.getY() / 2 >= 0)
                 {
@@ -681,7 +745,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                     y = elementDimensions.getY() / 2;
                 }
 
-                controller.setCurrentElemPosition(new Vector2D(x, y));
+                GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
             } catch (Exception exception)
             {
             }
@@ -697,7 +761,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 double angle = Double.parseDouble(orientation.getText());
                 Vector2D ori = new Vector2D(1, 0);
                 ori.setAngle(Math.toRadians(angle));
-                controller.setCurrentElemOrientation(ori);
+                GodController.getInstance().setCurrentElemOrientation(ori);
             } catch (Exception exception)
             {
             }
@@ -710,6 +774,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         if (selectedUIElement != null)
         {
             selectedUIElement.setElementNameVisible(elementNameCheckBox.isSelected());
+            updateVisibleLabelsCheckBox();
         }
     }
 
@@ -717,10 +782,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionNbMaxPlayer(ActionEvent e)
     {
         boolean nbOfPlayersRespected = true;
-
-        for (int teamId : controller.getTeams())
+        
+        for(int teamId : GodController.getInstance().getTeams())
         {
-            if (controller.getNbOfPlayersInTeam(teamId) > controller.getMaxNbOfPlayers())
+            if(GodController.getInstance().getNbOfPlayersInTeam(teamId) > GodController.getInstance().getMaxNbOfPlayers())
             {
                 nbOfPlayersRespected = false;
             }
@@ -728,7 +793,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
         if (nbOfPlayersRespected)
         {
-            controller.setRespectMaxNbOfPlayers(nbMaxPlayerCheckBox.isSelected());
+            GodController.getInstance().setRespectMaxNbOfPlayers(nbMaxPlayerCheckBox.isSelected());
         }
         else
         {
@@ -737,9 +802,18 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
             alert.setHeaderText("Erreur");
-            alert.setContentText("Le nombre de joueurs maximum est de " + controller.getMaxNbOfPlayers() + " par équipe.");
+            alert.setContentText("Le nombre de joueurs maximum est de " + GodController.getInstance().getMaxNbOfPlayers() + " par équipe.");
 
             alert.showAndWait();
+        }
+    }
+    
+    @FXML
+    private void onActionVisibleLabels(ActionEvent e)
+    {
+        for(UIElement elem : uiElements)
+        {
+            elem.setElementNameVisible(visibleLabelsCheckBox.isSelected());
         }
     }
 
@@ -749,8 +823,64 @@ public class StrategyEditionWindow implements Initializable, Updatable
         if (selectedUIElement != null)
         {
             selectedUIElement = null;
-            controller.deleteCurrentElement();
+            GodController.getInstance().deleteCurrentElement();
         }
+    }
+    
+    @FXML
+    private void onOpen(ActionEvent e)
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Charger une stratégie");
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("SER files", "*.ser"));
+        File file = fileChooser.showOpenDialog(stage);
+        
+        if(file != null)
+        {
+            GodController.load(file.getPath());
+            updateSport();
+            update();
+        }
+    }
+    
+    @FXML
+    private void onSave(ActionEvent e)
+    {
+        GodController.save(null);
+    }
+    
+    @FXML
+    private void onSaveAs(ActionEvent e)
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sauvegarder stratégie");
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("SER files", "*.ser"));
+        File file = fileChooser.showSaveDialog(stage);
+        
+        if(file != null)
+        {
+            GodController.save(file.getPath());
+        }
+    }
+    
+    @FXML
+    private void onUndo(ActionEvent e)
+    {
+        GodController.undo();
+        updateUndoRedo();
+    }
+    
+    @FXML
+    private void onRedo(ActionEvent e)
+    {
+        GodController.redo();
+        updateUndoRedo();
+    }
+    
+    private void updateUndoRedo()
+    {
+        undoMenu.setDisable(!GodController.canUndo());
+        redoMenu.setDisable(!GodController.canRedo());
     }
 
     @FXML
@@ -761,9 +891,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
 
-        StrategyCreationDialog strategyCreation = new StrategyCreationDialog(controller, dialog);
-        dialog.setOnHidden((event) ->
-        {
+        StrategyCreationDialog strategyCreation = new StrategyCreationDialog(dialog);
+        dialog.setOnHidden((event) -> {
             selectedUIElement = null;
             updateSport();
             update();
@@ -778,7 +907,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
 
-        SportEditionDialog sportEdition = new SportEditionDialog(controller, dialog);
+        SportEditionDialog sportEdition = new SportEditionDialog(dialog);
         sportEdition.stage.setOnHidden((event) ->
         {
             updateSport();
@@ -799,8 +928,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         MenuItem mi = (MenuItem) e.getSource();
         String player = mi.getParentMenu().getText();
-        this.controller.selectElementDescription(TypeDescription.Player, player);
-        this.controller.selectTeam(Integer.parseInt(mi.getText().substring(TEAM_LABEL.length())));
+        GodController.getInstance().selectElementDescription(TypeDescription.Player, player);
+        GodController.getInstance().selectTeam(Integer.parseInt(mi.getText().substring(TEAM_LABEL.length())));
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.playerButton.setStyle("-fx-background-color: lightblue;");
         this.ballButton.setStyle("-fx-background-color: inherit;");
@@ -811,34 +940,63 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void onActionBallDescription(ActionEvent e)
     {
         String ball = ((MenuItem) e.getSource()).getText();
-        this.controller.selectElementDescription(TypeDescription.Ball, ball);
+        GodController.getInstance().selectElementDescription(TypeDescription.Ball, ball);
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.ballButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
         this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_BALL;
     }
+    
+    private void onScroll(ScrollEvent e)
+    {
+        double factor = sceneScale.getX() + e.getDeltaY() / e.getMultiplierY() * ZOOM_SPEED;
+        sceneScale.setX(factor);
+        sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
+        e.consume();
+    }
 
     @FXML
-    public void onActionZoomIn(ActionEvent e)
+    private void onActionZoomIn(ActionEvent e)
     {
         double factor = sceneScale.getX() + ZOOM_SPEED;
         sceneScale.setX(factor);
         sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
     }
 
     @FXML
-    public void onActionZoomOut(ActionEvent e)
+    private void onActionZoomOut(ActionEvent e)
     {
         double factor = sceneScale.getX() - ZOOM_SPEED;
         sceneScale.setX(factor);
         sceneScale.setY(factor);
+        for(UIElement elem : uiElements)
+        {
+            if(elem.getElement() instanceof Player)
+            {
+                elem.setElementNameZoomFactor(1/factor);
+            }
+        }
     }
 
     private void onActionObstacleDescription(ActionEvent e)
     {
         String obstacle = ((MenuItem) e.getSource()).getText();
-        this.controller.selectElementDescription(TypeDescription.Obstacle, obstacle);
+        GodController.getInstance().selectElementDescription(TypeDescription.Obstacle, obstacle);
         this.moveButton.setStyle("-fx-background-color: inherit;");
         this.obstacleButton.setStyle("-fx-background-color: lightblue;");
         this.playerButton.setStyle("-fx-background-color: inherit;");
@@ -849,14 +1007,14 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionPlay(ActionEvent e)
     {
-        controller.playStrategy(1);
+        GodController.getInstance().playStrategy(1);
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
     }
 
     private void onActionPause(ActionEvent e)
     {
-        controller.pauseStrategy();
+        GodController.getInstance().pauseStrategy();
         playPauseButton.setOnAction(this::onActionPlay);
         playPauseButton.setText("" + PLAY_ICON);
     }
@@ -870,13 +1028,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionRestart()
     {
-        controller.setCurrentTime(0);
+        GodController.getInstance().setCurrentTime(0);
     }
 
     @FXML
     private void onActionRewind()
     {
-        controller.playStrategy(- Integer.parseInt(speed.getText().substring(1)));
+        GodController.getInstance().playStrategy(- Integer.parseInt(speed.getText().substring(1)));
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
     }
@@ -884,7 +1042,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionFastForward()
     {
-        controller.playStrategy(Integer.parseInt(speed.getText().substring(1)));
+        GodController.getInstance().playStrategy(Integer.parseInt(speed.getText().substring(1)));
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
     }
@@ -892,26 +1050,26 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionGoToEnd()
     {
-        controller.setCurrentTime(controller.getDuration());
+        GodController.getInstance().setCurrentTime(GodController.getInstance().getDuration());
     }
 
     @FXML
     private void onActionNextFrame()
     {
-        controller.setCurrentTime(controller.getCurrentTime() + (1f / GodController.FPS));
+        GodController.getInstance().setCurrentTime(GodController.getInstance().getCurrentTime() + (1f / GodController.FPS));
     }
 
     @FXML
     private void onActionPrevFrame()
     {
-        controller.setCurrentTime(controller.getCurrentTime() - (1f / GodController.FPS));
+        GodController.getInstance().setCurrentTime(GodController.getInstance().getCurrentTime() - (1f / GodController.FPS));
     }
 
     @FXML
     private void onActionStop(ActionEvent e)
     {
         onActionPause(e);
-        controller.setCurrentTime(0);
+        GodController.getInstance().setCurrentTime(0);
     }
 
     @Override
@@ -929,7 +1087,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         if (userChange)
         {
-            controller.setCurrentTime(timeLine.getValue() / controller.FPS);
+            GodController.getInstance().setCurrentTime(timeLine.getValue() / GodController.getInstance().FPS);
         }
         else
         {
@@ -940,6 +1098,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
     public void onSliderExiting()
     {
         timeLine.setValue((int) timeLine.getValue());
-        controller.setCurrentTime(timeLine.getValue() / controller.FPS);
+        GodController.getInstance().setCurrentTime(timeLine.getValue() / GodController.getInstance().FPS);
     }
 }

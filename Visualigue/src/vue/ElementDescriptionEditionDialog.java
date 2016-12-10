@@ -39,17 +39,15 @@ public class ElementDescriptionEditionDialog implements Initializable
     private TextField image;
     @FXML
     private ImageView imageView;
-    
-    GodController controller;
+
     BorderPane root;
     Stage stage;
     String sportName;
     ElementDescription.TypeDescription type;
     ElementDescription desc;
     
-    public ElementDescriptionEditionDialog(GodController controller, Stage primaryStage, String sportName, ElementDescription.TypeDescription type, ElementDescription desc)
+    public ElementDescriptionEditionDialog(Stage primaryStage, String sportName, ElementDescription.TypeDescription type, ElementDescription desc)
     {
-        this.controller = controller;
         stage = primaryStage;
         this.sportName = sportName;
         this.type = type;
@@ -112,13 +110,13 @@ public class ElementDescriptionEditionDialog implements Initializable
                 switch(type)
                 {
                     case Ball:
-                        controller.saveBallDescription(sportName, oldName, name.getText(), image.getText(), h, w);
+                        GodController.getInstance().saveBallDescription(sportName, oldName, name.getText(), image.getText(), h, w);
                         break;
                     case Player:
-                        controller.savePlayerDescription(sportName, oldName, name.getText(), image.getText(), h, w);
+                        GodController.getInstance().savePlayerDescription(sportName, oldName, name.getText(), image.getText(), h, w);
                         break;
                     case Obstacle:
-                        controller.saveObstacleDescription(sportName, oldName, name.getText(), image.getText(), h, w);
+                        GodController.getInstance().saveObstacleDescription(sportName, oldName, name.getText(), image.getText(), h, w);
                         break;
                 }
 

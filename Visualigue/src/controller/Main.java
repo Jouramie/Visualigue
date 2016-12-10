@@ -9,7 +9,6 @@ import vue.StrategyEditionWindow;
 
 public class Main extends Application
 {
-    private GodController controller;
     private Stage stage;
     
     public Main()
@@ -20,31 +19,11 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage)
     {
-        File f = new File("visualigue.ser");
-        if(f.exists() && !f.isDirectory())
-        {
-            try
-            {
-                FileInputStream fileIn = new FileInputStream("visualigue.ser");
-                ObjectInputStream in = new ObjectInputStream(fileIn);
-                controller = (GodController)in.readObject();
-                in.close();
-                fileIn.close();
-            }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }
-        
-        if(controller == null)
-        {
-            controller = new GodController();
-        }
+        GodController.load("visualigue.ser");
         
         stage = primaryStage;
-        StrategyEditionWindow mainWindow = new StrategyEditionWindow(controller, primaryStage);
-        controller.setWindow(mainWindow);
+        StrategyEditionWindow mainWindow = new StrategyEditionWindow(primaryStage);
+        GodController.getInstance().setWindow(mainWindow);
     }
     
     public static void main(String[] args)
