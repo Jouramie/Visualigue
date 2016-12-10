@@ -1,11 +1,14 @@
 package controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +46,10 @@ public class GodController implements java.io.Serializable
     private boolean respectMaxNbOfPlayers;
 
     private transient Updatable window;
-
     private transient StrategyPlayer sp;
+    private static transient GodController instance;
+    private static transient ArrayList<ByteArrayOutputStream> stateList = new ArrayList();
+    private static transient int currentState = -1;
 
     public GodController()
     {
@@ -71,7 +76,18 @@ public class GodController implements java.io.Serializable
         }
     }
     
-    public static GodController load(String path)
+    public static GodController getInstance()
+    {
+        if(instance == null)
+        {
+            instance = new GodController();
+            GodController.addState();
+        }
+        
+        return instance;
+    }
+    
+    public static void load(String path)
     {
         GodController result = null;
         
@@ -92,10 +108,18 @@ public class GodController implements java.io.Serializable
             }
         }
         
-        return result;
+        if(result != null)
+        {
+            result.setWindow(getInstance().window);
+            GodController.instance = result;
+            
+            stateList.clear();
+            currentState = -1;
+            addState();
+        }
     }
     
-    public void save(String path)
+    public static void save(String path)
     {
         try
         {
@@ -106,13 +130,104 @@ public class GodController implements java.io.Serializable
             
             FileOutputStream fileOut = new FileOutputStream(path);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(this);
+            out.writeObject(getInstance());
             out.close();
             fileOut.close();
         }
         catch(IOException ex)
         {
             ex.printStackTrace();
+        }
+    }
+    
+    public static void addState()
+    {
+        if(GodController.instance == null)
+            return;
+        
+        try
+        {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(GodController.getInstance());
+            out.close();
+            bos.close();
+            
+            stateList = new ArrayList(stateList.subList(0, currentState + 1));
+            stateList.add(bos);
+            currentState = stateList.size() - 1;
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+    public static boolean canRedo()
+    {
+        return currentState < stateList.size() - 1;
+    }
+    
+    public static void redo()
+    {
+        if(canRedo())
+        {
+            currentState++;
+            GodController result = null;
+            
+            try
+            {
+                ByteArrayInputStream bis = new ByteArrayInputStream(stateList.get(currentState).toByteArray());
+                ObjectInputStream in = new ObjectInputStream(bis);
+                result = (GodController)in.readObject();
+                in.close();
+                bis.close();
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+            
+            if(result != null)
+            {
+                result.setWindow(getInstance().window);
+                GodController.instance = result;
+                result.window.update();
+            }
+        }
+    }
+    
+    public static boolean canUndo()
+    {
+        return currentState > 0;
+    }
+    
+    public static void undo()
+    {
+        if(canUndo())
+        {
+            currentState--;
+            GodController result = null;
+            
+            try
+            {
+                ByteArrayInputStream bis = new ByteArrayInputStream(stateList.get(currentState).toByteArray());
+                ObjectInputStream in = new ObjectInputStream(bis);
+                result = (GodController)in.readObject();
+                in.close();
+                bis.close();
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+            
+            if(result != null)
+            {
+                result.setWindow(getInstance().window);
+                GodController.instance = result;
+                result.window.update();
+            }
         }
     }
 
@@ -123,7 +238,7 @@ public class GodController implements java.io.Serializable
         if (currentElementDescription != null)
         {
             if (currentElementDescription instanceof ObstacleDescription)
-            {
+            {               
                 elem = this.strategy.createObstacle((ObstacleDescription) currentElementDescription);
                 elem.setPosition(time, pos, 0.0);
                 elem.setOrientation(time, new Vector2D(1, 0), 0.0);
@@ -141,6 +256,7 @@ public class GodController implements java.io.Serializable
                 elem.setOrientation(time, new Vector2D(1, 0), 0.0);
             }
             
+            GodController.addState();
             window.update();
         }
         return elem;
@@ -152,8 +268,9 @@ public class GodController implements java.io.Serializable
     }
 
     public void setRespectMaxNbOfPlayers(boolean isRespected)
-    {
+    {       
         respectMaxNbOfPlayers = isRespected;
+        GodController.addState();
     }
     
     public int getNbOfPlayersInTeam(int team)
@@ -191,9 +308,11 @@ public class GodController implements java.io.Serializable
     public void deleteCurrentElement()
     {
         if (selectedElement != null)
-        {
+        {        
             strategy.deleteElement(selectedElement);
             selectedElement = null;
+            
+            GodController.addState();
             window.update();
         }
     }
@@ -229,8 +348,10 @@ public class GodController implements java.io.Serializable
     public void setCurrentElemPosition(Vector2D pos)
     {
         if (this.selectedElement != null)
-        {
+        {          
             this.selectedElement.setPosition(this.time, pos, 0.0);
+            
+            GodController.addState();
             window.update();
         }
     }
@@ -238,8 +359,10 @@ public class GodController implements java.io.Serializable
     public void setCurrentElemOrientation(Vector2D ori)
     {
         if (this.selectedElement != null)
-        {
+        {           
             this.selectedElement.setOrientation(time, ori, 0.0);
+            
+            GodController.addState();
             window.update();
         }
     }
@@ -255,7 +378,7 @@ public class GodController implements java.io.Serializable
     }
 
     public Sport saveSport(String oldName, String newName, String courtImage, double courtHeight, double courtWidth, int playerNumber, int numTeams) throws ValidationException
-    {
+    {        
         Sport sport = null;
         if (oldName != null)
         {
@@ -280,6 +403,8 @@ public class GodController implements java.io.Serializable
             sport = new Sport(newName, courtImage, courtHeight, courtWidth, playerNumber, numTeams);
             sports.put(newName, sport);
         }
+        
+        GodController.addState();
 
         return sport;
     }
@@ -304,6 +429,7 @@ public class GodController implements java.io.Serializable
         if (sportName != null)
         {
             sports.remove(sportName);
+            GodController.addState();
         }
     }
 
@@ -349,7 +475,7 @@ public class GodController implements java.io.Serializable
     {
         Sport sport = getSport(sportName);
         if (sport != null)
-        {
+        {           
             BallDescription desc = null;
 
             if (oldName != null)
@@ -369,6 +495,8 @@ public class GodController implements java.io.Serializable
                 desc = new BallDescription(newName, new Vector2D(width, height), image);
                 sport.addBallDescription(desc);
             }
+            
+            GodController.addState();
         }
     }
 
@@ -394,9 +522,11 @@ public class GodController implements java.io.Serializable
         if (sport != null)
         {
             if (name != null)
-            {
+            {                
                 desc = sport.getBallDescription(name);
                 sport.deleteElementDescription(desc);
+                
+                GodController.addState();
             }
         }
     }
@@ -425,6 +555,8 @@ public class GodController implements java.io.Serializable
                 desc = new PlayerDescription(newName, new Vector2D(width, height), image);
                 sport.addPlayerDescription(desc);
             }
+            
+            GodController.addState();
         }
     }
 
@@ -453,6 +585,8 @@ public class GodController implements java.io.Serializable
             {
                 desc = sport.getPlayerDescription(name);
                 sport.deleteElementDescription(desc);
+                
+                GodController.addState();
             }
         }
     }
@@ -481,6 +615,8 @@ public class GodController implements java.io.Serializable
                 desc = new ObstacleDescription(newName, new Vector2D(width, height), image);
                 sport.addObstacleDescription(desc);
             }
+            
+            GodController.addState();
         }
     }
 
@@ -509,6 +645,8 @@ public class GodController implements java.io.Serializable
             {
                 desc = sport.getObstacleDescription(name);
                 sport.deleteElementDescription(desc);
+                
+                GodController.addState();
             }
         }
     }
@@ -528,6 +666,8 @@ public class GodController implements java.io.Serializable
         {
             this.time = 0;
         }
+        
+        GodController.addState();
         window.update();
     }
 
@@ -578,6 +718,8 @@ public class GodController implements java.io.Serializable
             if (description != null)
             {
                 ((Player) selectedElement).setPlayerDescription(description);
+                window.update();
+                GodController.addState();
             }
         }
     }
@@ -587,6 +729,8 @@ public class GodController implements java.io.Serializable
         if(selectedElement instanceof Player)
         {
             ((Player)selectedElement).setName(name);
+
+            GodController.addState();
             window.update();
         }
     }
@@ -596,6 +740,8 @@ public class GodController implements java.io.Serializable
         if (selectedElement instanceof Player)
         {
             ((Player) selectedElement).setTeam(team);
+            GodController.addState();
+            window.update();
         }
     }
 

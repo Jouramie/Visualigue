@@ -84,13 +84,11 @@ public class SportEditionDialog implements Initializable
     @FXML
     private Button deleteSportBtn;
 
-    GodController controller;
     BorderPane root;
     Stage stage;
 
-    public SportEditionDialog(GodController controller, Stage primaryStage)
+    public SportEditionDialog(Stage primaryStage)
     {
-        this.controller = controller;
         this.stage = primaryStage;
 
         try
@@ -148,7 +146,7 @@ public class SportEditionDialog implements Initializable
         
         try
         {
-            controller.saveSport(sport, sportName.getText(), courtImage.getText(), height, width, numPlayer, teams);
+            GodController.getInstance().saveSport(sport, sportName.getText(), courtImage.getText(), height, width, numPlayer, teams);
             updateSportsList();
             sports.getSelectionModel().select(sportName.getText());
         }
@@ -169,7 +167,7 @@ public class SportEditionDialog implements Initializable
         String sportN = (String)sports.getSelectionModel().getSelectedItem();
         if(sportN != null)
         {
-            controller.deleteSport(sportN);
+            GodController.getInstance().deleteSport(sportN);
             updateSportsList();
         }
     }
@@ -191,7 +189,7 @@ public class SportEditionDialog implements Initializable
     private Sport getCurrentSport()
     {
         String currentName = (String)sports.getSelectionModel().getSelectedItem();
-        return controller.getSport(currentName);
+        return GodController.getInstance().getSport(currentName);
     }
     
     @FXML
@@ -232,15 +230,15 @@ public class SportEditionDialog implements Initializable
             {
                 case "Balles":
                     type = ElementDescription.TypeDescription.Ball;
-                    desc = controller.getBallDescription(sportN, treeItem.getValue());
+                    desc = GodController.getInstance().getBallDescription(sportN, treeItem.getValue());
                     break;
                 case "Joueurs":
                     type = ElementDescription.TypeDescription.Player;
-                    desc = controller.getPlayerDescription(sportN, treeItem.getValue());
+                    desc = GodController.getInstance().getPlayerDescription(sportN, treeItem.getValue());
                     break;
                 case "Obstacles":
                     type = ElementDescription.TypeDescription.Obstacle;
-                    desc = controller.getObstacleDescription(sportN, treeItem.getValue());
+                    desc = GodController.getInstance().getObstacleDescription(sportN, treeItem.getValue());
                     break;
             }
             
@@ -259,13 +257,13 @@ public class SportEditionDialog implements Initializable
             switch(treeItem.getParent().getValue())
             {
                 case "Balles":
-                    controller.deleteBallDescription(sportN, treeItem.getValue());
+                    GodController.getInstance().deleteBallDescription(sportN, treeItem.getValue());
                     break;
                 case "Joueurs":
-                    controller.deletePlayerDescription(sportN, treeItem.getValue());
+                    GodController.getInstance().deletePlayerDescription(sportN, treeItem.getValue());
                     break;
                 case "Obstacles":
-                    controller.deleteObstacleDescription(sportN, treeItem.getValue());
+                    GodController.getInstance().deleteObstacleDescription(sportN, treeItem.getValue());
                     break;
             }
             
@@ -275,7 +273,7 @@ public class SportEditionDialog implements Initializable
 
     private void updateSportsList()
     {
-        List<Sport> allSports = controller.getSports();
+        List<Sport> allSports = GodController.getInstance().getSports();
 
         String oldSelection = (String)sports.getSelectionModel().getSelectedItem();
 
@@ -425,7 +423,7 @@ public class SportEditionDialog implements Initializable
         dialog.initOwner(stage);
         
         String sportN = (String)sports.getSelectionModel().getSelectedItem();
-        ElementDescriptionEditionDialog elementEdition = new ElementDescriptionEditionDialog(controller, dialog, sportN, type, desc);
+        ElementDescriptionEditionDialog elementEdition = new ElementDescriptionEditionDialog(dialog, sportN, type, desc);
         dialog.setOnHidden((event) -> {
             updateDescriptions();
         });

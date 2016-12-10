@@ -15,6 +15,7 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -39,8 +40,14 @@
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#onActionConfigureSport" text="Configurer les sports" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Annuler" />
-                  <MenuItem mnemonicParsing="false" text="Rétablir" />
+                  <MenuItem fx:id="undoMenu" mnemonicParsing="false" onAction="#onUndo" text="Annuler">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="redoMenu" mnemonicParsing="false" onAction="#onRedo" text="Rétablir">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Affichage">
