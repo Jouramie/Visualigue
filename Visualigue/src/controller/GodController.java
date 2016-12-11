@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.text.DecimalFormat;
-import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -928,7 +926,6 @@ public class GodController implements java.io.Serializable
                     break;
                 }
                 window.update();
-                System.out.println(time);
             }
 
             // Arrondissement
@@ -936,7 +933,6 @@ public class GodController implements java.io.Serializable
             time = Math.round(((int) (time * FPS_PLAY)) / FPS_PLAY);
             sp = null;
             window.lastUpdate();
-            System.out.println(time);
             return null;
         }
         

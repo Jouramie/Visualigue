@@ -1,216 +1,151 @@
 package vue;
 
-import java.util.HashMap;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.InnerShadow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Scale;
 import model.Element;
 import model.Player;
-import model.Vector2D;
 
-public class UIElement
+public class UIElement extends UIGeneralElement
 {
-    private Group node;
-    private ImageView image;
-    private ImageView orientation;
-    private Color color;
-    private Element element;
-    private boolean rotating;
-    private Group group;
+
+    private static final String PATH_IMAGE_ROTATION = "/res/orientation.png";
+
+    private Group nameGroup;
+
+    private ImageView orientationArrow;
+    private boolean isRotating;
+
     private Label elementName;
     private Scale elementNameScale;
-    static private HashMap<String, Image> images = new HashMap();
-    static private HashMap<Integer, Color> teamColor = new HashMap();
 
-    public UIElement(Element element, double time, double elementNameScaleFactor)
+    private UIGhostElement ghost;
+
+    public UIElement(Element element, double elementNameScaleFactor)
     {
-        this.element = element;
-        rotating = false;
+        super(element);
+        isRotating = false;
 
-        image = new ImageView();
+        orientationArrow = new ImageView();
+        orientationArrow.setVisible(false);
 
-        orientation = new ImageView();
-        orientation.setVisible(false);
-
-        node = new Group();
-        node.getChildren().add(image);
-        node.getChildren().add(orientation);
+        rotationGroup.getChildren().add(orientationArrow);
 
         elementName = new Label();
 
-        group = new Group();
-        group.getChildren().add(elementName);
-        group.getChildren().add(node);
-        
+        nameGroup = new Group();
+        nameGroup.getChildren().add(elementName);
+        nameGroup.getChildren().add(rotationGroup);
+
         elementNameScale = new Scale(elementNameScaleFactor, elementNameScaleFactor, 0, 0);
         elementName.getTransforms().add(elementNameScale);
-
-        refreshNode(time);
-    }
-
-    public void refreshNode(double time)
-    {
-        image.setImage(UIElement.getImage(element.getElementDescription().getImage()));
-        image.setFitWidth(element.getElementDescription().getSize().getX());
-        image.setFitHeight(element.getElementDescription().getSize().getY());
-
         if (element instanceof Player)
         {
-            Player player = (Player)element;
-            InnerShadow innerShadow = new InnerShadow((double)player.getElementDescription().getSize().getX()/1.8, getColor(player.getTeam()));
-            image.setEffect(innerShadow);
+            ghost = new UIGhostElement(element);
         }
+        node = nameGroup;
+    }
 
-        orientation.setImage(UIElement.getImage("/res/orientation.png"));
-        orientation.setFitWidth(4 * element.getElementDescription().getSize().getX());
-        orientation.setFitHeight(4 * element.getElementDescription().getSize().getY());
-        orientation.setTranslateX(-1.5 * element.getElementDescription().getSize().getX());
-        orientation.setTranslateY(-1.5 * element.getElementDescription().getSize().getY());
+    @Override
+    public void refreshNode()
+    {
+        super.refreshNode();
+        orientationArrow.setImage(ImageLoader.getImage(PATH_IMAGE_ROTATION));
+        orientationArrow.setFitWidth(4 * element.getElementDescription().getSize().getX());
+        orientationArrow.setFitHeight(4 * element.getElementDescription().getSize().getY());
+        orientationArrow.setTranslateX(-1.5 * element.getElementDescription().getSize().getX());
+        orientationArrow.setTranslateY(-1.5 * element.getElementDescription().getSize().getY());
 
         elementName.setTranslateY(element.getElementDescription().getSize().getY());
-        update(time);
 
         setElementName(elementName.getText());
+        if (ghost != null)
+        {
+            ghost.refreshNode();
+        }
     }
 
+    @Override
     public void update(double time)
     {
-        move(element.getPosition(time).getX(), element.getPosition(time).getY());
-        node.setRotate(Math.toDegrees(element.getOrientation(time).getAngle()));
-        if(element instanceof Player)
+        super.update(time);
+        if (element instanceof Player)
         {
-            setElementName(element.getElementDescription().getName() + "\n" + ((Player)element).getName());
+            setElementName(element.getElementDescription().getName() + "\n" + ((Player) element).getName());
+        }
+        if (ghost != null)
+        {
+            ghost.update(time);
         }
     }
 
-    public Node getGroup()
+    @Override
+    public void addGlowEffect()
     {
-        return group;
-    }
-
-    public Node getNode()
-    {
-        return node;
-    }
-
-    public Element getElement()
-    {
-        return element;
-    }
-
-    public void move(double x, double y)
-    {
-        group.setTranslateX(x - element.getElementDescription().getSize().getX() / 2);
-        group.setTranslateY(y - element.getElementDescription().getSize().getY() / 2);
-    }
-
-    public Vector2D getPosition()
-    {
-        double x = group.getTranslateX() + element.getElementDescription().getSize().getX() / 2;
-        double y = group.getTranslateY() + element.getElementDescription().getSize().getY() / 2;
-        return new Vector2D(x, y);
-    }
-
-    static private Image getImage(String image)
-    {
-        Image result = images.get(image);
-        if (result == null)
+        super.addGlowEffect();
+        if (ghost != null)
         {
-            result = new Image(image);
-            images.put(image, result);
+            ghost.addGlowEffect();
         }
-
-        return result;
     }
 
-    public void glow()
+    @Override
+    public void removeGlowEffect()
     {
-        Effect e = image.getEffect();
-        if (e instanceof DropShadow)
+        super.removeGlowEffect();
+        if (ghost != null)
         {
-            return;
+            ghost.removeGlowEffect();
         }
-
-        DropShadow borderGlow = new DropShadow();
-        borderGlow.setOffsetY(0f);
-        borderGlow.setOffsetX(0f);
-        borderGlow.setColor(Color.YELLOW);
-        borderGlow.setWidth(70);
-        borderGlow.setHeight(70);
-        borderGlow.setInput(e);
-        image.setEffect(borderGlow);
-
     }
 
-    public void unGlow()
+    public Node getGroupName()
     {
-        if (image.getEffect() instanceof DropShadow)
-        {
-            DropShadow glow = (DropShadow) image.getEffect();
-            if (glow.getInput() != null)
-            {
-                Effect input = glow.getInput();
-                image.setEffect(input);
-            }
-            else
-            {
-                image.setEffect(null);
-            }
-        }
+        return nameGroup;
     }
 
     public void setElementName(String name)
     {
         elementName.setText(name);
         double maxWidth = 0;
-        
-        for(String line : name.split("\n"))
+
+        for (String line : name.split("\n"))
         {
             Text text = new Text(name);
-            if(text.getLayoutBounds().getWidth() * elementNameScale.getX() > maxWidth)
+            if (text.getLayoutBounds().getWidth() * elementNameScale.getX() > maxWidth)
             {
                 maxWidth = text.getLayoutBounds().getWidth() * elementNameScale.getX();
             }
         }
-        elementName.setTranslateX(element.getElementDescription().getSize().getX()/2 - maxWidth/2);
+        elementName.setTranslateX(element.getElementDescription().getSize().getX() / 2 - maxWidth / 2);
         elementName.setTextAlignment(TextAlignment.CENTER);
     }
 
     public void setRotating(boolean value)
     {
-        rotating = value;
+        isRotating = value;
     }
 
     public void showOrientationArrow()
     {
-        orientation.setVisible(true);
+        orientationArrow.setVisible(true);
     }
 
     public void hideOrientationArrow()
     {
-        if (!rotating)
+        if (!isRotating)
         {
-            orientation.setVisible(false);
+            orientationArrow.setVisible(false);
         }
     }
 
-    public Node getElementImage()
+    public Node getOrientationArrow()
     {
-        return image;
-    }
-
-    public Node getElementOrientationArrow()
-    {
-        return orientation;
+        return orientationArrow;
     }
 
     public boolean isElementNameVisible()
@@ -223,37 +158,14 @@ public class UIElement
         elementName.setVisible(visible);
     }
 
-    private static void initColors()
-    {
-        teamColor.put(1, Color.BLUE);
-        teamColor.put(2, Color.GREEN);
-        teamColor.put(3, Color.WHITE);
-        teamColor.put(4, Color.BLACK);
-        teamColor.put(5, Color.RED);
-        teamColor.put(6, Color.YELLOW);
-        teamColor.put(7, Color.ORANGE);
-        teamColor.put(8, Color.AQUA);
-    }
-
-    private static Color getColor(Integer team)
-    {
-        if (teamColor.isEmpty())
-        {
-            initColors();
-        }
-        Color result = teamColor.get(team);
-        if (result == null)
-        {
-            result = Color.rgb((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
-            teamColor.put(team, result);
-        }
-        return result;
-    }
-    
-    void setElementNameZoomFactor(double factor)
+    public void setElementNameZoomFactor(double factor)
     {
         elementNameScale.setX(factor);
         elementNameScale.setY(factor);
         setElementName(elementName.getText());
+    }
+
+    public Node getGhostNode() {
+        return ghost == null ? null : ghost.getNode();
     }
 }
