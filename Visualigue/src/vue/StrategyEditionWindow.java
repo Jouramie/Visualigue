@@ -71,12 +71,12 @@ public class StrategyEditionWindow implements Initializable, Updatable
     }
 
     private Stage stage;
+    private Scene scene;
     private BorderPane root;
     private List<UIElement> uiElements;
     private UIElement selectedUIElement;
     private Toolbox selectedTool;
     private boolean draggingElement;
-    private boolean userChange;
     private ImageView terrain;
 
     @FXML
@@ -140,7 +140,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             fxmlLoader.setController(this);
             root = (BorderPane) fxmlLoader.load();
             stage = primaryStage;
-            Scene scene = new Scene(root, 1000, 800);
+            scene = new Scene(root, 1000, 800);
             stage.setScene(scene);
             stage.setTitle("VisuaLigue");
             stage.setOnCloseRequest((event) ->
@@ -158,7 +158,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
-    {
+    {        
         zoomingGroup = new Pane();
         scenePane = new Pane();
         zoomingGroup.getChildren().add(scenePane);
@@ -171,10 +171,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             onScroll(e);
         });
+        mainPane.setOnKeyPressed(this::onKeyPressed);
 
-        scenePane.setOnMousePressed(this::onMouseClicked);
-        scenePane.setOnMouseMoved(this::onMouseMoved);
-        scenePane.setOnMouseExited(this::onMouseExited);
+        scenePane.setOnMousePressed(this::onMousePressedScene);
+        scenePane.setOnMouseMoved(this::onMouseMovedScene);
+        scenePane.setOnMouseExited(this::onMouseExitedScene);
 
         addRightPaneListener();
 
@@ -183,16 +184,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
         clipRect.heightProperty().bind(mainPane.heightProperty());
         clipRect.widthProperty().bind(mainPane.widthProperty());
         mainPane.setClip(clipRect);
-
-        userChange = true;
+        
+        
         timeLine.valueProperty().addListener((observable, oldValue, newValue) ->
         {
-            onSliderValueChange();
-        });
-
-        timeLine.focusedProperty().addListener((observable, oldValue, newValue) ->
-        {
-            onSliderExiting();
+            onValueChangeSlider();
         });
 
         speed = new MaskField();
@@ -223,6 +219,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
         updateSport();
         update();
+        
     }
 
     @Override
@@ -231,9 +228,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
         updateUndoRedo();
 
         double t = GodController.getInstance().getCurrentTime();
-        userChange = false;
-        timeLine.setValue(t * GodController.FPS);
-        timeLine.setMax((GodController.getInstance().getDuration() * GodController.FPS) + 10);
+        timeLine.setValue(t * GodController.FPS_EDIT);
+        timeLine.setMax((GodController.getInstance().getDuration() * GodController.FPS_EDIT) + 10);
 
         List<Element> elements = GodController.getInstance().getAllElements();
         List<UIElement> elemToDelete = new ArrayList(uiElements);
@@ -265,12 +261,12 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 }
                 scenePane.getChildren().add(newUIElement.getNode());
                 newUIElement.getGroupRotation().setOnMousePressed(this::onMousePressedElement);
-                newUIElement.getGroupRotation().setOnKeyPressed(this::onKeyPressedElement);
+                newUIElement.getGroupRotation().setOnKeyPressed(this::onKeyPressed);
                 newUIElement.getElementImage().setOnMouseDragged(this::onMouseDraggedElement);
                 newUIElement.getElementImage().setOnMouseReleased(this::onMouseReleasedElement);
                 newUIElement.getGroupRotation().setOnMouseEntered(this::onMouseEnteredElement);
                 newUIElement.getOrientationArrow().setOnMouseExited(this::onMouseExitedElement);
-                newUIElement.getOrientationArrow().setOnMouseDragged(this::onMouseRotatingElement);
+                newUIElement.getOrientationArrow().setOnMouseDragged(this::onMouseDraggedRotatingElement);
                 newUIElement.getOrientationArrow().setOnMouseReleased(this::onMouseReleasedRotatingElement);
             }
         }
@@ -484,7 +480,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         stage.close();
     }
 
-    private void onMouseMoved(MouseEvent e)
+    private void onMouseMovedScene(MouseEvent e)
     {
         Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
         if (point.getX() <= GodController.getInstance().getCourtDimensions().getX()
@@ -500,13 +496,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
     }
 
-    private void onMouseExited(MouseEvent e)
+    private void onMouseExitedScene(MouseEvent e)
     {
         xCoordinate.setText("-");
         yCoordinate.setText("-");
     }
 
-    private void onMouseClicked(MouseEvent e)
+    private void onMousePressedScene(MouseEvent e)
     {
         if (selectedTool == Toolbox.ADD_BALL || selectedTool == Toolbox.ADD_OBSTACLE || selectedTool == Toolbox.ADD_PLAYER)
         {
@@ -523,7 +519,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onMousePressedElement(MouseEvent e)
     {
-        System.out.println("ASD");
+        System.out.println(scene.getFocusOwner().getId());
         if (selectedTool == Toolbox.MOVE)
         {
             Node node = (Node) e.getSource();
@@ -548,8 +544,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
     }
 
-    private void onKeyPressedElement(KeyEvent e)
+    private void onKeyPressed(KeyEvent e)
     {
+        System.out.println("vue.StrategyEditionWindow.onKeyPressed()");
         if (e.getCode() == KeyCode.DELETE)
         {
             selectedUIElement = null;
@@ -628,7 +625,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
     }
 
-    private void onMouseRotatingElement(MouseEvent e)
+    private void onMouseDraggedRotatingElement(MouseEvent e)
     {
         if (selectedTool == Toolbox.MOVE)
         {
@@ -952,6 +949,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         dialog.setOnHidden((event) ->
         {
             selectedUIElement = null;
+            GodController.getInstance().setCurrentTime(0);
             updateSport();
             update();
         });
@@ -1114,13 +1112,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionNextFrame()
     {
-        GodController.getInstance().setCurrentTime(GodController.getInstance().getCurrentTime() + (1f / GodController.FPS));
+        GodController.getInstance().setCurrentTime(GodController.getInstance().getCurrentTime() + (1f / GodController.FPS_EDIT));
     }
 
     @FXML
     private void onActionPrevFrame()
     {
-        GodController.getInstance().setCurrentTime(GodController.getInstance().getCurrentTime() - (1f / GodController.FPS));
+        GodController.getInstance().setCurrentTime(GodController.getInstance().getCurrentTime() - (1f / GodController.FPS_EDIT));
     }
 
     @FXML
@@ -1141,21 +1139,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
         });
     }
 
-    private void onSliderValueChange()
+    private void onValueChangeSlider()
     {
-        if (userChange)
-        {
-            GodController.getInstance().setCurrentTime(timeLine.getValue() / GodController.getInstance().FPS);
-        }
-        else
-        {
-            userChange = true;
-        }
-    }
-
-    private void onSliderExiting()
-    {
-        timeLine.setValue((int) timeLine.getValue());
-        GodController.getInstance().setCurrentTime(timeLine.getValue() / GodController.getInstance().FPS);
+        GodController.getInstance().setCurrentTime(timeLine.getValue() / GodController.getInstance().FPS_EDIT);
     }
 }
