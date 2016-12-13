@@ -158,7 +158,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
-    {        
+    {
         zoomingGroup = new Pane();
         scenePane = new Pane();
         zoomingGroup.getChildren().add(scenePane);
@@ -184,8 +184,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         clipRect.heightProperty().bind(mainPane.heightProperty());
         clipRect.widthProperty().bind(mainPane.widthProperty());
         mainPane.setClip(clipRect);
-        
-        
+
         timeLine.valueProperty().addListener((observable, oldValue, newValue) ->
         {
             onValueChangeSlider();
@@ -219,7 +218,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
         updateSport();
         update();
-        
+
     }
 
     @Override
@@ -295,21 +294,61 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private void removeRightPaneListener()
     {
         nameTextField.setOnAction(null);
+        nameTextField.focusedProperty().removeListener((obsevable, oldValue, newValue) -> {
+            if(!newValue){
+                onActionName(null);
+            }
+        });
         role.setOnAction(null);
         team.setOnAction(null);
         positionX.setOnAction(null);
+        positionX.focusedProperty().removeListener((obsevable, oldValue, newValue) -> {
+            if(!newValue){
+                onActionPositionX(null);
+            }
+        });
         positionY.setOnAction(null);
+        positionY.focusedProperty().removeListener((obsevable, oldValue, newValue) -> {
+            if(!newValue){
+                onActionPositionY(null);
+            }
+        });
         orientation.setOnAction(null);
+        orientation.focusedProperty().removeListener((obsevable, oldValue, newValue) -> {
+            if(!newValue){
+                onActionOrientation(null);
+            }
+        });
     }
 
     private void addRightPaneListener()
     {
         nameTextField.setOnAction(this::onActionName);
+        nameTextField.focusedProperty().addListener((obsevable, oldValue, newValue) -> {
+            if(!newValue){
+                onActionName(null);
+            }
+        });
         role.setOnAction(this::onActionRole);
         team.setOnAction(this::onActionTeam);
         positionX.setOnAction(this::onActionPositionX);
+        positionX.focusedProperty().addListener((obsevable, oldValue, newValue) -> {
+            if(!newValue){
+                onActionPositionX(null);
+            }
+        });
         positionY.setOnAction(this::onActionPositionY);
+        positionY.focusedProperty().addListener((obsevable, oldValue, newValue) -> {
+            if(!newValue){
+                onActionPositionY(null);
+            }
+        });
         orientation.setOnAction(this::onActionOrientation);
+        orientation.focusedProperty().addListener((obsevable, oldValue, newValue) -> {
+            if(!newValue){
+                onActionOrientation(null);
+            }
+        });
     }
 
     private void updateRightPane(double x, double y, double ori)
@@ -519,9 +558,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onMousePressedElement(MouseEvent e)
     {
-        System.out.println(scene.getFocusOwner().getId());
         if (selectedTool == Toolbox.MOVE)
         {
+            mainPane.requestFocus();
             Node node = (Node) e.getSource();
 
             for (UIElement uiElement : uiElements)
@@ -655,7 +694,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         }
     }
 
-    private void onActionName(Event e)
+    private void onActionName(ActionEvent e)
     {
         if (selectedUIElement != null && selectedUIElement.getElement() instanceof Player)
         {
@@ -684,9 +723,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
             String choix = (String) ((ChoiceBox) e.getSource()).getValue();
             if (choix != null)
             {
-                int team = Integer.parseInt(choix.substring(TEAM_LABEL.length()));
+                int teamNumber = Integer.parseInt(choix.substring(TEAM_LABEL.length()));
 
-                GodController.getInstance().setSelectedPlayerTeam(team);
+                GodController.getInstance().setSelectedPlayerTeam(teamNumber);
                 //selectedUIElement.refreshNode(GodController.getInstance().getCurrentTime());
             }
         }
@@ -723,7 +762,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 }
 
                 GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
-            } catch (Exception exception)
+            } catch (NumberFormatException ex)
             {
             }
         }
@@ -760,7 +799,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 }
 
                 GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
-            } catch (Exception exception)
+            } catch (NumberFormatException ex)
             {
             }
         }
@@ -776,7 +815,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 Vector2D ori = new Vector2D(1, 0);
                 ori.setAngle(Math.toRadians(angle));
                 GodController.getInstance().setCurrentElemOrientation(ori);
-            } catch (Exception exception)
+            } catch (NumberFormatException ex)
             {
             }
         }
