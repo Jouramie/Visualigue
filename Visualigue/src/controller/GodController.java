@@ -37,14 +37,11 @@ public class GodController implements java.io.Serializable
     private Map<String, Sport> sports;
     private Map<String, Strategy> strategies;
     private Strategy strategy;
-    private double time;
+    private transient double time;
     private ElementDescription currentElementDescription;
     private int currentTeam;
     private Element selectedElement;
 
-    private PlayerDescription playerDescription;
-    private BallDescription ballDescription;
-    private ObstacleDescription obstacleDescription;
     private boolean respectMaxNbOfPlayers;
 
     private transient Updatable window;
@@ -103,7 +100,7 @@ public class GodController implements java.io.Serializable
                 result = (GodController) in.readObject();
                 in.close();
                 fileIn.close();
-            } catch (Exception ex)
+            } catch (IOException | ClassNotFoundException ex)
             {
                 ex.printStackTrace();
             }
@@ -184,7 +181,7 @@ public class GodController implements java.io.Serializable
                 result = (GodController) in.readObject();
                 in.close();
                 bis.close();
-            } catch (Exception ex)
+            } catch (IOException | ClassNotFoundException ex)
             {
                 ex.printStackTrace();
             }
@@ -217,7 +214,7 @@ public class GodController implements java.io.Serializable
                 result = (GodController) in.readObject();
                 in.close();
                 bis.close();
-            } catch (Exception ex)
+            } catch (IOException | ClassNotFoundException ex)
             {
                 ex.printStackTrace();
             }
@@ -576,7 +573,7 @@ public class GodController implements java.io.Serializable
 
     public List<Sport> getSports()
     {
-        return new ArrayList<Sport>(sports.values());
+        return new ArrayList<>(sports.values());
     }
 
     public void deleteSport(String sportName)
@@ -623,7 +620,7 @@ public class GodController implements java.io.Serializable
 
     public List<Strategy> getStrategies()
     {
-        return new ArrayList<Strategy>(strategies.values());
+        return new ArrayList<>(strategies.values());
     }
 
     public void saveBallDescription(String sportName, String oldName, String newName, String image, double height, double width) throws ValidationException
@@ -672,7 +669,7 @@ public class GodController implements java.io.Serializable
 
     public void deleteBallDescription(String sportName, String name)
     {
-        BallDescription desc = null;
+        BallDescription desc;
         Sport sport = getSport(sportName);
         if (sport != null)
         {
@@ -732,7 +729,7 @@ public class GodController implements java.io.Serializable
 
     public void deletePlayerDescription(String sportName, String name)
     {
-        PlayerDescription desc = null;
+        PlayerDescription desc;
         Sport sport = getSport(sportName);
         if (sport != null)
         {
@@ -792,7 +789,7 @@ public class GodController implements java.io.Serializable
 
     public void deleteObstacleDescription(String sportName, String name)
     {
-        ObstacleDescription desc = null;
+        ObstacleDescription desc;
         Sport sport = getSport(sportName);
         if (sport != null)
         {
@@ -918,7 +915,7 @@ public class GodController implements java.io.Serializable
         protected Void call() throws Exception
         {
             playing = true;
-            long previousTimeMillis = System.currentTimeMillis();
+            long previousTimeMillis;
 
             while (0 <= time && time <= strategy.getDuration())
             {

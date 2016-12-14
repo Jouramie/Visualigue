@@ -23,9 +23,9 @@ import model.Vector2D;
  */
 public abstract class UIGeneralElement
 {
-
+    
     protected Group rotationGroup;
-    protected Node node;
+    protected Group globalGroup;
     protected Element element;
     protected Color color;
     protected ImageView image;
@@ -44,7 +44,7 @@ public abstract class UIGeneralElement
 
         isSelected = false;
 
-        node = rotationGroup;
+        globalGroup = rotationGroup;
     }
 
     public void refreshNode()
@@ -58,13 +58,18 @@ public abstract class UIGeneralElement
             Player player = (Player) element;
             InnerShadow innerShadow = new InnerShadow((double) player.getElementDescription().getSize().getX() / 1.8, getColor(player.getTeam()));
             image.setEffect(innerShadow);
+            if (isSelected)
+            {
+                isSelected = false;
+                addGlowEffect();
+            }
         }
 
     }
 
     public Node getNode()
     {
-        return node;
+        return globalGroup;
     }
 
     public Element getElement()
@@ -74,14 +79,14 @@ public abstract class UIGeneralElement
 
     public void move(double x, double y)
     {
-        node.setTranslateX(x - element.getElementDescription().getSize().getX() / 2);
-        node.setTranslateY(y - element.getElementDescription().getSize().getY() / 2);
+        globalGroup.setTranslateX(x - element.getElementDescription().getSize().getX() / 2);
+        globalGroup.setTranslateY(y - element.getElementDescription().getSize().getY() / 2);
     }
 
     public Vector2D getPosition()
     {
-        double x = node.getTranslateX() + element.getElementDescription().getSize().getX() / 2;
-        double y = node.getTranslateY() + element.getElementDescription().getSize().getY() / 2;
+        double x = globalGroup.getTranslateX() + element.getElementDescription().getSize().getX() / 2;
+        double y = globalGroup.getTranslateY() + element.getElementDescription().getSize().getY() / 2;
         return new Vector2D(x, y);
     }
 

@@ -15,13 +15,11 @@ public class UIElement extends UIGeneralElement
 
     private static final String PATH_IMAGE_ROTATION = "/res/orientation.png";
 
-    private Group nameGroup;
-
-    private ImageView orientationArrow;
+    private final ImageView orientationArrow;
     private boolean isRotating;
 
-    private Label elementName;
-    private Scale elementNameScale;
+    private final Label elementName;
+    private final Scale elementNameScale;
 
     private UIGhostElement ghost;
 
@@ -37,9 +35,9 @@ public class UIElement extends UIGeneralElement
 
         elementName = new Label();
 
-        nameGroup = new Group();
-        nameGroup.getChildren().add(elementName);
-        nameGroup.getChildren().add(rotationGroup);
+        globalGroup = new Group();
+        globalGroup.getChildren().add(elementName);
+        globalGroup.getChildren().add(rotationGroup);
 
         elementNameScale = new Scale(elementNameScaleFactor, elementNameScaleFactor, 0, 0);
         elementName.getTransforms().add(elementNameScale);
@@ -47,7 +45,6 @@ public class UIElement extends UIGeneralElement
         {
             ghost = new UIGhostElement(element);
         }
-        node = nameGroup;
     }
 
     @Override
@@ -105,7 +102,7 @@ public class UIElement extends UIGeneralElement
 
     public Node getGroupName()
     {
-        return nameGroup;
+        return globalGroup;
     }
 
     public void setElementName(String name)

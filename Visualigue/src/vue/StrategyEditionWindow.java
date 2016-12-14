@@ -240,7 +240,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 if (uiElem.getElement() == elem)
                 {
-                    uiElem.refreshNode();
                     uiElem.update(t);
                     elemToDelete.remove(uiElem);
                     found = true;
@@ -602,11 +601,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 draggingElement = true;
 
                 Point2D point = scenePane.sceneToLocal(e.getSceneX(), e.getSceneY());
-                Vector2D dimensions = GodController.getInstance().getCourtDimensions();
 
                 double x = selectedUIElement.getPosition().getX();
                 double y = selectedUIElement.getPosition().getY();
-                Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
 
                 if (GodController.getInstance().isValidCoord(selectedUIElement.getElement().getElementDescription(), new Vector2D(point.getX(), point.getY())))
                 {
@@ -710,7 +707,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             if (choix != null)
             {
                 GodController.getInstance().setSelectedPlayerRole((String) ((ChoiceBox) e.getSource()).getValue());
-                //selectedUIElement.refreshNode(GodController.getInstance().getCurrentTime());
+                selectedUIElement.refreshNode();
             }
         }
 
@@ -726,7 +723,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 int teamNumber = Integer.parseInt(choix.substring(TEAM_LABEL.length()));
 
                 GodController.getInstance().setSelectedPlayerTeam(teamNumber);
-                //selectedUIElement.refreshNode(GodController.getInstance().getCurrentTime());
+                selectedUIElement.refreshNode();
             }
         }
     }
@@ -1180,6 +1177,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onValueChangeSlider()
     {
-        GodController.getInstance().setCurrentTime(timeLine.getValue() / GodController.getInstance().FPS_EDIT);
+        GodController.getInstance().setCurrentTime(timeLine.getValue() / GodController.FPS_EDIT);
     }
 }

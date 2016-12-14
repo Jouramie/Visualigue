@@ -18,7 +18,7 @@ public class UIGhostElement extends UIGeneralElement
     public void refreshNode()
     {
         super.refreshNode();
-        node.setOpacity(0.5);
+        globalGroup.setOpacity(0.5);
     }
 
     @Override
@@ -27,7 +27,6 @@ public class UIGhostElement extends UIGeneralElement
         double previousTime = time;
         if (element instanceof MobileElement)
         {
-            MobileElement e = (MobileElement) element;
             previousTime = ((MobileElement) element).getPreviousKeyFrame(time);
         }
         super.update(previousTime);
