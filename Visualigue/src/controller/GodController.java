@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import model.BallDescription;
 import model.Element;
@@ -42,7 +43,7 @@ public class GodController implements java.io.Serializable
     private BallDescription ballDescription;
     private ObstacleDescription obstacleDescription;
     private boolean respectMaxNbOfPlayers;
-
+    private transient Recorder recorder;
     private transient Updatable window;
 
     private transient StrategyPlayer sp;
@@ -148,6 +149,25 @@ public class GodController implements java.io.Serializable
             window.update();
         }
         return elem;
+    }
+    
+    public void beginRecording(MobileElement mobile)
+    {
+        try
+        {
+            recorder = new Recorder(mobile);
+            Thread th = new Thread(recorder);
+            th.setDaemon(true);
+            th.start();
+        }
+        catch(Exception e)
+        {
+        }
+    }
+    
+    public void stopRecording()
+    {
+        recorder.cancel();
     }
     
     public boolean getRespectMaxNbOfPlayers()
@@ -804,6 +824,43 @@ public class GodController implements java.io.Serializable
         {
             playing = false;
         }
+    }
+    
+    private class Recorder extends Task<Void>
+    {
+            private long previousTime;
+            private long currentTime;
+            private MobileElement mobile;
+            
+            Recorder(MobileElement mobile)
+            {
+                this.mobile = mobile;
+            }
+
+            @Override
+            protected Void call() throws Exception
+            {
+                currentTime = System.currentTimeMillis();
+
+                while(true)
+                {
+                    previousTime = currentTime;
+                    currentTime = System.currentTimeMillis();
+                    double dt = (currentTime - previousTime)/1000.0;
+
+                    Platform.runLater(() -> {
+                        time += dt;
+                        Vector2D pos = window.updateOnRecord(this.mobile);
+                        if(isValidCoord(currentElementDescription, pos))
+                        {
+                            selectedElement.setPosition(time, pos, dt);
+                        }
+                    });
+
+                    Thread.sleep((long)(1000.0 / FPS_PLAY));
+                }
+            }
+
     }
 
     public String getCourtImage()
