@@ -49,15 +49,12 @@ public class StrategyCreationDialog implements Initializable
     
     @FXML
     private Button btnLoadStrategy;
-    
-    
-    GodController controller;
+
     BorderPane root;
     Stage stage;
 
-    public StrategyCreationDialog(GodController controller, Stage primaryStage)
+    public StrategyCreationDialog(Stage primaryStage)
     {
-        this.controller = controller;
         this.stage = primaryStage;
 
         try
@@ -80,7 +77,7 @@ public class StrategyCreationDialog implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        for(Sport s : controller.getSports())
+        for(Sport s : GodController.getInstance().getSports())
         {
             listViewSports.getItems().add(s.getName());
         }
@@ -108,7 +105,7 @@ public class StrategyCreationDialog implements Initializable
         {
             String sport = (String)listViewSports.getSelectionModel().getSelectedItem();
             String strat = textFieldStrategyName.getText();
-            controller.createStrategy(strat, sport);
+            GodController.getInstance().createStrategy(strat, sport);
             
             stage.close();
         }
@@ -127,7 +124,7 @@ public class StrategyCreationDialog implements Initializable
     private void onActionLoadStrategy(ActionEvent e)
     {
         String strat = (String)listViewStrategies.getSelectionModel().getSelectedItem();
-        controller.loadStrategy(strat);
+        GodController.getInstance().loadStrategy(strat);
         stage.close();
     }
         
@@ -144,9 +141,14 @@ public class StrategyCreationDialog implements Initializable
         btnLoadStrategy.setDisable(false);
         
         String strat = (String)listViewStrategies.getSelectionModel().getSelectedItem();
-        Strategy strategy = controller.getStrategy(strat);
-        Image img = new Image(strategy.getSport().getCourtImage());
-        imageViewPreview.setImage(img);
+        Strategy strategy = GodController.getInstance().getStrategy(strat);
+        
+        if(strategy != null)
+        {
+            PreviewGenerator gen = new PreviewGenerator();
+            Image img = gen.generatePreview(strategy);
+            imageViewPreview.setImage(img);
+        }
     }
     
     private void updateStrategyList()
@@ -157,7 +159,7 @@ public class StrategyCreationDialog implements Initializable
         
         if(currentSport != null)
         {
-            for(Strategy s : controller.getStrategies())
+            for(Strategy s : GodController.getInstance().getStrategies())
             {
                 if(s.getSport().getName().equals(currentSport))
                 {

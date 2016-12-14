@@ -1,4 +1,7 @@
 package controller;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,27 +29,27 @@ import model.Strategy;
 import model.ValidationException;
 import model.Vector2D;
 
-public class GodController implements java.io.Serializable 
+public class GodController implements java.io.Serializable
 {
-    public static final double FPS = 2;
+
+    public static final double FPS_EDIT = 2;
     public static final double FPS_PLAY = 10;
 
     private Map<String, Sport> sports;
     private Map<String, Strategy> strategies;
     private Strategy strategy;
-    private double time;
+    private transient double time;
     private ElementDescription currentElementDescription;
     private int currentTeam;
     private Element selectedElement;
 
-    private PlayerDescription playerDescription;
-    private BallDescription ballDescription;
-    private ObstacleDescription obstacleDescription;
     private boolean respectMaxNbOfPlayers;
     private transient Recorder recorder;
     private transient Updatable window;
-
     private transient StrategyPlayer sp;
+    private static transient GodController instance;
+    private static transient ArrayList<ByteArrayOutputStream> stateList = new ArrayList();
+    private static transient int currentState = -1;
 
     public GodController()
     {
@@ -72,50 +75,163 @@ public class GodController implements java.io.Serializable
             Logger.getLogger(GodController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public static GodController load(String path)
+
+    public static GodController getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new GodController();
+            GodController.addState();
+        }
+
+        return instance;
+    }
+
+    public static void load(String path)
     {
         GodController result = null;
-        
+
         File f = new File(path);
-        if(f.exists() && !f.isDirectory())
+        if (f.exists() && !f.isDirectory())
         {
             try
             {
                 FileInputStream fileIn = new FileInputStream(path);
                 ObjectInputStream in = new ObjectInputStream(fileIn);
-                result = (GodController)in.readObject();
+                result = (GodController) in.readObject();
                 in.close();
                 fileIn.close();
-            }
-            catch(Exception ex)
+            } catch (IOException | ClassNotFoundException ex)
             {
                 ex.printStackTrace();
             }
         }
-        
-        return result;
+
+        if (result != null)
+        {
+            result.setWindow(getInstance().window);
+            GodController.instance = result;
+            instance.time = 0;
+
+            stateList.clear();
+            currentState = -1;
+            addState();
+        }
     }
-    
-    public void save(String path)
+
+    public static void save(String path)
     {
         try
         {
-            if(path == null || path.isEmpty())
+            if (path == null || path.isEmpty())
             {
                 path = "visualigue.ser";
             }
-            
+
             FileOutputStream fileOut = new FileOutputStream(path);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(this);
+            out.writeObject(getInstance());
             out.close();
             fileOut.close();
-        }
-        catch(IOException ex)
+        } catch (IOException ex)
         {
             ex.printStackTrace();
         }
+    }
+
+    public static void addState()
+    {
+        if (GodController.instance == null)
+        {
+            return;
+        }
+
+        try
+        {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(GodController.getInstance());
+            out.close();
+            bos.close();
+
+            stateList = new ArrayList(stateList.subList(0, currentState + 1));
+            stateList.add(bos);
+            currentState = stateList.size() - 1;
+        } catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public static boolean canRedo()
+    {
+        return currentState < stateList.size() - 1;
+    }
+
+    public static void redo()
+    {
+        if (canRedo())
+        {
+            currentState++;
+            GodController result = null;
+
+            try
+            {
+                ByteArrayInputStream bis = new ByteArrayInputStream(stateList.get(currentState).toByteArray());
+                ObjectInputStream in = new ObjectInputStream(bis);
+                result = (GodController) in.readObject();
+                in.close();
+                bis.close();
+            } catch (IOException | ClassNotFoundException ex)
+            {
+                ex.printStackTrace();
+            }
+
+            if (result != null)
+            {
+                result.setWindow(getInstance().window);
+                GodController.instance = result;
+                result.window.update();
+            }
+        }
+    }
+
+    public static boolean canUndo()
+    {
+        return currentState > 0;
+    }
+
+    public static void undo()
+    {
+        if (canUndo())
+        {
+            currentState--;
+            GodController result = null;
+
+            try
+            {
+                ByteArrayInputStream bis = new ByteArrayInputStream(stateList.get(currentState).toByteArray());
+                ObjectInputStream in = new ObjectInputStream(bis);
+                result = (GodController) in.readObject();
+                in.close();
+                bis.close();
+            } catch (IOException | ClassNotFoundException ex)
+            {
+                ex.printStackTrace();
+            }
+
+            if (result != null)
+            {
+                result.setWindow(getInstance().window);
+                GodController.instance = result;
+                result.window.update();
+            }
+        }
+    }
+    
+    public Strategy getCurrentStrategy()
+    {
+        return this.strategy;
     }
 
     public Element addElement(Vector2D pos) throws Exception
@@ -126,7 +242,7 @@ public class GodController implements java.io.Serializable
         {
             if (currentElementDescription instanceof ObstacleDescription)
             {
-                if(isObstacleNotInstersectingTrajectory((ObstacleDescription)currentElementDescription, pos))
+                if (isObstacleNotInstersectingTrajectory((ObstacleDescription) currentElementDescription, pos))
                 {
                     elem = this.strategy.createObstacle((ObstacleDescription) currentElementDescription);
                     elem.setPosition(time, pos, 0.0);
@@ -145,7 +261,8 @@ public class GodController implements java.io.Serializable
                 elem.setPosition(time, pos, 0.0);
                 elem.setOrientation(time, new Vector2D(1, 0), 0.0);
             }
-            
+
+            GodController.addState();
             window.update();
         }
         return elem;
@@ -178,46 +295,49 @@ public class GodController implements java.io.Serializable
     public void setRespectMaxNbOfPlayers(boolean isRespected)
     {
         respectMaxNbOfPlayers = isRespected;
+        GodController.addState();
     }
-    
+
     public int getNbOfPlayersInTeam(int team)
     {
         int result = 0;
-        
-        for(Element e : strategy.getAllElements())
+
+        for (Element e : strategy.getAllElements())
         {
-            if(e instanceof Player && ((Player)e).getTeam() == team)
+            if (e instanceof Player && ((Player) e).getTeam() == team)
             {
-                result ++;
+                result++;
             }
         }
-        
+
         return result;
     }
-    
+
     public int[] getTeams()
     {
         int[] result = new int[strategy.getSport().getMaxTeam()];
-        
-        for(int i = 0; i < result.length; i ++)
+
+        for (int i = 0; i < result.length; i++)
         {
             result[i] = i + 1;
         }
-        
+
         return result;
     }
-    
+
     public int getMaxNbOfPlayers()
     {
         return strategy.getSport().getMaxPlayer();
     }
-    
+
     public void deleteCurrentElement()
     {
         if (selectedElement != null)
         {
             strategy.deleteElement(selectedElement);
             selectedElement = null;
+
+            GodController.addState();
             window.update();
         }
     }
@@ -254,9 +374,9 @@ public class GodController implements java.io.Serializable
     {
         if (this.selectedElement != null && isValidCoord(selectedElement.getElementDescription(), pos))
         {
-            if(selectedElement instanceof MobileElement)
+            if (selectedElement instanceof MobileElement)
             {
-                if(!isInterpolationValid(pos))
+                if (!isInterpolationValid(pos))
                 {
                     window.update();
                     return;
@@ -264,152 +384,157 @@ public class GodController implements java.io.Serializable
             }
             else
             {
-                if(!isObstacleNotInstersectingTrajectory((ObstacleDescription)selectedElement.getElementDescription(), pos))
+                if (!isObstacleNotInstersectingTrajectory((ObstacleDescription) selectedElement.getElementDescription(), pos))
                 {
                     window.update();
                     return;
                 }
             }
-            
+
             this.selectedElement.setPosition(this.time, pos, 0.0);
+
+            GodController.addState();
+            window.update();
         }
         window.update();
     }
-    
+
     public boolean isInterpolationValid(Vector2D newPos)
     {
-        if(selectedElement != null && selectedElement instanceof MobileElement)
+        if (selectedElement != null && selectedElement instanceof MobileElement)
         {
-            for(Element obstacle : getAllElements())
+            for (Element obstacle : getAllElements())
             {
-                if(obstacle != selectedElement && obstacle instanceof ObstacleElement)
+                if (obstacle != selectedElement && obstacle instanceof ObstacleElement)
                 {
                     final int NB_OF_VERIFICATIONS = 30;
-                    MobileElement elem = (MobileElement)selectedElement;
+                    MobileElement elem = (MobileElement) selectedElement;
                     Vector2D pos = elem.getPosition(elem.getPreviousKeyFrame(time));
                     Vector2D elemSize = elem.getElementDescription().getSize();
                     Vector2D obstaclePosition = obstacle.getPosition(time);
                     Vector2D obstacleSize = obstacle.getElementDescription().getSize();
                     Vector2D dl = newPos.substract(pos);
-                    dl.setLength(dl.getLength()/NB_OF_VERIFICATIONS);
-                    java.awt.geom.Rectangle2D.Double rect1 = new java.awt.geom.Rectangle2D.Double(obstaclePosition.getX() - obstacleSize.getX()/2, obstaclePosition.getY() - obstacleSize.getY()/2, obstacleSize.getX(), obstacleSize.getY());
+                    dl.setLength(dl.getLength() / NB_OF_VERIFICATIONS);
+                    java.awt.geom.Rectangle2D.Double rect1 = new java.awt.geom.Rectangle2D.Double(obstaclePosition.getX() - obstacleSize.getX() / 2, obstaclePosition.getY() - obstacleSize.getY() / 2, obstacleSize.getX(), obstacleSize.getY());
                     java.awt.geom.Rectangle2D.Double rect2 = new java.awt.geom.Rectangle2D.Double();
-                    
-                    for(int i = 0; i < NB_OF_VERIFICATIONS; i ++)
+
+                    for (int i = 0; i < NB_OF_VERIFICATIONS; i++)
                     {
-                        rect2.setRect(pos.getX() - elemSize.getX()/2, pos.getY() - elemSize.getY()/2, elemSize.getX(), elemSize.getY());
-                        
-                        if(rect1.intersects(rect2))
+                        rect2.setRect(pos.getX() - elemSize.getX() / 2, pos.getY() - elemSize.getY() / 2, elemSize.getX(), elemSize.getY());
+
+                        if (rect1.intersects(rect2))
                         {
                             return false;
                         }
-                        
+
                         pos = pos.add(dl);
                     }
-                    
+
                     pos = elem.getPosition(elem.getNextKeyFrame(time));
                     dl = newPos.substract(pos);
-                    dl.setLength(dl.getLength()/NB_OF_VERIFICATIONS);
-                    
-                    for(int i = 0; i < NB_OF_VERIFICATIONS; i ++)
+                    dl.setLength(dl.getLength() / NB_OF_VERIFICATIONS);
+
+                    for (int i = 0; i < NB_OF_VERIFICATIONS; i++)
                     {
-                        rect2.setRect(pos.getX() - elemSize.getX()/2, pos.getY() - elemSize.getY()/2, elemSize.getX(), elemSize.getY());
-                        
-                        if(rect1.intersects(rect2))
+                        rect2.setRect(pos.getX() - elemSize.getX() / 2, pos.getY() - elemSize.getY() / 2, elemSize.getX(), elemSize.getY());
+
+                        if (rect1.intersects(rect2))
                         {
                             return false;
                         }
-                        
+
                         pos = pos.add(dl);
                     }
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     public boolean isObstacleNotInstersectingTrajectory(ObstacleDescription obstacleDescription, Vector2D newPos)
     {
-        for(Element element : getAllElements())
+        for (Element element : getAllElements())
         {
-            if(element instanceof MobileElement)
+            if (element instanceof MobileElement)
             {
                 final double NB_OF_VERIFICATIONS_BY_SECOND = 15;
-                MobileElement mobile = (MobileElement)element;
+                MobileElement mobile = (MobileElement) element;
                 Vector2D mobileSize = mobile.getElementDescription().getSize();
                 Vector2D obstacleSize = obstacleDescription.getSize();
-                
+
                 double verificationTime = 0;
-                double maxVerfificationTime = (int)(strategy.getDuration() * NB_OF_VERIFICATIONS_BY_SECOND);
-                
-                java.awt.geom.Rectangle2D.Double rect1 = new java.awt.geom.Rectangle2D.Double(newPos.getX() - obstacleSize.getX()/2, newPos.getY() - obstacleSize.getY()/2, obstacleSize.getX(), obstacleSize.getY());
+                double maxVerfificationTime = (int) (strategy.getDuration() * NB_OF_VERIFICATIONS_BY_SECOND);
+
+                java.awt.geom.Rectangle2D.Double rect1 = new java.awt.geom.Rectangle2D.Double(newPos.getX() - obstacleSize.getX() / 2, newPos.getY() - obstacleSize.getY() / 2, obstacleSize.getX(), obstacleSize.getY());
                 java.awt.geom.Rectangle2D.Double rect2 = new java.awt.geom.Rectangle2D.Double();
 
-                while(verificationTime <= maxVerfificationTime)
+                while (verificationTime <= maxVerfificationTime)
                 {
-                    rect2.setRect(mobile.getPosition(verificationTime).getX() - mobileSize.getX()/2, mobile.getPosition(verificationTime).getY() - mobileSize.getY()/2, mobileSize.getX(), mobileSize.getY());
+                    rect2.setRect(mobile.getPosition(verificationTime).getX() - mobileSize.getX() / 2, mobile.getPosition(verificationTime).getY() - mobileSize.getY() / 2, mobileSize.getX(), mobileSize.getY());
 
-                    if(rect1.intersects(rect2))
+                    if (rect1.intersects(rect2))
                     {
                         return false;
                     }
 
-                    verificationTime += (1.0/NB_OF_VERIFICATIONS_BY_SECOND);
+                    verificationTime += (1.0 / NB_OF_VERIFICATIONS_BY_SECOND);
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     public boolean isValidCoord(ElementDescription elementDescription, Vector2D pos)
     {
         Vector2D elementSize = elementDescription.getSize();
-        
-        for(Element e : getAllElements())
+
+        for (Element e : getAllElements())
         {
-            if(e != selectedElement && e instanceof ObstacleElement)
+            if (e != selectedElement && e instanceof ObstacleElement)
             {
                 Vector2D obstacleSize = e.getElementDescription().getSize();
-                
-                if(pos.getX() + elementSize.getX()/2 >= e.getPosition(time).getX() - obstacleSize.getX()/2 && pos.getX() - elementSize.getX()/2 <= e.getPosition(time).getX() + obstacleSize.getX()/2)
+
+                if (pos.getX() + elementSize.getX() / 2 >= e.getPosition(time).getX() - obstacleSize.getX() / 2 && pos.getX() - elementSize.getX() / 2 <= e.getPosition(time).getX() + obstacleSize.getX() / 2)
                 {
-                    if(pos.getY() + elementSize.getY()/2 >= e.getPosition(time).getY() - obstacleSize.getY()/2 && pos.getY() - elementSize.getY()/2 <= e.getPosition(time).getY() + obstacleSize.getY()/2)
+                    if (pos.getY() + elementSize.getY() / 2 >= e.getPosition(time).getY() - obstacleSize.getY() / 2 && pos.getY() - elementSize.getY() / 2 <= e.getPosition(time).getY() + obstacleSize.getY() / 2)
                     {
                         return false;
                     }
                 }
             }
         }
-        
+
         Vector2D courtSize = this.strategy.getSport().getCourtSize();
-        
-        if(pos.getX() + elementSize.getX()/2 > courtSize.getX())
+
+        if (pos.getX() + elementSize.getX() / 2 > courtSize.getX())
         {
             return false;
         }
-        if(pos.getX() - elementSize.getX()/2 < 0)
+        if (pos.getX() - elementSize.getX() / 2 < 0)
         {
             return false;
         }
-        if(pos.getY() + elementSize.getY()/2 > courtSize.getY())
+        if (pos.getY() + elementSize.getY() / 2 > courtSize.getY())
         {
             return false;
         }
-        if(pos.getY() - elementSize.getY()/2 < 0)
+        if (pos.getY() - elementSize.getY() / 2 < 0)
         {
             return false;
         }
-        
+
         return true;
     }
-    
+
     public void setCurrentElemOrientation(Vector2D ori)
     {
         if (this.selectedElement != null)
         {
             this.selectedElement.setOrientation(time, ori, 0.0);
+
+            GodController.addState();
             window.update();
         }
     }
@@ -435,13 +560,13 @@ public class GodController implements java.io.Serializable
         if (sport != null)
         {
             sports.remove(oldName);
-            
+
             sport.setName(newName);
             sport.setCourtImage(courtImage);
             sport.setCourtSize(new Vector2D(courtWidth, courtHeight));
             sport.setMaxPlayer(playerNumber);
             sport.setMaxTeam(numTeams);
-            
+
             sports.put(newName, sport);
         }
 
@@ -450,6 +575,8 @@ public class GodController implements java.io.Serializable
             sport = new Sport(newName, courtImage, courtHeight, courtWidth, playerNumber, numTeams);
             sports.put(newName, sport);
         }
+
+        GodController.addState();
 
         return sport;
     }
@@ -466,7 +593,7 @@ public class GodController implements java.io.Serializable
 
     public List<Sport> getSports()
     {
-        return new ArrayList<Sport>(sports.values());
+        return new ArrayList<>(sports.values());
     }
 
     public void deleteSport(String sportName)
@@ -474,6 +601,7 @@ public class GodController implements java.io.Serializable
         if (sportName != null)
         {
             sports.remove(sportName);
+            GodController.addState();
         }
     }
 
@@ -512,7 +640,7 @@ public class GodController implements java.io.Serializable
 
     public List<Strategy> getStrategies()
     {
-        return new ArrayList<Strategy>(strategies.values());
+        return new ArrayList<>(strategies.values());
     }
 
     public void saveBallDescription(String sportName, String oldName, String newName, String image, double height, double width) throws ValidationException
@@ -539,6 +667,8 @@ public class GodController implements java.io.Serializable
                 desc = new BallDescription(newName, new Vector2D(width, height), image);
                 sport.addBallDescription(desc);
             }
+
+            GodController.addState();
         }
     }
 
@@ -559,7 +689,7 @@ public class GodController implements java.io.Serializable
 
     public void deleteBallDescription(String sportName, String name)
     {
-        BallDescription desc = null;
+        BallDescription desc;
         Sport sport = getSport(sportName);
         if (sport != null)
         {
@@ -567,6 +697,8 @@ public class GodController implements java.io.Serializable
             {
                 desc = sport.getBallDescription(name);
                 sport.deleteElementDescription(desc);
+
+                GodController.addState();
             }
         }
     }
@@ -595,6 +727,8 @@ public class GodController implements java.io.Serializable
                 desc = new PlayerDescription(newName, new Vector2D(width, height), image);
                 sport.addPlayerDescription(desc);
             }
+
+            GodController.addState();
         }
     }
 
@@ -615,7 +749,7 @@ public class GodController implements java.io.Serializable
 
     public void deletePlayerDescription(String sportName, String name)
     {
-        PlayerDescription desc = null;
+        PlayerDescription desc;
         Sport sport = getSport(sportName);
         if (sport != null)
         {
@@ -623,6 +757,8 @@ public class GodController implements java.io.Serializable
             {
                 desc = sport.getPlayerDescription(name);
                 sport.deleteElementDescription(desc);
+
+                GodController.addState();
             }
         }
     }
@@ -651,6 +787,8 @@ public class GodController implements java.io.Serializable
                 desc = new ObstacleDescription(newName, new Vector2D(width, height), image);
                 sport.addObstacleDescription(desc);
             }
+
+            GodController.addState();
         }
     }
 
@@ -671,7 +809,7 @@ public class GodController implements java.io.Serializable
 
     public void deleteObstacleDescription(String sportName, String name)
     {
-        ObstacleDescription desc = null;
+        ObstacleDescription desc;
         Sport sport = getSport(sportName);
         if (sport != null)
         {
@@ -679,6 +817,8 @@ public class GodController implements java.io.Serializable
             {
                 desc = sport.getObstacleDescription(name);
                 sport.deleteElementDescription(desc);
+
+                GodController.addState();
             }
         }
     }
@@ -698,7 +838,12 @@ public class GodController implements java.io.Serializable
         {
             this.time = 0;
         }
-        window.update();
+
+        GodController.addState();
+        if (window != null)
+        {
+            window.update();
+        }
     }
 
     public void nextFrame()
@@ -748,24 +893,30 @@ public class GodController implements java.io.Serializable
             if (description != null)
             {
                 ((Player) selectedElement).setPlayerDescription(description);
+                window.update();
+                GodController.addState();
             }
         }
     }
-    
+
     public void setSelectedPlayerName(String name)
     {
-        if(selectedElement instanceof Player)
+        if (selectedElement instanceof Player)
         {
-            ((Player)selectedElement).setName(name);
+            ((Player) selectedElement).setName(name);
+
+            GodController.addState();
             window.update();
         }
     }
-            
+
     public void setSelectedPlayerTeam(int team)
     {
         if (selectedElement instanceof Player)
         {
             ((Player) selectedElement).setTeam(team);
+            GodController.addState();
+            window.update();
         }
     }
 
@@ -774,11 +925,6 @@ public class GodController implements java.io.Serializable
 
         private boolean playing;
         private double speed;
-
-        public StrategyPlayer()
-        {
-            speed = 1;
-        }
 
         public StrategyPlayer(double speed)
         {
@@ -789,27 +935,26 @@ public class GodController implements java.io.Serializable
         protected Void call() throws Exception
         {
             playing = true;
-            long previousTimeMillis = System.currentTimeMillis();
+            long previousTimeMillis;
 
-            while (time < strategy.getDuration())
+            while (0 <= time && time <= strategy.getDuration())
             {
-
                 previousTimeMillis = System.currentTimeMillis();
                 Thread.sleep((long) (1000 / FPS_PLAY));
-                time += (double) (System.currentTimeMillis() - previousTimeMillis) / 1000 * speed;
-                if (time > strategy.getDuration())
-                {
-                    time = strategy.getDuration();
-                }
-                window.update();
                 if (!playing)
                 {
                     break;
                 }
+                time += (double) (System.currentTimeMillis() - previousTimeMillis) / 1000 * speed;
+                if (time > strategy.getDuration() || time < 0)
+                {
+                    break;
+                }
+                window.update();
             }
 
             // Arrondissement
-            time = ((int) (time * FPS_PLAY)) / FPS_PLAY;
+            time = Math.round(((int) (time * FPS_PLAY)) / FPS_PLAY);
             sp = null;
             window.lastUpdate();
             return null;
@@ -878,28 +1023,25 @@ public class GodController implements java.io.Serializable
         this.window = window;
     }
 
-    public void playStrategy()
+    public void playStrategy(double speed)
     {
         if (sp == null)
         {
-            sp = new StrategyPlayer();
+            sp = new StrategyPlayer(speed);
             Thread th = new Thread(sp);
             th.setDaemon(true);
             th.start();
         }
         else
         {
+            sp.speed = speed;
             sp.play();
         }
     }
 
     public void pauseStrategy()
     {
-        if (sp == null)
-        {
-            throw new IllegalStateException("Something went wrong...");
-        }
-        else
+        if (sp != null)
         {
             sp.pause();
         }

@@ -9,7 +9,6 @@ import vue.StrategyEditionWindow;
 
 public class Main extends Application
 {
-    private GodController controller;
     private Stage stage;
     
     public Main()
@@ -20,16 +19,11 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage)
     {
-        controller = GodController.load("visualigue.ser");
-        
-        if(controller == null)
-        {
-            controller = new GodController();
-        }
+        GodController.load("visualigue.ser");
         
         stage = primaryStage;
-        StrategyEditionWindow mainWindow = new StrategyEditionWindow(controller, primaryStage);
-        controller.setWindow(mainWindow);
+        StrategyEditionWindow mainWindow = new StrategyEditionWindow(primaryStage);
+        GodController.getInstance().setWindow(mainWindow);
     }
     
     public static void main(String[] args)
