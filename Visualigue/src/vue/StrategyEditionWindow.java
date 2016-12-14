@@ -2,17 +2,19 @@ package vue;
 
 import controller.GodController;
 import controller.Updatable;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
+import javax.imageio.ImageIO;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -896,6 +898,46 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         undoMenu.setDisable(!GodController.canUndo());
         redoMenu.setDisable(!GodController.canRedo());
+    }
+    
+    @FXML
+    private void onExportImage(ActionEvent e)
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sauvegarder stratégie");
+        fileChooser.getExtensionFilters().addAll(
+            new ExtensionFilter("Image PNG", "*.png"),
+            new ExtensionFilter("Image JPEG", "*.jpg"),
+            new ExtensionFilter("Image bitmap", "*.bmp")
+        );
+        File file = fileChooser.showSaveDialog(stage);
+        
+        if (file != null)
+        {
+            PreviewGenerator gen = new PreviewGenerator();
+            Image img = gen.generatePreview(GodController.getInstance().getCurrentStrategy());
+            
+            BufferedImage bImage = SwingFXUtils.fromFXImage(img, null);
+            BufferedImage imageRGB = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.OPAQUE);
+            Graphics2D graphics = imageRGB.createGraphics();
+            graphics.drawImage(bImage, 0, 0, null);
+
+            try
+            {
+                String extension = "";
+                int i = file.getPath().lastIndexOf('.');
+                if (i > 0)
+                {
+                    extension = file.getPath().substring(i+1);
+                }
+                ImageIO.write(imageRGB, extension, file);
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     }
 
     @FXML

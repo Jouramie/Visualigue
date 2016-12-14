@@ -231,6 +231,11 @@ public class GodController implements java.io.Serializable
             }
         }
     }
+    
+    public Strategy getCurrentStrategy()
+    {
+        return this.strategy;
+    }
 
     public Element addElement(Vector2D pos) throws Exception
     {

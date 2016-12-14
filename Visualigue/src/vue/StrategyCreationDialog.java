@@ -142,8 +142,13 @@ public class StrategyCreationDialog implements Initializable
         
         String strat = (String)listViewStrategies.getSelectionModel().getSelectedItem();
         Strategy strategy = GodController.getInstance().getStrategy(strat);
-        Image img = new Image(strategy.getSport().getCourtImage());
-        imageViewPreview.setImage(img);
+        
+        if(strategy != null)
+        {
+            PreviewGenerator gen = new PreviewGenerator();
+            Image img = gen.generatePreview(strategy);
+            imageViewPreview.setImage(img);
+        }
     }
     
     private void updateStrategyList()

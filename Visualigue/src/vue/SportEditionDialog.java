@@ -333,7 +333,7 @@ public class SportEditionDialog implements Initializable
             for(BallDescription desc : currentSport.getAllBallDescriptions())
             {
                 TreeItem<String> item = new TreeItem(desc.getName());
-                ImageView image = new ImageView(desc.getImage());
+                ImageView image = new ImageView(ImageLoader.getImage(desc.getImage()));
                 image.setFitWidth(16);
                 image.setFitHeight(16);
                 image.setPreserveRatio(true);
@@ -347,7 +347,7 @@ public class SportEditionDialog implements Initializable
             for(PlayerDescription desc : currentSport.getAllPlayerDescriptions())
             {
                 TreeItem<String> item = new TreeItem(desc.getName());
-                ImageView image = new ImageView(desc.getImage());
+                ImageView image = new ImageView(ImageLoader.getImage(desc.getImage()));
                 image.setFitWidth(16);
                 image.setFitHeight(16);
                 image.setPreserveRatio(true);
@@ -361,7 +361,7 @@ public class SportEditionDialog implements Initializable
             for(ObstacleDescription desc : currentSport.getAllObstacleDescriptions())
             {
                 TreeItem<String> item = new TreeItem(desc.getName());
-                ImageView image = new ImageView(desc.getImage());
+                ImageView image = new ImageView(ImageLoader.getImage(desc.getImage()));
                 image.setFitWidth(16);
                 image.setFitHeight(16);
                 image.setPreserveRatio(true);
