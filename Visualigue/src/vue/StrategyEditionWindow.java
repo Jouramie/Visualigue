@@ -55,6 +55,7 @@ import javafx.stage.StageStyle;
 import model.Element;
 import model.ElementDescription;
 import model.ElementDescription.TypeDescription;
+import model.MobileElement;
 import model.Player;
 import model.Vector2D;
 
@@ -79,6 +80,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private Toolbox selectedTool;
     private boolean draggingElement;
     private ImageView terrain;
+    private boolean recording;
 
     @FXML
     private ScrollPane mainPane;
@@ -134,6 +136,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.selectedTool = Toolbox.MOVE;
         this.uiElements = new ArrayList();
         this.draggingElement = false;
+        this.recording = false;
 
         try
         {
@@ -319,7 +322,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             updateRightPane(0, 0, 0);
         }
     }
-
+    
     private void removeRightPaneListener()
     {
         nameTextField.setOnAction(null);
@@ -536,9 +539,23 @@ public class StrategyEditionWindow implements Initializable, Updatable
     }
 
     @Override
-    public void updateOnRecord()
+    public Vector2D updateOnRecord(MobileElement mobile)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        updateUndoRedo();
+
+        double t = GodController.getInstance().getCurrentTime();
+        timeLine.setValue(t * GodController.FPS_EDIT);
+        timeLine.setMax((GodController.getInstance().getDuration() * GodController.FPS_EDIT) + 10);
+
+        for (UIElement uiElem : uiElements)
+        {
+            if(uiElem.getElement() != mobile)
+            {
+                uiElem.update(t);
+            }
+        }
+        
+        return selectedUIElement.getPosition();
     }
 
     @FXML
@@ -587,7 +604,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onMousePressedElement(MouseEvent e)
     {
-        if (selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE || selectedTool == Toolbox.RECORD)
         {
             mainPane.requestFocus();
             Node node = (Node) e.getSource();
@@ -609,12 +626,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
             Vector2D position = selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime());
             updateRightPane(position.getX(), position.getY(), Math.toDegrees(selectedUIElement.getElement().getOrientation(GodController.getInstance().getCurrentTime()).getAngle()));
+            
+            if(selectedTool == Toolbox.RECORD && selectedUIElement.getElement() instanceof MobileElement)
+            {
+                recording = true;
+                GodController.getInstance().beginRecording((MobileElement)selectedUIElement.getElement());
+            }
         }
     }
 
     private void onKeyPressed(KeyEvent e)
     {
-        System.out.println("vue.StrategyEditionWindow.onKeyPressed()");
         if (e.getCode() == KeyCode.DELETE)
         {
             selectedUIElement = null;
@@ -624,7 +646,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onMouseDraggedElement(MouseEvent e)
     {
-        if (selectedTool == Toolbox.MOVE)
+        if (selectedTool == Toolbox.MOVE || selectedTool == Toolbox.RECORD)
         {
             if (selectedUIElement != null)
             {
@@ -634,8 +656,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
                 double x = selectedUIElement.getPosition().getX();
                 double y = selectedUIElement.getPosition().getY();
-
-                if (GodController.getInstance().isValidCoord(selectedUIElement.getElement().getElementDescription(), new Vector2D(point.getX(), point.getY())))
+                
+                Vector2D elementDimensions = selectedUIElement.getElement().getElementDescription().getSize();
+                
+                if(GodController.getInstance().isValidCoord(selectedUIElement.getElement().getElementDescription(), new Vector2D(point.getX(), point.getY())) && GodController.getInstance().isInterpolationValid(new Vector2D(point.getX(), point.getY())))
                 {
                     x = point.getX();
                     y = point.getY();
@@ -655,6 +679,16 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 draggingElement = false;
                 GodController.getInstance().setCurrentElemPosition(selectedUIElement.getPosition());
+            }
+        }
+        else if(selectedTool == Toolbox.RECORD)
+        {
+            if (selectedUIElement != null)
+            {
+                draggingElement = false;
+                GodController.getInstance().stopRecording();
+                recording = false;
+                selectedTool = Toolbox.MOVE;
             }
         }
     }
@@ -895,6 +929,14 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             elem.setElementNameVisible(visibleLabelsCheckBox.isSelected());
         }
+        
+        if(selectedUIElement != null)
+        {
+            if (selectedUIElement.getElement() instanceof Player)
+            {
+                elementNameCheckBox.setSelected(selectedUIElement.isElementNameVisible());
+            }
+        }
     }
 
     @FXML
@@ -1069,7 +1111,17 @@ public class StrategyEditionWindow implements Initializable, Updatable
         this.obstacleButton.setStyle("-fx-background-color: inherit;");
         selectedTool = Toolbox.ADD_BALL;
     }
-
+    
+    @FXML
+    private void onActionRecord()
+    {
+        this.moveButton.setStyle("-fx-background-color: lightblue;");
+        this.playerButton.setStyle("-fx-background-color: inherit;");
+        this.ballButton.setStyle("-fx-background-color: inherit;");
+        this.obstacleButton.setStyle("-fx-background-color: inherit;");
+        this.selectedTool = Toolbox.RECORD;
+    }
+    
     private void onScroll(ScrollEvent e)
     {
         double factor = sceneScale.getX() + e.getDeltaY() / e.getMultiplierY() * ZOOM_SPEED;
@@ -1142,12 +1194,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
     }
 
     @FXML
-    private void onActionRecord()
-    {
-        System.out.println("vue.StrategyEditionWindow.onActionRecord()");
-    }
-
-    @FXML
     private void onActionRestart()
     {
         GodController.getInstance().setCurrentTime(0);
@@ -1207,6 +1253,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
 
     private void onValueChangeSlider()
     {
-        GodController.getInstance().setCurrentTime(timeLine.getValue() / GodController.FPS_EDIT);
+        if(!recording)
+        {
+            GodController.getInstance().setCurrentTime(timeLine.getValue() / GodController.FPS_EDIT);
+        }
     }
 }

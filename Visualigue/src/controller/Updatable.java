@@ -5,6 +5,9 @@
  */
 package controller;
 
+import model.MobileElement;
+import model.Vector2D;
+
 /**
  *
  * @author JEBOL42
@@ -12,6 +15,6 @@ package controller;
 public interface Updatable
 {
     public void update();
-    public void updateOnRecord();
+    public Vector2D updateOnRecord(MobileElement mobile);
     public void lastUpdate();
 }

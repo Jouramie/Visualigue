@@ -64,7 +64,6 @@ public abstract class UIGeneralElement
                 addGlowEffect();
             }
         }
-
     }
 
     public Node getNode()
