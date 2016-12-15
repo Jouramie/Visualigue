@@ -35,6 +35,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -178,6 +179,35 @@ public class StrategyEditionWindow implements Initializable, Updatable
         scenePane.setOnMouseExited(this::onMouseExitedScene);
 
         addRightPaneListener();
+        
+        /*DecimalFormat format = new DecimalFormat("#0.00");
+        TextFormatter formatter = new TextFormatter(new UnaryOperator<TextFormatter.Change>()
+        {
+            @Override
+            public TextFormatter.Change apply(TextFormatter.Change t)
+            {
+                if (t.getControlNewText().isEmpty())
+                {
+                    return t;
+                }
+
+                try
+                {
+                    double d = Double.parseDouble(t.getControlNewText());
+                } catch (NumberFormatException ex)
+                {
+                    return null;
+                }
+                
+                if (t.getControlNewText().contains(".")) {
+                    return t;
+                } else {
+                    return t;
+                }                
+            }
+        });
+        
+        positionX.setTextFormatter(formatter);*/
 
         // Clipping
         Rectangle clipRect = new Rectangle(mainPane.getWidth(), mainPane.getHeight());
@@ -356,9 +386,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
         updateVisibleLabelsCheckBox();
         nbMaxPlayerCheckBox.setSelected(GodController.getInstance().getRespectMaxNbOfPlayers());
 
-        positionX.setText("" + x);
-        positionY.setText("" + y);
-        orientation.setText("" + ori);
+        positionX.setText(String.format("%1$.2f", x));
+        positionY.setText(String.format("%1$.2f", y));
+        orientation.setText(String.format("%1$.2f", ori));
 
         if (selectedUIElement != null)
         {
@@ -524,8 +554,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
         if (point.getX() <= GodController.getInstance().getCourtDimensions().getX()
                 && point.getY() <= GodController.getInstance().getCourtDimensions().getY())
         {
-            xCoordinate.setText("" + point.getX());
-            yCoordinate.setText("" + point.getY());
+            xCoordinate.setText(String.format("%1$.2f", point.getX()));
+            yCoordinate.setText(String.format("%1$.2f", point.getY()));
         }
         else
         {
