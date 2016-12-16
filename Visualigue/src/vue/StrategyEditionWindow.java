@@ -35,6 +35,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -219,9 +220,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
             zoomingGroup.setMinHeight(scenePane.getBoundsInParent().getHeight());
         });
 
-        updateSport();
-        update();
-
+        //updateSport();
+        //update();
     }
 
     @Override
@@ -359,9 +359,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
         updateVisibleLabelsCheckBox();
         nbMaxPlayerCheckBox.setSelected(GodController.getInstance().getRespectMaxNbOfPlayers());
 
-        positionX.setText("" + x);
-        positionY.setText("" + y);
-        orientation.setText("" + ori);
+        positionX.setText(String.format("%1$.2f", x));
+        positionY.setText(String.format("%1$.2f", y));
+        orientation.setText(String.format("%1$.2f", ori));
 
         if (selectedUIElement != null)
         {
@@ -489,6 +489,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
         terrain.setFitHeight(y);
 
         double factor = (double) mainPane.getWidth() / (double) terrain.getBoundsInParent().getMaxX();
+        if(factor == 0){
+            factor = 1;
+        }
         sceneScale.setX(factor);
         sceneScale.setY(factor);
         for (UIElement elem : uiElements)
@@ -541,8 +544,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
         if (point.getX() <= GodController.getInstance().getCourtDimensions().getX()
                 && point.getY() <= GodController.getInstance().getCourtDimensions().getY())
         {
-            xCoordinate.setText("" + point.getX());
-            yCoordinate.setText("" + point.getY());
+            xCoordinate.setText(String.format("%1$.2f", point.getX()));
+            yCoordinate.setText(String.format("%1$.2f", point.getY()));
         }
         else
         {
@@ -1154,6 +1157,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         GodController.getInstance().playStrategy(1);
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
+        timeLine.setDisable(true);
     }
 
     private void onActionPause(ActionEvent e)
@@ -1161,6 +1165,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         GodController.getInstance().pauseStrategy();
         playPauseButton.setOnAction(this::onActionPlay);
         playPauseButton.setText("" + PLAY_ICON);
+        timeLine.setDisable(false);
     }
 
     @FXML
@@ -1175,6 +1180,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         GodController.getInstance().playStrategy(-Integer.parseInt(speed.getText().substring(1)));
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
+        timeLine.setDisable(true);
     }
 
     @FXML
@@ -1183,6 +1189,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         GodController.getInstance().playStrategy(Integer.parseInt(speed.getText().substring(1)));
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
+        timeLine.setDisable(true);
     }
 
     @FXML
@@ -1208,6 +1215,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         onActionPause(e);
         GodController.getInstance().setCurrentTime(0);
+        timeLine.setDisable(false);
     }
 
     @Override
@@ -1219,6 +1227,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             playPauseButton.setText("" + PLAY_ICON);
         });
+        timeLine.setDisable(false);
     }
 
     private void onValueChangeSlider()
