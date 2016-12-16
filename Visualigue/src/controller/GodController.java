@@ -228,7 +228,7 @@ public class GodController implements java.io.Serializable
             }
         }
     }
-    
+
     public Strategy getCurrentStrategy()
     {
         return this.strategy;
@@ -267,7 +267,7 @@ public class GodController implements java.io.Serializable
         }
         return elem;
     }
-    
+
     public void beginRecording(MobileElement mobile)
     {
         try
@@ -276,17 +276,19 @@ public class GodController implements java.io.Serializable
             Thread th = new Thread(recorder);
             th.setDaemon(true);
             th.start();
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
         }
     }
-    
+
     public void stopRecording()
     {
         recorder.cancel();
+        time = Math.ceil(time * FPS_EDIT) / FPS_EDIT;
+        selectedElement.setPosition(time, selectedElement.getPosition(time), 0);
+        window.update();
     }
-    
+
     public boolean getRespectMaxNbOfPlayers()
     {
         return respectMaxNbOfPlayers;
@@ -416,9 +418,9 @@ public class GodController implements java.io.Serializable
                     Vector2D dl;
                     java.awt.geom.Rectangle2D.Double rect1 = new java.awt.geom.Rectangle2D.Double(obstaclePosition.getX() - obstacleSize.getX() / 2, obstaclePosition.getY() - obstacleSize.getY() / 2, obstacleSize.getX(), obstacleSize.getY());
                     java.awt.geom.Rectangle2D.Double rect2 = new java.awt.geom.Rectangle2D.Double();
-                    
+
                     double previousTime = elem.getPreviousKeyFrame(time);
-                    if(previousTime != time)
+                    if (previousTime != time)
                     {
                         pos = elem.getPosition(previousTime);
                         dl = newPos.substract(pos);
@@ -438,7 +440,7 @@ public class GodController implements java.io.Serializable
                     }
 
                     double nextTime = elem.getNextKeyFrame(time);
-                    if(nextTime != time)
+                    if (nextTime != time)
                     {
                         pos = elem.getPosition(nextTime);
                         dl = newPos.substract(pos);
@@ -961,13 +963,19 @@ public class GodController implements java.io.Serializable
                 {
                     break;
                 }
-                window.update();
+                Platform.runLater(() ->
+                {
+                    window.update();
+                });
             }
 
             // Arrondissement
-            time = Math.round(((int) (time * FPS_PLAY)) / FPS_PLAY);
+            time = Math.round(time * FPS_EDIT) / FPS_EDIT;
             sp = null;
-            window.lastUpdate();
+            Platform.runLater(() ->
+            {
+                window.lastUpdate();
+            });
             return null;
         }
 
@@ -981,41 +989,43 @@ public class GodController implements java.io.Serializable
             playing = false;
         }
     }
-    
+
     private class Recorder extends Task<Void>
     {
-            private long previousTime;
-            private long currentTime;
-            private MobileElement mobile;
-            
-            Recorder(MobileElement mobile)
-            {
-                this.mobile = mobile;
-            }
 
-            @Override
-            protected Void call() throws Exception
+        private long previousTime;
+        private long currentTime;
+        private final MobileElement mobile;
+
+        Recorder(MobileElement mobile)
+        {
+            this.mobile = mobile;
+        }
+
+        @Override
+        protected Void call() throws Exception
+        {
+            currentTime = System.currentTimeMillis();
+
+            while (true)
             {
+                previousTime = currentTime;
                 currentTime = System.currentTimeMillis();
+                double dt = (currentTime - previousTime) / 1000.0;
 
-                while(true)
+                Platform.runLater(() ->
                 {
-                    previousTime = currentTime;
-                    currentTime = System.currentTimeMillis();
-                    double dt = (currentTime - previousTime)/1000.0;
+                    time += dt;
+                    Vector2D pos = window.updateOnRecord(this.mobile);
+                    if (isValidCoord(currentElementDescription, pos))
+                    {
+                        selectedElement.setPosition(time, pos, dt);
+                    }
+                });
 
-                    Platform.runLater(() -> {
-                        time += dt;
-                        Vector2D pos = window.updateOnRecord(this.mobile);
-                        if(isValidCoord(currentElementDescription, pos))
-                        {
-                            selectedElement.setPosition(time, pos, dt);
-                        }
-                    });
-
-                    Thread.sleep((long)(1000.0 / FPS_PLAY));
-                }
+                Thread.sleep((long) (1000.0 / FPS_PLAY));
             }
+        }
 
     }
 
