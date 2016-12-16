@@ -792,7 +792,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
                     x = elementDimensions.getX() / 2;
                 }
 
-                GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
+                if(x != selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getX())
+                {
+                    GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
+                }
             } catch (NumberFormatException ex)
             {
             }
@@ -829,7 +832,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
                     y = elementDimensions.getY() / 2;
                 }
 
-                GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
+                if(y != selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getY())
+                {
+                    GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
+                }
             } catch (NumberFormatException ex)
             {
             }
@@ -845,7 +851,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 double angle = Double.parseDouble(orientation.getText());
                 Vector2D ori = new Vector2D(1, 0);
                 ori.setAngle(Math.toRadians(angle));
-                GodController.getInstance().setCurrentElemOrientation(ori);
+                
+                if(angle != selectedUIElement.getElement().getOrientation(GodController.getInstance().getCurrentTime()).getAngle())
+                {
+                    GodController.getInstance().setCurrentElemOrientation(ori);
+                }
             } catch (NumberFormatException ex)
             {
             }

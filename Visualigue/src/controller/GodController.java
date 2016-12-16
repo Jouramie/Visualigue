@@ -284,7 +284,8 @@ public class GodController implements java.io.Serializable
     
     public void stopRecording()
     {
-        recorder.cancel();
+        recorder.stopRecording();
+        recorder = null;
     }
     
     public boolean getRespectMaxNbOfPlayers()
@@ -391,7 +392,7 @@ public class GodController implements java.io.Serializable
                 }
             }
 
-            this.selectedElement.setPosition(this.time, pos, 0.0);
+            this.selectedElement.setPosition(this.time, pos, 1.0/FPS_EDIT);
 
             GodController.addState();
             window.update();
@@ -961,7 +962,9 @@ public class GodController implements java.io.Serializable
                 {
                     break;
                 }
-                window.update();
+                Platform.runLater(() -> {
+                    window.update();
+                });
             }
 
             // Arrondissement
@@ -987,6 +990,7 @@ public class GodController implements java.io.Serializable
             private long previousTime;
             private long currentTime;
             private MobileElement mobile;
+            private boolean running;
             
             Recorder(MobileElement mobile)
             {
@@ -997,8 +1001,9 @@ public class GodController implements java.io.Serializable
             protected Void call() throws Exception
             {
                 currentTime = System.currentTimeMillis();
+                this.running = true;
 
-                while(true)
+                while(this.running)
                 {
                     previousTime = currentTime;
                     currentTime = System.currentTimeMillis();
@@ -1015,8 +1020,15 @@ public class GodController implements java.io.Serializable
 
                     Thread.sleep((long)(1000.0 / FPS_PLAY));
                 }
+                
+                GodController.addState();
+                return null;
             }
-
+            
+            public void stopRecording()
+            {
+                this.running = false;
+            }
     }
 
     public String getCourtImage()
