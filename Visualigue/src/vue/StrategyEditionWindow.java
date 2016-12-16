@@ -134,6 +134,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
     private Button playPauseButton;
     @FXML
     private TextField nameTextField;
+    @FXML 
+    private TextField frameStep;
 
     public StrategyEditionWindow(Stage primaryStage)
     {
@@ -222,6 +224,14 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             zoomingGroup.setMinWidth(scenePane.getBoundsInParent().getWidth());
             zoomingGroup.setMinHeight(scenePane.getBoundsInParent().getHeight());
+        });
+        
+        frameStep.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                int value = Integer.parseInt(newValue);
+            } catch(NumberFormatException ex){
+                frameStep.setText(oldValue);
+            }
         });
 
         //updateSport();
@@ -1250,6 +1260,13 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         GodController.getInstance().setCurrentTime(GodController.getInstance().getCurrentTime() - (1f / GodController.FPS_EDIT));
     }
+    
+    @FXML
+    private void onActionStepFrame()
+    {
+        int step = Integer.parseInt(frameStep.getText());
+        GodController.getInstance().setCurrentTime(GodController.getInstance().getCurrentTime() + (((double) step) / GodController.FPS_EDIT));
+    }    
 
     @FXML
     private void onActionStop(ActionEvent e)
