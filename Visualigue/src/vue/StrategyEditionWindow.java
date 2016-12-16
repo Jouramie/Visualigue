@@ -182,35 +182,6 @@ public class StrategyEditionWindow implements Initializable, Updatable
         scenePane.setOnMouseExited(this::onMouseExitedScene);
 
         addRightPaneListener();
-        
-        /*DecimalFormat format = new DecimalFormat("#0.00");
-        TextFormatter formatter = new TextFormatter(new UnaryOperator<TextFormatter.Change>()
-        {
-            @Override
-            public TextFormatter.Change apply(TextFormatter.Change t)
-            {
-                if (t.getControlNewText().isEmpty())
-                {
-                    return t;
-                }
-
-                try
-                {
-                    double d = Double.parseDouble(t.getControlNewText());
-                } catch (NumberFormatException ex)
-                {
-                    return null;
-                }
-                
-                if (t.getControlNewText().contains(".")) {
-                    return t;
-                } else {
-                    return t;
-                }                
-            }
-        });
-        
-        positionX.setTextFormatter(formatter);*/
 
         // Clipping
         Rectangle clipRect = new Rectangle(mainPane.getWidth(), mainPane.getHeight());
@@ -249,9 +220,8 @@ public class StrategyEditionWindow implements Initializable, Updatable
             zoomingGroup.setMinHeight(scenePane.getBoundsInParent().getHeight());
         });
 
-        updateSport();
-        update();
-
+        //updateSport();
+        //update();
     }
 
     @Override
@@ -519,6 +489,9 @@ public class StrategyEditionWindow implements Initializable, Updatable
         terrain.setFitHeight(y);
 
         double factor = (double) mainPane.getWidth() / (double) terrain.getBoundsInParent().getMaxX();
+        if(factor == 0){
+            factor = 1;
+        }
         sceneScale.setX(factor);
         sceneScale.setY(factor);
         for (UIElement elem : uiElements)
@@ -1184,6 +1157,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         GodController.getInstance().playStrategy(1);
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
+        timeLine.setDisable(true);
     }
 
     private void onActionPause(ActionEvent e)
@@ -1191,6 +1165,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         GodController.getInstance().pauseStrategy();
         playPauseButton.setOnAction(this::onActionPlay);
         playPauseButton.setText("" + PLAY_ICON);
+        timeLine.setDisable(false);
     }
 
     @FXML
@@ -1205,6 +1180,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         GodController.getInstance().playStrategy(-Integer.parseInt(speed.getText().substring(1)));
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
+        timeLine.setDisable(true);
     }
 
     @FXML
@@ -1213,6 +1189,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         GodController.getInstance().playStrategy(Integer.parseInt(speed.getText().substring(1)));
         playPauseButton.setOnAction(this::onActionPause);
         playPauseButton.setText("" + PAUSE_ICON);
+        timeLine.setDisable(true);
     }
 
     @FXML
@@ -1238,6 +1215,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
     {
         onActionPause(e);
         GodController.getInstance().setCurrentTime(0);
+        timeLine.setDisable(false);
     }
 
     @Override
@@ -1249,6 +1227,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
         {
             playPauseButton.setText("" + PLAY_ICON);
         });
+        timeLine.setDisable(false);
     }
 
     private void onValueChangeSlider()
