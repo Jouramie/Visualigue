@@ -99,6 +99,13 @@ public class StrategyCreationDialog implements Initializable
     }
     
     @FXML
+    private void onActionBack(ActionEvent e)
+    {
+        vboxAdd.setVisible(false);
+        vboxPreview.setVisible(true);
+    }
+    
+    @FXML
     private void onActionSave(ActionEvent e)
     {
         try

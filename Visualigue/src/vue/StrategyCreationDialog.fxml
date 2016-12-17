@@ -40,6 +40,10 @@
                         <Insets left="50.0" />
                      </VBox.margin>
                   </Button>
+                  <Button layoutX="60.0" layoutY="96.0" mnemonicParsing="false" onAction="#onActionBack" text="Retour">
+                     <VBox.margin>
+                        <Insets left="50.0" top="15.0" />
+                     </VBox.margin></Button>
                </children>
             </VBox>
             <VBox fx:id="vboxPreview">
