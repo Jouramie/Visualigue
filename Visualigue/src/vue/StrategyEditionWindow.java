@@ -9,12 +9,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.DoubleStream;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -163,7 +161,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        onActionNewStrategy(null);
+        openNewStrategy(true);
     }
 
     @Override
@@ -847,7 +845,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
                     x = elementDimensions.getX() / 2;
                 }
 
-                GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
+                if(x != selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getX())
+                {
+                    GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
+                }
             } catch (NumberFormatException ex)
             {
             }
@@ -884,7 +885,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
                     y = elementDimensions.getY() / 2;
                 }
 
-                GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
+                if(y != selectedUIElement.getElement().getPosition(GodController.getInstance().getCurrentTime()).getY())
+                {
+                    GodController.getInstance().setCurrentElemPosition(new Vector2D(x, y));
+                }
             } catch (NumberFormatException ex)
             {
             }
@@ -900,7 +904,11 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 double angle = Double.parseDouble(orientation.getText());
                 Vector2D ori = new Vector2D(1, 0);
                 ori.setAngle(Math.toRadians(angle));
-                GodController.getInstance().setCurrentElemOrientation(ori);
+                
+                if(angle != selectedUIElement.getElement().getOrientation(GodController.getInstance().getCurrentTime()).getAngle())
+                {
+                    GodController.getInstance().setCurrentElemOrientation(ori);
+                }
             } catch (NumberFormatException ex)
             {
             }
@@ -1054,10 +1062,23 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionNewStrategy(ActionEvent e)
     {
+        openNewStrategy(false);
+    }
+    
+    private void openNewStrategy(boolean disableClose)
+    {
         Stage dialog = new Stage(StageStyle.TRANSPARENT);
         dialog.initStyle(StageStyle.DECORATED);
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
+        
+        // At the first opening, we disable the close button.
+        if(disableClose)
+        {
+            dialog.setOnCloseRequest((event) -> {
+                event.consume();
+            });
+        }
 
         StrategyCreationDialog strategyCreation = new StrategyCreationDialog(dialog);
         dialog.setOnHidden((event) ->

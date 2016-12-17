@@ -283,9 +283,10 @@ public class GodController implements java.io.Serializable
 
     public void stopRecording()
     {
-        recorder.cancel();
-        time = Math.ceil(time * FPS_EDIT) / FPS_EDIT;
-        selectedElement.setPosition(time, selectedElement.getPosition(time), 0);
+        recorder.stopRecording();
+        recorder = null;
+        //time = Math.ceil(time * FPS_EDIT) / FPS_EDIT;
+        //selectedElement.setPosition(time, selectedElement.getPosition(time), 1.0/FPS_PLAY);
         window.update();
     }
 
@@ -399,7 +400,7 @@ public class GodController implements java.io.Serializable
                 }
             }
 
-            this.selectedElement.setPosition(this.time, pos, 0.0);
+            this.selectedElement.setPosition(this.time, pos, 1.0/FPS_EDIT);
 
             GodController.addState();
         }
@@ -656,6 +657,20 @@ public class GodController implements java.io.Serializable
         }
 
         return strategies.get(name);
+    }
+    
+    public void deleteStrategy(String name)
+    {
+        if (name == null)
+        {
+            return;
+        }
+
+        Strategy s = strategies.get(name);
+        if(s != null && strategies.size() > 1)
+        {
+            strategies.remove(name);
+        }
     }
 
     public List<Strategy> getStrategies()
@@ -996,13 +1011,14 @@ public class GodController implements java.io.Serializable
             playing = false;
         }
     }
-
+    
     private class Recorder extends Task<Void>
     {
 
         private long previousTime;
         private long currentTime;
         private final MobileElement mobile;
+        private boolean running;
 
         Recorder(MobileElement mobile)
         {
@@ -1013,8 +1029,9 @@ public class GodController implements java.io.Serializable
         protected Void call() throws Exception
         {
             currentTime = System.currentTimeMillis();
+            this.running = true;
 
-            while (true)
+            while (this.running)
             {
                 previousTime = currentTime;
                 currentTime = System.currentTimeMillis();
@@ -1032,8 +1049,20 @@ public class GodController implements java.io.Serializable
 
                 Thread.sleep((long) (1000.0 / FPS_PLAY));
             }
+            
+            Platform.runLater(() ->
+            {
+                selectedElement.setPosition(time, selectedElement.getPosition(time), 1.0/FPS_EDIT);
+            });
+            
+            GodController.addState();
+            return null;
         }
 
+        public void stopRecording()
+        {
+            this.running = false;
+        }
     }
 
     public String getCourtImage()

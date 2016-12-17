@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -24,7 +23,7 @@ public class Trajectory implements java.io.Serializable
             return;
         }
         double beginTime = Math.max(0, time - interpolation);
-        double endTime = Math.min(0, time - interpolation);
+        double endTime = Math.min(getDuration(), time + interpolation);
 
         Vector2D beginPos = getPosition(beginTime);
         Vector2D endPos = getPosition(endTime);
@@ -144,7 +143,15 @@ public class Trajectory implements java.io.Serializable
         if (begin < end)
         {
             TreeMap<Double, Vector2D> temp = new TreeMap(positions.subMap(begin, end));
-            positions = temp;
+            if(positions.containsKey(end))
+            {
+                temp.put(end, new Vector2D());
+            }
+            
+            for(Double keys : temp.keySet())
+            {
+                positions.remove(keys);
+            }
         }
     }
 
@@ -153,7 +160,15 @@ public class Trajectory implements java.io.Serializable
         if (begin < end)
         {
             TreeMap<Double, Vector2D> temp = new TreeMap(orientations.subMap(begin, end));
-            orientations = temp;
+            if(orientations.containsKey(end))
+            {
+                temp.put(end, new Vector2D());
+            }
+            
+            for(Double keys : temp.keySet())
+            {
+                orientations.remove(keys);
+            }
         }
     }
     

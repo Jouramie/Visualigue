@@ -40,6 +40,10 @@
                         <Insets left="50.0" />
                      </VBox.margin>
                   </Button>
+                  <Button layoutX="60.0" layoutY="96.0" mnemonicParsing="false" onAction="#onActionBack" text="Retour">
+                     <VBox.margin>
+                        <Insets left="50.0" top="15.0" />
+                     </VBox.margin></Button>
                </children>
             </VBox>
             <VBox fx:id="vboxPreview">
@@ -54,6 +58,11 @@
                   </Label>
                   <ImageView fx:id="imageViewPreview" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
                   <Button fx:id="btnLoadStrategy" disable="true" mnemonicParsing="false" onAction="#onActionLoadStrategy" text="Charger une stratégie">
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="btnDelete" disable="true" layoutX="10.0" layoutY="380.0" mnemonicParsing="false" onAction="#onActionDelete" text="Supprimer">
                      <VBox.margin>
                         <Insets top="20.0" />
                      </VBox.margin>
