@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -144,6 +143,10 @@ public class Trajectory implements java.io.Serializable
         if (begin < end)
         {
             TreeMap<Double, Vector2D> temp = new TreeMap(positions.subMap(begin, end));
+            if(positions.containsKey(end))
+            {
+                temp.put(end, new Vector2D());
+            }
             
             for(Double keys : temp.keySet())
             {
@@ -157,7 +160,15 @@ public class Trajectory implements java.io.Serializable
         if (begin < end)
         {
             TreeMap<Double, Vector2D> temp = new TreeMap(orientations.subMap(begin, end));
-            orientations = temp;
+            if(orientations.containsKey(end))
+            {
+                temp.put(end, new Vector2D());
+            }
+            
+            for(Double keys : temp.keySet())
+            {
+                orientations.remove(keys);
+            }
         }
     }
     
