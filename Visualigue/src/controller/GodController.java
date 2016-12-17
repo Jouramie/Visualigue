@@ -651,6 +651,20 @@ public class GodController implements java.io.Serializable
 
         return strategies.get(name);
     }
+    
+    public void deleteStrategy(String name)
+    {
+        if (name == null)
+        {
+            return;
+        }
+
+        Strategy s = strategies.get(name);
+        if(s != null && strategies.size() > 1)
+        {
+            strategies.remove(name);
+        }
+    }
 
     public List<Strategy> getStrategies()
     {

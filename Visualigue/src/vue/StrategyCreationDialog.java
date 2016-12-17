@@ -34,6 +34,9 @@ public class StrategyCreationDialog implements Initializable
     
     @FXML
     private Button btnCreateStrategy;
+    
+    @FXML
+    private Button btnDelete;
            
     @FXML
     private VBox vboxAdd;   
@@ -99,6 +102,13 @@ public class StrategyCreationDialog implements Initializable
     }
     
     @FXML
+    private void onActionDelete(ActionEvent e)
+    {
+        GodController.getInstance().deleteStrategy((String)listViewStrategies.getSelectionModel().getSelectedItem());
+        updateStrategyList();
+    }
+    
+    @FXML
     private void onActionBack(ActionEvent e)
     {
         vboxAdd.setVisible(false);
@@ -155,6 +165,12 @@ public class StrategyCreationDialog implements Initializable
             PreviewGenerator gen = new PreviewGenerator();
             Image img = gen.generatePreview(strategy);
             imageViewPreview.setImage(img);
+            
+            btnDelete.setDisable(false);
+        }
+        else
+        {
+            btnDelete.setDisable(true);
         }
     }
     
