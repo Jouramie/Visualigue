@@ -38,7 +38,7 @@ public class GodController implements java.io.Serializable
     private Map<String, Sport> sports;
     private Map<String, Strategy> strategies;
     private Strategy strategy;
-    private transient double time;
+    private double time;
     private ElementDescription currentElementDescription;
     private int currentTeam;
     private Element selectedElement;
@@ -109,7 +109,7 @@ public class GodController implements java.io.Serializable
 
         if (result != null)
         {
-            result.setWindow(getInstance().window);
+            result.setWindow(instance == null ? null : instance.window);
             GodController.instance = result;
             instance.time = 0;
 
@@ -347,6 +347,12 @@ public class GodController implements java.io.Serializable
     public void selectElement(Element elem)
     {
         this.selectedElement = elem;
+        window.update();
+    }
+
+    public Element getSelectedElement()
+    {
+        return selectedElement;
     }
 
     public void selectElementDescription(ElementDescription.TypeDescription type, String name)
@@ -396,7 +402,6 @@ public class GodController implements java.io.Serializable
             this.selectedElement.setPosition(this.time, pos, 0.0);
 
             GodController.addState();
-            window.update();
         }
         window.update();
     }
@@ -525,15 +530,15 @@ public class GodController implements java.io.Serializable
         {
             return false;
         }
-        if (pos.getX() - elementSize.getX() / 2 < 0)
+        else if (pos.getX() - elementSize.getX() / 2 < 0)
         {
             return false;
         }
-        if (pos.getY() + elementSize.getY() / 2 > courtSize.getY())
+        else if (pos.getY() + elementSize.getY() / 2 > courtSize.getY())
         {
             return false;
         }
-        if (pos.getY() - elementSize.getY() / 2 < 0)
+        else if (pos.getY() - elementSize.getY() / 2 < 0)
         {
             return false;
         }
@@ -639,6 +644,8 @@ public class GodController implements java.io.Serializable
         {
             this.strategy = strat;
         }
+        time = 0;
+        selectedElement = null;
     }
 
     public Strategy getStrategy(String name)

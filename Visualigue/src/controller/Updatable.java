@@ -9,7 +9,6 @@ import model.MobileElement;
 import model.Vector2D;
 
 /**
- *
  * @author JEBOL42
  */
 public interface Updatable

@@ -171,7 +171,6 @@
                   <TextField fx:id="orientation" prefWidth="80.0" />
                </children>
             </HBox>
-            <CheckBox fx:id="elementNameCheckBox" mnemonicParsing="false" onAction="#onActionElementNameVisible" text="Étiquette visible" />
             <Button fx:id="deleteButton" alignment="CENTER" mnemonicParsing="false" onAction="#onActionDelete" text="Supprimer" />
          </children>
          <BorderPane.margin>
@@ -200,7 +199,7 @@
                   <Button mnemonicParsing="false" onAction="#onActionGoToEnd" styleClass="btnTimeLine" text="⏭" />
                </children>
             </HBox>
-            <Slider fx:id="timeLine" styleClass="sliderTimeLine">
+            <Slider fx:id="timeLine" max="10.0" styleClass="sliderTimeLine">
                <VBox.margin>
                   <Insets />
                </VBox.margin></Slider>
