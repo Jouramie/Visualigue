@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2016-08-29" view-index="0" gantt-divider-location="575" resource-divider-location="300" version="2.8.1" locale="fr">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2016-09-26" view-index="0" gantt-divider-location="575" resource-divider-location="300" version="2.8.1" locale="fr">
     <description/>
     <view zooming-state="default:7" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="389" order="0"/>
-        <field id="tpd4" name="Date de début" width="91" order="1"/>
-        <field id="tpd5" name="Date de fin" width="76" order="2"/>
+        <field id="tpd3" name="Nom" width="394" order="0"/>
+        <field id="tpd4" name="Date de début" width="96" order="1"/>
+        <field id="tpd5" name="Date de fin" width="81" order="2"/>
         <option id="taskLabelUp" value="taskDates"/>
         <timeline><![CDATA[52,4]]></timeline>
         <option id="color.recent"><![CDATA[#6699ff #000000 #f4f4f4 #ff3300 #00ff33 #0033ff]]></option>
@@ -41,7 +41,7 @@
         </task>
         <task id="40" name="Livrable 1" meeting="false" start="2016-09-15" duration="16" complete="85" expand="false">
             <depend id="41" type="2" difference="0" hardness="Strong"/>
-            <task id="49" name="Rencontres d'équipe" color="#000000" meeting="false" start="2016-09-15" duration="15" complete="60" expand="true">
+            <task id="49" name="Rencontres d'équipe" color="#000000" meeting="false" start="2016-09-15" duration="15" complete="60" expand="false">
                 <task id="13" name="Rencontre d'équipe 09/15" color="#00ff33" meeting="true" start="2016-09-15" duration="0" complete="100" expand="true"/>
                 <task id="16" name="Rencontre d'équipe 09/20" color="#00ff33" meeting="true" start="2016-09-20" duration="0" complete="100" expand="true">
                     <depend id="23" type="2" difference="0" hardness="Strong"/>
@@ -106,8 +106,8 @@ Alexandre :
             </task>
             <task id="53" name="Remise livrable 1" color="#0033ff" meeting="true" start="2016-10-01" duration="0" complete="0" expand="true"/>
         </task>
-        <task id="41" name="Livrable 2" color="#000000" meeting="false" project="true" start="2016-10-01" duration="36" complete="94" expand="true">
-            <task id="102" name="Itération 1" meeting="false" start="2016-10-01" duration="18" complete="96" expand="true">
+        <task id="41" name="Livrable 2" color="#000000" meeting="false" project="true" start="2016-10-01" duration="36" complete="94" expand="false">
+            <task id="102" name="Itération 1" meeting="false" start="2016-10-01" duration="18" complete="96" expand="false">
                 <depend id="121" type="2" difference="0" hardness="Strong"/>
                 <task id="104" name="Début de l'écriture du diagramme de classe" color="#8cb6ce" meeting="false" start="2016-10-01" duration="4" complete="100" expand="true">
                     <depend id="105" type="2" difference="0" hardness="Strong"/>
@@ -130,7 +130,7 @@ Alexandre :
                 </task>
                 <task id="114" name="Tests + Rencontre Itération 1" color="#8cb6ce" meeting="true" start="2016-10-19" duration="0" complete="0" expand="true"/>
             </task>
-            <task id="121" name="Itération 2" color="#000000" meeting="false" start="2016-10-19" duration="17" complete="98" expand="true">
+            <task id="121" name="Itération 2" color="#000000" meeting="false" start="2016-10-19" duration="17" complete="98" expand="false">
                 <task id="207" name="Programmer l'ajout de joueur à la scène" color="#8cb6ce" meeting="false" start="2016-10-19" duration="17" complete="100" expand="true" cost-manual-value="0.0" cost-calculated="true">
                     <depend id="161" type="2" difference="0" hardness="Strong"/>
                 </task>
@@ -169,25 +169,93 @@ Alexandre :
                 <depend id="42" type="2" difference="0" hardness="Strong"/>
             </task>
         </task>
-        <task id="42" name="Livrable 3" color="#000000" meeting="false" project="true" start="2016-11-06" duration="21" complete="0" expand="true">
-            <task id="167" name="Itération 3" color="#000000" meeting="false" start="2016-11-06" duration="10" complete="0" expand="true">
-                <task id="173" name="Programmer la création de types de sports" color="#6699ff" meeting="false" start="2016-11-06" duration="4" complete="0" expand="true">
+        <task id="42" name="Livrable 3" color="#000000" meeting="false" project="true" start="2016-11-06" duration="22" complete="0" expand="false">
+            <task id="167" name="Itération 3" color="#000000" meeting="false" start="2016-11-06" duration="11" complete="0" expand="false">
+                <depend id="171" type="2" difference="0" hardness="Strong"/>
+                <depend id="235" type="2" difference="0" hardness="Strong"/>
+                <task id="173" name="Création de types de sports" color="#6699ff" meeting="false" start="2016-11-06" duration="2" complete="0" expand="true">
                     <depend id="177" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="177" name="Programmer la création de catégories de joueurs" color="#6699ff" meeting="false" start="2016-11-10" duration="6" complete="1" expand="true">
-                    <depend id="183" type="2" difference="0" hardness="Strong"/>
+                <task id="177" name="Création de catégories de joueurs, balles et obstacles" color="#6699ff" meeting="false" start="2016-11-08" duration="1" complete="1" expand="true">
+                    <depend id="214" type="2" difference="0" hardness="Strong"/>
+                    <depend id="237" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="179" name="Programmer la création de jeu image par image" color="#6699ff" meeting="false" start="2016-11-06" duration="10" complete="0" expand="true">
-                    <depend id="183" type="2" difference="0" hardness="Strong"/>
+                <task id="237" name="Ajout de joueurs, balles et obstacles à la stratégie" color="#6699ff" meeting="false" start="2016-11-09" duration="2" complete="0" expand="true">
+                    <depend id="179" type="2" difference="0" hardness="Strong"/>
+                    <depend id="241" type="2" difference="0" hardness="Strong"/>
+                    <depend id="245" type="2" difference="0" hardness="Strong"/>
+                    <depend id="247" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="179" name="Création de jeu image par image" color="#6699ff" meeting="false" start="2016-11-11" duration="3" complete="0" expand="true">
+                    <depend id="210" type="2" difference="0" hardness="Strong"/>
+                    <depend id="213" type="2" difference="0" hardness="Strong"/>
+                    <depend id="214" type="2" difference="0" hardness="Strong"/>
+                    <depend id="244" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="247" name="Rotation des éléments" meeting="false" start="2016-11-11" duration="3" complete="0" expand="true"/>
+                <task id="214" name="Visualisation de la stratégie" color="#6699ff" meeting="false" start="2016-11-14" duration="3" complete="0" expand="true">
+                    <depend id="245" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="226" name="Diagrammes d'états et d'activité" meeting="false" start="2016-11-06" duration="11" complete="0" expand="false">
+                    <task id="230" name="Diagramme d'états pour un joueur" meeting="false" start="2016-11-06" duration="5" complete="0" expand="true"/>
+                    <task id="231" name="Diagramme d'étatspour la rondelle" meeting="false" start="2016-11-06" duration="5" complete="0" expand="true"/>
+                    <task id="233" name="Diagramme d'activité pour la création de stratégie" meeting="false" start="2016-11-11" duration="6" complete="0" expand="true"/>
                 </task>
             </task>
-            <task id="171" name="Itération 4" color="#000000" meeting="false" start="2016-11-16" duration="11" complete="0" expand="true">
-                <task id="181" name="Programmer l'afficahge du jeu avec zoom et coordonnées" color="#6699ff" meeting="false" start="2016-11-16" duration="11" complete="0" expand="true"/>
-                <task id="183" name="Programmer le visionnement du jeu" color="#6699ff" meeting="false" start="2016-11-16" duration="11" complete="0" expand="true"/>
+            <task id="171" name="Itération 4" color="#000000" meeting="false" start="2016-11-17" duration="11" complete="0" expand="false">
+                <depend id="43" type="2" difference="0" hardness="Strong"/>
+                <task id="210" name="Sauvegarde" meeting="false" start="2016-11-17" duration="5" complete="0" expand="true">
+                    <depend id="235" type="2" difference="0" hardness="Strong"/>
+                    <depend id="246" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="213" name="Programmer la page d'accueil" meeting="false" start="2016-11-17" duration="5" complete="0" expand="true">
+                    <depend id="235" type="2" difference="0" hardness="Strong"/>
+                    <depend id="243" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="181" name="Afficahge des coordonnées et zoom" color="#6699ff" meeting="false" start="2016-11-22" duration="4" complete="0" expand="true">
+                    <depend id="235" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="218" name="Affichage des noms des joueurs" meeting="false" start="2016-11-22" duration="2" complete="0" expand="true">
+                    <depend id="235" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="235" name="Mise à jour du diagramme de classe" color="#6699ff" meeting="false" start="2016-11-26" duration="2" complete="0" expand="true"/>
             </task>
             <task id="5" name="Fin Livrable 3" color="#0033ff" meeting="true" start="2016-11-27" duration="0" complete="0" expand="true"/>
         </task>
-        <task id="43" name="Livrable 4" color="#000000" meeting="false" project="true" start="2016-12-18" duration="1" complete="0" expand="false">
+        <task id="43" name="Livrable 4" color="#000000" meeting="false" project="true" start="2016-11-28" duration="20" complete="0" expand="false">
+            <task id="312" name="Itération 5" meeting="false" start="2016-11-28" duration="8" complete="0" expand="false">
+                <depend id="244" type="2" difference="0" hardness="Strong"/>
+                <depend id="245" type="2" difference="0" hardness="Strong"/>
+                <depend id="246" type="2" difference="0" hardness="Strong"/>
+                <depend id="327" type="2" difference="0" hardness="Strong"/>
+                <task id="241" name="Obstacle bloquant" meeting="false" start="2016-11-28" duration="5" complete="0" expand="true">
+                    <depend id="284" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="242" name="Exporter en image" meeting="false" start="2016-11-28" duration="5" complete="0" expand="true">
+                    <depend id="243" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="243" name="Preview des stratégie à l'accueil" meeting="false" start="2016-12-03" duration="3" complete="0" expand="true"/>
+            </task>
+            <task id="327" name="Itération 6" meeting="false" start="2016-12-06" duration="7" complete="0" expand="false">
+                <depend id="284" type="2" difference="0" hardness="Strong"/>
+                <depend id="333" type="2" difference="0" hardness="Strong"/>
+                <task id="246" name="Undo/Redo" meeting="false" start="2016-12-06" duration="4" complete="0" expand="true"/>
+                <task id="244" name="Création en temps réel" color="#6699ff" meeting="false" start="2016-12-06" duration="4" complete="0" expand="true">
+                    <depend id="245" type="2" difference="0" hardness="Strong"/>
+                    <depend id="284" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="245" name="Joueur en possession de la rondelle" meeting="false" start="2016-12-10" duration="3" complete="0" expand="true">
+                    <depend id="284" type="2" difference="0" hardness="Strong"/>
+                </task>
+            </task>
+            <task id="284" name="Test et correction des bugs" color="#6699ff" meeting="false" start="2016-12-13" duration="5" complete="0" expand="true"/>
+            <task id="329" name="Diagrammes et artéfacts" meeting="false" start="2016-12-13" duration="5" complete="0" expand="false">
+                <task id="333" name="Mise à jour du diagramme de classe" meeting="false" start="2016-12-13" duration="5" complete="0" expand="true"/>
+                <task id="335" name="Mise à jour du modèle du domaine" meeting="false" start="2016-12-13" duration="1" complete="0" expand="true"/>
+                <task id="342" name="Mise à jour du diagramme de gantt" meeting="false" start="2016-12-16" duration="1" complete="0" expand="true"/>
+                <task id="331" name="Mise à jour de la vision" meeting="false" start="2016-12-17" duration="1" complete="0" expand="true"/>
+                <task id="337" name="Rédaction de la conclusion" meeting="false" start="2016-12-17" duration="1" complete="0" expand="true"/>
+            </task>
             <task id="10" name="Fin Livrable 4" color="#0033ff" meeting="true" start="2016-12-18" duration="0" complete="0" expand="true"/>
         </task>
     </tasks>
