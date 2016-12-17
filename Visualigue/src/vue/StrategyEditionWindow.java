@@ -9,12 +9,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.DoubleStream;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -163,7 +161,7 @@ public class StrategyEditionWindow implements Initializable, Updatable
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        onActionNewStrategy(null);
+        openNewStrategy(true);
     }
 
     @Override
@@ -1082,10 +1080,23 @@ public class StrategyEditionWindow implements Initializable, Updatable
     @FXML
     private void onActionNewStrategy(ActionEvent e)
     {
+        openNewStrategy(false);
+    }
+    
+    private void openNewStrategy(boolean disableClose)
+    {
         Stage dialog = new Stage(StageStyle.TRANSPARENT);
         dialog.initStyle(StageStyle.DECORATED);
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(stage);
+        
+        // At the first opening, we disable the close button.
+        if(disableClose)
+        {
+            dialog.setOnCloseRequest((event) -> {
+                event.consume();
+            });
+        }
 
         StrategyCreationDialog strategyCreation = new StrategyCreationDialog(dialog);
         dialog.setOnHidden((event) ->

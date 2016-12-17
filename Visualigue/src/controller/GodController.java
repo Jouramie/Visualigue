@@ -285,8 +285,8 @@ public class GodController implements java.io.Serializable
     {
         recorder.stopRecording();
         recorder = null;
-        time = Math.ceil(time * FPS_EDIT) / FPS_EDIT;
-        selectedElement.setPosition(time, selectedElement.getPosition(time), 0);
+        //time = Math.ceil(time * FPS_EDIT) / FPS_EDIT;
+        //selectedElement.setPosition(time, selectedElement.getPosition(time), 1.0/FPS_PLAY);
         window.update();
     }
 
@@ -1028,6 +1028,11 @@ public class GodController implements java.io.Serializable
 
                 Thread.sleep((long) (1000.0 / FPS_PLAY));
             }
+            
+            Platform.runLater(() ->
+            {
+                selectedElement.setPosition(time, selectedElement.getPosition(time), 1.0/FPS_EDIT);
+            });
             
             GodController.addState();
             return null;
