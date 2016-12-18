@@ -39,7 +39,7 @@ public class GodController implements java.io.Serializable
     private Map<String, Sport> sports;
     private Map<String, Strategy> strategies;
     private Strategy strategy;
-    private transient double time;
+    private double time;
     private ElementDescription currentElementDescription;
     private int currentTeam;
     private Element selectedElement;
@@ -110,7 +110,7 @@ public class GodController implements java.io.Serializable
 
         if (result != null)
         {
-            result.setWindow(getInstance().window);
+            result.setWindow(instance == null ? null : instance.window);
             GodController.instance = result;
             instance.time = 0;
 
@@ -229,7 +229,7 @@ public class GodController implements java.io.Serializable
             }
         }
     }
-    
+
     public Strategy getCurrentStrategy()
     {
         return this.strategy;
@@ -275,7 +275,7 @@ public class GodController implements java.io.Serializable
         }
         return elem;
     }
-    
+
     public void beginRecording(MobileElement mobile)
     {
         try
@@ -284,17 +284,20 @@ public class GodController implements java.io.Serializable
             Thread th = new Thread(recorder);
             th.setDaemon(true);
             th.start();
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
         }
     }
-    
+
     public void stopRecording()
     {
-        recorder.cancel();
+        recorder.stopRecording();
+        recorder = null;
+        //time = Math.ceil(time * FPS_EDIT) / FPS_EDIT;
+        //selectedElement.setPosition(time, selectedElement.getPosition(time), 1.0/FPS_PLAY);
+        window.update();
     }
-    
+
     public boolean getRespectMaxNbOfPlayers()
     {
         return respectMaxNbOfPlayers;
@@ -384,6 +387,12 @@ public class GodController implements java.io.Serializable
     public void selectElement(Element elem)
     {
         this.selectedElement = elem;
+        window.update();
+    }
+
+    public Element getSelectedElement()
+    {
+        return selectedElement;
     }
 
     public void selectElementDescription(ElementDescription.TypeDescription type, String name)
@@ -451,10 +460,9 @@ public class GodController implements java.io.Serializable
                 }
             }
 
-            this.selectedElement.setPosition(this.time, pos, 0.0);
+            this.selectedElement.setPosition(this.time, pos, 1.0/FPS_EDIT);
 
             GodController.addState();
-            window.update();
         }
         window.update();
     }
@@ -476,9 +484,9 @@ public class GodController implements java.io.Serializable
                     Vector2D dl;
                     java.awt.geom.Rectangle2D.Double rect1 = new java.awt.geom.Rectangle2D.Double(obstaclePosition.getX() - obstacleSize.getX() / 2, obstaclePosition.getY() - obstacleSize.getY() / 2, obstacleSize.getX(), obstacleSize.getY());
                     java.awt.geom.Rectangle2D.Double rect2 = new java.awt.geom.Rectangle2D.Double();
-                    
+
                     double previousTime = elem.getPreviousKeyFrame(time);
-                    if(previousTime != time)
+                    if (previousTime != time)
                     {
                         pos = elem.getPosition(previousTime);
                         dl = newPos.substract(pos);
@@ -498,7 +506,7 @@ public class GodController implements java.io.Serializable
                     }
 
                     double nextTime = elem.getNextKeyFrame(time);
-                    if(nextTime != time)
+                    if (nextTime != time)
                     {
                         pos = elem.getPosition(nextTime);
                         dl = newPos.substract(pos);
@@ -606,15 +614,15 @@ public class GodController implements java.io.Serializable
         {
             return false;
         }
-        if (pos.getX() - elementSize.getX() / 2 < 0)
+        else if (pos.getX() - elementSize.getX() / 2 < 0)
         {
             return false;
         }
-        if (pos.getY() + elementSize.getY() / 2 > courtSize.getY())
+        else if (pos.getY() + elementSize.getY() / 2 > courtSize.getY())
         {
             return false;
         }
-        if (pos.getY() - elementSize.getY() / 2 < 0)
+        else if (pos.getY() - elementSize.getY() / 2 < 0)
         {
             return false;
         }
@@ -720,6 +728,8 @@ public class GodController implements java.io.Serializable
         {
             this.strategy = strat;
         }
+        time = 0;
+        selectedElement = null;
     }
 
     public Strategy getStrategy(String name)
@@ -730,6 +740,20 @@ public class GodController implements java.io.Serializable
         }
 
         return strategies.get(name);
+    }
+    
+    public void deleteStrategy(String name)
+    {
+        if (name == null)
+        {
+            return;
+        }
+
+        Strategy s = strategies.get(name);
+        if(s != null && strategies.size() > 1)
+        {
+            strategies.remove(name);
+        }
     }
 
     public List<Strategy> getStrategies()
@@ -1044,13 +1068,19 @@ public class GodController implements java.io.Serializable
                 {
                     break;
                 }
-                window.update();
+                Platform.runLater(() ->
+                {
+                    window.update();
+                });
             }
 
             // Arrondissement
-            time = Math.round(((int) (time * FPS_PLAY)) / FPS_PLAY);
+            time = Math.round(time * FPS_EDIT) / FPS_EDIT;
             sp = null;
-            window.lastUpdate();
+            Platform.runLater(() ->
+            {
+                window.lastUpdate();
+            });
             return null;
         }
 
@@ -1067,39 +1097,55 @@ public class GodController implements java.io.Serializable
     
     private class Recorder extends Task<Void>
     {
-            private long previousTime;
-            private long currentTime;
-            private MobileElement mobile;
-            
-            Recorder(MobileElement mobile)
-            {
-                this.mobile = mobile;
-            }
 
-            @Override
-            protected Void call() throws Exception
+        private long previousTime;
+        private long currentTime;
+        private final MobileElement mobile;
+        private boolean running;
+
+        Recorder(MobileElement mobile)
+        {
+            this.mobile = mobile;
+        }
+
+        @Override
+        protected Void call() throws Exception
+        {
+            currentTime = System.currentTimeMillis();
+            this.running = true;
+
+            while (this.running)
             {
+                previousTime = currentTime;
                 currentTime = System.currentTimeMillis();
+                double dt = (currentTime - previousTime) / 1000.0;
 
-                while(true)
+                Platform.runLater(() ->
                 {
-                    previousTime = currentTime;
-                    currentTime = System.currentTimeMillis();
-                    double dt = (currentTime - previousTime)/1000.0;
+                    time += dt;
+                    Vector2D pos = window.updateOnRecord(this.mobile);
+                    if (isValidCoord(currentElementDescription, pos))
+                    {
+                        selectedElement.setPosition(time, pos, dt);
+                    }
+                });
 
-                    Platform.runLater(() -> {
-                        time += dt;
-                        Vector2D pos = window.updateOnRecord(this.mobile);
-                        if(isValidCoord(currentElementDescription, pos))
-                        {
-                            selectedElement.setPosition(time, pos, dt);
-                        }
-                    });
-
-                    Thread.sleep((long)(1000.0 / FPS_PLAY));
-                }
+                Thread.sleep((long) (1000.0 / FPS_PLAY));
             }
+            
+            Platform.runLater(() ->
+            {
+                selectedElement.setPosition(time, selectedElement.getPosition(time), 1.0/FPS_EDIT);
+            });
+            
+            GodController.addState();
+            return null;
+        }
 
+        public void stopRecording()
+        {
+            this.running = false;
+        }
     }
 
     public String getCourtImage()
