@@ -280,6 +280,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
             {
                 scenePane.getChildren().remove(uiElem.getGhostNode());
             }
+            if(selectedUIElement == uiElem)
+            {
+                selectedUIElement = null;
+            }
         }
 
         if (selectedUIElement != null)
@@ -674,6 +678,10 @@ public class StrategyEditionWindow implements Initializable, Updatable
                 if (uiElem.getGroupRotation().equals(node))
                 {
                     uiElem.showOrientationArrow();
+                }
+                else
+                {
+                    uiElem.hideOrientationArrow();
                 }
             }
         }

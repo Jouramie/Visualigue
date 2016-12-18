@@ -1,14 +1,12 @@
 package model;
-
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class Trajectory implements java.io.Serializable
 {
 
-    private TreeMap<Double, Vector2D> positions;
-    private TreeMap<Double, Vector2D> orientations;
+    protected TreeMap<Double, Vector2D> positions;
+    protected TreeMap<Double, Vector2D> orientations;
 
     public Trajectory()
     {

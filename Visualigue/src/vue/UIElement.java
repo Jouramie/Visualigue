@@ -1,5 +1,6 @@
 package vue;
 
+import controller.GodController;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -14,7 +15,7 @@ public class UIElement extends UIGeneralElement
 {
 
     private static final String PATH_IMAGE_ROTATION = "/res/orientation.png";
-
+    
     private final ImageView orientationArrow;
     private boolean isRotating;
 
@@ -51,12 +52,13 @@ public class UIElement extends UIGeneralElement
     public void refreshNode()
     {
         super.refreshNode();
+        
         orientationArrow.setImage(ImageLoader.getImage(PATH_IMAGE_ROTATION));
         orientationArrow.setFitWidth(4 * element.getElementDescription().getSize().getX());
         orientationArrow.setFitHeight(4 * element.getElementDescription().getSize().getY());
         orientationArrow.setTranslateX(-1.5 * element.getElementDescription().getSize().getX());
         orientationArrow.setTranslateY(-1.5 * element.getElementDescription().getSize().getY());
-
+        
         elementName.setTranslateY(element.getElementDescription().getSize().getY());
 
         setElementName(elementName.getText());

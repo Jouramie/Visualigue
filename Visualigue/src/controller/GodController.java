@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import model.Ball;
 import model.BallDescription;
 import model.Element;
 import model.ElementDescription;
@@ -254,6 +255,13 @@ public class GodController implements java.io.Serializable
                 elem = this.strategy.createBall((BallDescription) currentElementDescription);
                 elem.setPosition(time, pos, 0.0);
                 elem.setOrientation(time, new Vector2D(1, 0), 0.0);
+                ((Ball)elem).takeFromOwner(0);
+                
+                Player player = touchingPlayer((BallDescription)currentElementDescription, pos);
+                if(player != null)
+                {
+                    player.giveBall(time, (Ball)elem);
+                }
             }
             else if (currentElementDescription instanceof PlayerDescription && (!respectMaxNbOfPlayers || getNbOfPlayersInTeam(currentTeam) < getMaxNbOfPlayers()))
             {
@@ -334,11 +342,42 @@ public class GodController implements java.io.Serializable
     {
         if (selectedElement != null)
         {
+            if(selectedElement instanceof Player)
+            {
+                deletePlayer((Player)selectedElement);
+            }
+            else if(selectedElement instanceof Ball)
+            {
+                deleteBall((Ball)selectedElement);
+            }
+            
             strategy.deleteElement(selectedElement);
             selectedElement = null;
 
             GodController.addState();
             window.update();
+        }
+    }
+    
+    private void deletePlayer(Player player)
+    {
+        for(Element elem : strategy.getAllElements())
+        {
+            if(elem instanceof Ball)
+            {
+                ((Ball)elem).deletePlayer(player);
+            }
+        }
+    }
+    
+    private void deleteBall(Ball ball)
+    {
+        for(Element elem : strategy.getAllElements())
+        {
+            if(elem instanceof Player)
+            {
+                ((Player)elem).deleteBall(ball);
+            }
         }
     }
 
@@ -372,6 +411,27 @@ public class GodController implements java.io.Serializable
 
     public void setCurrentElemPosition(Vector2D pos)
     {
+        if(selectedElement instanceof Ball)
+        {
+            for(Element elem : strategy.getAllElements())
+            {
+                if(elem instanceof Player && ((Player)elem).getBall(time) == selectedElement)
+                {
+                    Player player = (Player)elem;
+                    player.giveBall(player.getPreviousKeyFrame(time), null);
+                }
+            }
+            
+            Player player = touchingPlayer((BallDescription)selectedElement.getElementDescription(), pos);
+            if(player != null)
+            {
+                player.giveBall(time, (Ball)selectedElement);
+                window.update();
+                return;
+            }
+
+        }
+        
         if (this.selectedElement != null && isValidCoord(selectedElement.getElementDescription(), pos))
         {
             if (selectedElement instanceof MobileElement)
@@ -461,6 +521,29 @@ public class GodController implements java.io.Serializable
         }
 
         return true;
+    }
+    
+    private Player touchingPlayer(BallDescription ballDescription, Vector2D pos)
+    {
+        Vector2D ballSize = ballDescription.getSize();
+        Player player = null;
+        
+        for(Element elem : strategy.getAllElements())
+        {
+            if(elem instanceof Player)
+            {
+                Vector2D elemSize = elem.getElementDescription().getSize();
+            
+                if (pos.getX() + ballSize.getX() / 2 >= elem.getPosition(time).getX() - elemSize.getX() / 2 && pos.getX() - ballSize.getX() / 2 <= elem.getPosition(time).getX() + elemSize.getX() / 2)
+                {
+                    if (pos.getY() + ballSize.getY() / 2 >= elem.getPosition(time).getY() - elemSize.getY() / 2 && pos.getY() - ballSize.getY() / 2 <= elem.getPosition(time).getY() + elemSize.getY() / 2)
+                    {
+                        player = (Player)elem;
+                    }
+                }
+            }
+        }
+        return player;
     }
 
     public boolean isObstacleNotInstersectingTrajectory(ObstacleDescription obstacleDescription, Vector2D newPos)

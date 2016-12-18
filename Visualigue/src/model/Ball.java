@@ -14,5 +14,21 @@ public class Ball extends MobileElement implements java.io.Serializable
     public Ball(BallDescription desc)
     {
         super(desc);
+        trajectory = new BallTrajectory(description.getSize());
+    }
+    
+    public void giveToOwner(double time, Player player)
+    {
+        ((BallTrajectory)trajectory).giveToOwner(time, player);
+    }
+    
+    public void takeFromOwner(double time)
+    {
+        ((BallTrajectory)trajectory).takeFromOwner(time);
+    }
+    
+    public void deletePlayer(Player player)
+    {
+        ((BallTrajectory)trajectory).deletePlayer(player);
     }
 }
