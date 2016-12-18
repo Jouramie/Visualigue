@@ -1113,6 +1113,7 @@ public class GodController implements java.io.Serializable
         {
             currentTime = System.currentTimeMillis();
             this.running = true;
+            boolean firstTime = true;
 
             while (this.running)
             {
@@ -1120,17 +1121,36 @@ public class GodController implements java.io.Serializable
                 currentTime = System.currentTimeMillis();
                 double dt = (currentTime - previousTime) / 1000.0;
 
-                Platform.runLater(() ->
+                if(!firstTime)
                 {
-                    time += dt;
-                    Vector2D pos = window.updateOnRecord(this.mobile);
-                    if (isValidCoord(currentElementDescription, pos))
+                    Platform.runLater(() ->
                     {
-                        selectedElement.setPosition(time, pos, dt);
-                    }
-                });
+                        time += dt;
+                        Vector2D pos = window.updateOnRecord(this.mobile);
 
+                        if(isValidCoord(currentElementDescription, pos))
+                        {
+                            selectedElement.setOrientation(time, pos.substract(selectedElement.getPosition(time)).normaliser(), dt);
+                            selectedElement.setPosition(time, pos, dt);
+                        }
+                    });
+                }
+                else
+                {
+                    Platform.runLater(() ->
+                    {
+                        time += dt;
+                        Vector2D pos = window.updateOnRecord(this.mobile);
+
+                        if(isValidCoord(currentElementDescription, pos))
+                        {
+                            selectedElement.setPosition(time, pos, dt);
+                        }
+                    });
+                }
+                
                 Thread.sleep((long) (1000.0 / FPS_PLAY));
+                firstTime = false;
             }
             
             Platform.runLater(() ->
