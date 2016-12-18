@@ -1130,7 +1130,7 @@ public class GodController implements java.io.Serializable
 
                         if(isValidCoord(currentElementDescription, pos))
                         {
-                            selectedElement.setOrientation(time, pos.substract(selectedElement.getPosition(time)).normaliser(), dt);
+                            selectedElement.setOrientation(time - dt, pos.substract(selectedElement.getPosition(time)).normaliser(), dt);
                             selectedElement.setPosition(time, pos, dt);
                         }
                     });
