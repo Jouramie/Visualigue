@@ -51,6 +51,15 @@ public class BallTrajectory extends Trajectory
         owners.put(time, null);
     }
     
+    public void takeFromLastOwner(double time)
+    {
+        if(owners.floorEntry(time) != null && owners.floorEntry(time).getValue() != null)
+        {
+            positions.put(time, getBallPositionFromPlayer(time));
+        }
+        owners.put(time, null);
+    }
+    
     @Override
     public Vector2D getPosition(double time)
     {
@@ -58,7 +67,17 @@ public class BallTrajectory extends Trajectory
         
         if(owners.floorEntry(time) != null && owners.floorEntry(time).getValue() != null)
         {
-            pos = getBallPositionFromPlayer(time);
+            if(owners.ceilingEntry(time) != null && owners.ceilingEntry(time).getValue() != null)
+            {
+                Vector2D lastPos = getBallPositionFromPlayer(owners.floorKey(time));
+                Vector2D nextPos = getBallPositionFromPlayer(owners.ceilingKey(time));
+                double delta = (time - owners.floorKey(time)) / (owners.ceilingKey(time) - owners.floorKey(time));
+                pos = interpolate(lastPos, nextPos, delta);
+            }
+            else
+            {
+                pos = getBallPositionFromPlayer(time);
+            }
         }
         else
         {
@@ -149,6 +168,18 @@ public class BallTrajectory extends Trajectory
         }
         
         return pos;
+    }
+    
+    @Override
+    public double getDuration()
+    {
+        double duration = 0;
+        if (!positions.isEmpty() && !orientations.isEmpty() && !owners.isEmpty())
+        {
+            duration = Math.max(positions.lastKey(), orientations.lastKey());
+            duration = Math.max(duration, owners.lastKey());
+        }
+        return duration;
     }
     
     private Vector2D getBallPositionFromPlayer(double time)

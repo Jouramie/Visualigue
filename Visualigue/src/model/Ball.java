@@ -27,6 +27,11 @@ public class Ball extends MobileElement implements java.io.Serializable
         ((BallTrajectory)trajectory).takeFromOwner(time);
     }
     
+    public void takeFromLastOwner(double time)
+    {
+        ((BallTrajectory)trajectory).takeFromLastOwner(time);
+    }
+    
     public void deletePlayer(Player player)
     {
         ((BallTrajectory)trajectory).deletePlayer(player);
