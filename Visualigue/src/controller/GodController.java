@@ -427,7 +427,7 @@ public class GodController implements java.io.Serializable
                 if(elem instanceof Player && ((Player)elem).getBall(time) == selectedElement)
                 {
                     Player player = (Player)elem;
-                    player.giveBall(player.getPreviousKeyFrame(time), null);
+                    player.giveBall(time - 1.0/FPS_EDIT, null);
                 }
             }
             
