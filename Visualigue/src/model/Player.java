@@ -60,7 +60,7 @@ public class Player extends MobileElement implements java.io.Serializable
     {
         if(this.balls.floorEntry(time) != null && this.balls.floorEntry(time).getValue() != null)
         {
-            this.balls.floorEntry(time).getValue().takeFromOwner(time);
+            this.balls.floorEntry(time).getValue().takeFromLastOwner(time);
         }
         this.balls.put(time, ball);
         
