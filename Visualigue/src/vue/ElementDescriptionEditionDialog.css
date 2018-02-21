@@ -9,9 +9,9 @@ and open the template in the editor.
 */
 
 .mainFxmlClass {
--fx-background-color: darkgrey;
+    -fx-background-color: darkgrey;
 }
 
-.background{
+.background {
     -fx-background-color: gainsboro;
 }

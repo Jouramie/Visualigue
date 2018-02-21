@@ -3,22 +3,18 @@ package model;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public class Trajectory implements java.io.Serializable
-{
+public class Trajectory implements java.io.Serializable {
 
     protected TreeMap<Double, Vector2D> positions;
     protected TreeMap<Double, Vector2D> orientations;
 
-    public Trajectory()
-    {
+    public Trajectory() {
         this.positions = new TreeMap();
         this.orientations = new TreeMap();
     }
 
-    public void setPosition(double time, double interpolation, Vector2D position)
-    {
-        if (positions.isEmpty())
-        {
+    public void setPosition(double time, double interpolation, Vector2D position) {
+        if (positions.isEmpty()) {
             positions.put(0d, position);
             positions.put(time, position);
             return;
@@ -36,9 +32,8 @@ public class Trajectory implements java.io.Serializable
         positions.put(time, position);
     }
 
-    public void setOrientation(double time, double interpolation, Vector2D orientation)
-    {
-        if (orientations.isEmpty()){
+    public void setOrientation(double time, double interpolation, Vector2D orientation) {
+        if (orientations.isEmpty()) {
             orientations.put(0d, orientation);
             orientations.put(time, orientation);
             return;
@@ -56,35 +51,29 @@ public class Trajectory implements java.io.Serializable
         orientations.put(time, orientation);
     }
 
-    public Vector2D getPosition(double time)
-    {
-        if (positions.isEmpty())
-        {
+    public Vector2D getPosition(double time) {
+        if (positions.isEmpty()) {
             return new Vector2D();
         }
 
         Vector2D pos = positions.get(time);
-        if (pos != null)
-        {
+        if (pos != null) {
             return pos;
         }
 
         Entry<Double, Vector2D> floorEntry = positions.floorEntry(time);
         Entry<Double, Vector2D> ceilingEntry = positions.ceilingEntry(time);
-        if (floorEntry == null)
-        {
+        if (floorEntry == null) {
             floorEntry = positions.firstEntry();
         }
-        if (ceilingEntry == null)
-        {
+        if (ceilingEntry == null) {
             ceilingEntry = positions.lastEntry();
         }
 
         Vector2D result = floorEntry.getValue().clone();
         double delta = (time - floorEntry.getKey()) / (ceilingEntry.getKey() - floorEntry.getKey());
         Vector2D diff = ceilingEntry.getValue().substract(floorEntry.getValue());
-        if (diff.equals(new Vector2D()))
-        {
+        if (diff.equals(new Vector2D())) {
             return result;
         }
         diff = diff.multiply(delta);
@@ -92,36 +81,30 @@ public class Trajectory implements java.io.Serializable
         return result;
     }
 
-    public Vector2D getOrientation(double time)
-    {
+    public Vector2D getOrientation(double time) {
         // TODO: changer pour une meilleure interpolation.
-        if (orientations.isEmpty())
-        {
+        if (orientations.isEmpty()) {
             return new Vector2D();
         }
 
         Vector2D pos = orientations.get(time);
-        if (pos != null)
-        {
+        if (pos != null) {
             return pos;
         }
 
         Entry<Double, Vector2D> floorEntry = orientations.floorEntry(time);
         Entry<Double, Vector2D> ceilingEntry = orientations.ceilingEntry(time);
-        if (floorEntry == null)
-        {
+        if (floorEntry == null) {
             floorEntry = orientations.firstEntry();
         }
-        if (ceilingEntry == null)
-        {
+        if (ceilingEntry == null) {
             ceilingEntry = orientations.lastEntry();
         }
 
         Vector2D result = floorEntry.getValue().clone();
         double delta = (time - floorEntry.getKey()) / (ceilingEntry.getKey() - floorEntry.getKey());
         Vector2D diff = ceilingEntry.getValue().substract(floorEntry.getValue());
-        if (diff.equals(new Vector2D()))
-        {
+        if (diff.equals(new Vector2D())) {
             return result;
         }
         diff = diff.multiply(delta);
@@ -129,65 +112,51 @@ public class Trajectory implements java.io.Serializable
         return result;
     }
 
-    public double getDuration()
-    {
+    public double getDuration() {
         double duration = 0;
-        if (!positions.isEmpty() && !orientations.isEmpty())
-        {
+        if (!positions.isEmpty() && !orientations.isEmpty()) {
             duration = Math.max(positions.lastKey(), orientations.lastKey());
         }
         return duration;
     }
 
-    public void flushPositions(double begin, double end)
-    {
-        if (begin < end)
-        {
+    public void flushPositions(double begin, double end) {
+        if (begin < end) {
             TreeMap<Double, Vector2D> temp = new TreeMap(positions.subMap(begin, end));
-            if(positions.containsKey(end))
-            {
+            if (positions.containsKey(end)) {
                 temp.put(end, new Vector2D());
             }
-            
-            for(Double keys : temp.keySet())
-            {
+
+            for (Double keys : temp.keySet()) {
                 positions.remove(keys);
             }
         }
     }
 
-    public void flushOrientations(double begin, double end)
-    {
-        if (begin < end)
-        {
+    public void flushOrientations(double begin, double end) {
+        if (begin < end) {
             TreeMap<Double, Vector2D> temp = new TreeMap(orientations.subMap(begin, end));
-            if(orientations.containsKey(end))
-            {
+            if (orientations.containsKey(end)) {
                 temp.put(end, new Vector2D());
             }
-            
-            for(Double keys : temp.keySet())
-            {
+
+            for (Double keys : temp.keySet()) {
                 orientations.remove(keys);
             }
         }
     }
-    
-    public double getPreviousKeyFrame(double currentTime)
-    {
+
+    public double getPreviousKeyFrame(double currentTime) {
         double time = 0.0;
-        if(positions != null && currentTime > 0)
-        {
+        if (positions != null && currentTime > 0) {
             time = positions.lowerKey(currentTime);
         }
         return time;
     }
-    
-    public double getNextKeyFrame(double currentTime)
-    {
+
+    public double getNextKeyFrame(double currentTime) {
         double time = currentTime;
-        if(positions != null && currentTime < positions.lastKey())
-        {
+        if (positions != null && currentTime < positions.lastKey()) {
             time = positions.higherKey(currentTime);
         }
         return time;

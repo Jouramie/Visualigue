@@ -5,7 +5,6 @@
  */
 package vue;
 
-import java.util.HashMap;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
@@ -17,13 +16,11 @@ import model.Element;
 import model.Player;
 import model.Vector2D;
 
-/**
- *
- * @author Utilisateur
- */
-public abstract class UIGeneralElement
-{
-    
+import java.util.HashMap;
+
+public abstract class UIGeneralElement {
+
+    static protected HashMap<Integer, Color> teamColor = new HashMap();
     protected Group rotationGroup;
     protected Group globalGroup;
     protected Element element;
@@ -31,10 +28,7 @@ public abstract class UIGeneralElement
     protected ImageView image;
     protected boolean isSelected;
 
-    static protected HashMap<Integer, Color> teamColor = new HashMap();
-
-    public UIGeneralElement(Element element)
-    {
+    public UIGeneralElement(Element element) {
         this.element = element;
 
         image = new ImageView();
@@ -47,56 +41,7 @@ public abstract class UIGeneralElement
         globalGroup = rotationGroup;
     }
 
-    public void refreshNode()
-    {
-        image.setImage(ImageLoader.getImage(element.getElementDescription().getImage()));
-        image.setFitWidth(element.getElementDescription().getSize().getX());
-        image.setFitHeight(element.getElementDescription().getSize().getY());
-
-        if (element instanceof Player)
-        {
-            Player player = (Player) element;
-            InnerShadow innerShadow = new InnerShadow((double) player.getElementDescription().getSize().getX() / 1.8, getColor(player.getTeam()));
-            image.setEffect(innerShadow);
-            if (isSelected)
-            {
-                isSelected = false;
-                addGlowEffect();
-            }
-        }
-    }
-
-    public Node getNode()
-    {
-        return globalGroup;
-    }
-
-    public Element getElement()
-    {
-        return element;
-    }
-
-    public void move(double x, double y)
-    {
-        globalGroup.setTranslateX(x - element.getElementDescription().getSize().getX() / 2);
-        globalGroup.setTranslateY(y - element.getElementDescription().getSize().getY() / 2);
-    }
-
-    public Vector2D getPosition()
-    {
-        double x = globalGroup.getTranslateX() + element.getElementDescription().getSize().getX() / 2;
-        double y = globalGroup.getTranslateY() + element.getElementDescription().getSize().getY() / 2;
-        return new Vector2D(x, y);
-    }
-
-    public void update(double time)
-    {
-        move(element.getPosition(time).getX(), element.getPosition(time).getY());
-        rotationGroup.setRotate(Math.toDegrees(element.getOrientation(time).getAngle()));
-    }
-
-    private static void initColors()
-    {
+    private static void initColors() {
         teamColor.put(1, Color.BLUE);
         teamColor.put(2, Color.GREEN);
         teamColor.put(3, Color.WHITE);
@@ -107,25 +52,60 @@ public abstract class UIGeneralElement
         teamColor.put(8, Color.AQUA);
     }
 
-    private static Color getColor(Integer team)
-    {
-        if (teamColor.isEmpty())
-        {
+    private static Color getColor(Integer team) {
+        if (teamColor.isEmpty()) {
             initColors();
         }
         Color result = teamColor.get(team);
-        if (result == null)
-        {
+        if (result == null) {
             result = Color.rgb((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
             teamColor.put(team, result);
         }
         return result;
     }
 
-    public void addGlowEffect()
-    {
-        if (!isSelected)
-        {
+    public void refreshNode() {
+        image.setImage(ImageLoader.getImage(element.getElementDescription().getImage()));
+        image.setFitWidth(element.getElementDescription().getSize().getX());
+        image.setFitHeight(element.getElementDescription().getSize().getY());
+
+        if (element instanceof Player) {
+            Player player = (Player) element;
+            InnerShadow innerShadow = new InnerShadow((double) player.getElementDescription().getSize().getX() / 1.8, getColor(player.getTeam()));
+            image.setEffect(innerShadow);
+            if (isSelected) {
+                isSelected = false;
+                addGlowEffect();
+            }
+        }
+    }
+
+    public Node getNode() {
+        return globalGroup;
+    }
+
+    public Element getElement() {
+        return element;
+    }
+
+    public void move(double x, double y) {
+        globalGroup.setTranslateX(x - element.getElementDescription().getSize().getX() / 2);
+        globalGroup.setTranslateY(y - element.getElementDescription().getSize().getY() / 2);
+    }
+
+    public Vector2D getPosition() {
+        double x = globalGroup.getTranslateX() + element.getElementDescription().getSize().getX() / 2;
+        double y = globalGroup.getTranslateY() + element.getElementDescription().getSize().getY() / 2;
+        return new Vector2D(x, y);
+    }
+
+    public void update(double time) {
+        move(element.getPosition(time).getX(), element.getPosition(time).getY());
+        rotationGroup.setRotate(Math.toDegrees(element.getOrientation(time).getAngle()));
+    }
+
+    public void addGlowEffect() {
+        if (!isSelected) {
             Effect eff = image.getEffect();
             DropShadow glow = new DropShadow();
             glow.setOffsetY(0f);
@@ -139,12 +119,9 @@ public abstract class UIGeneralElement
         }
     }
 
-    public void removeGlowEffect()
-    {
-        if (isSelected)
-        {
-            if (image.getEffect() instanceof DropShadow)
-            {
+    public void removeGlowEffect() {
+        if (isSelected) {
+            if (image.getEffect() instanceof DropShadow) {
                 DropShadow glow = (DropShadow) image.getEffect();
                 Effect input = glow.getInput();
                 image.setEffect(input);
@@ -153,13 +130,11 @@ public abstract class UIGeneralElement
         }
     }
 
-    public Node getElementImage()
-    {
+    public Node getElementImage() {
         return image;
     }
 
-    public Node getGroupRotation()
-    {
+    public Node getGroupRotation() {
         return rotationGroup;
     }
 }

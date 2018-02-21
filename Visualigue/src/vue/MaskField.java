@@ -57,6 +57,18 @@ public class MaskField extends TextField {
      * простой текст без применения маски
      */
     private StringProperty plainText;
+    /**
+     * это сама маска видимая в поле ввода
+     */
+    private StringProperty mask;
+    /**
+     * если маска должна отображать символы которые зарезервированы для маски, то задается дополнительная подсказка где символ маски, а где просто символ
+     */
+    private StringProperty whatMask;
+    /**
+     * это символы замещения
+     */
+    private StringProperty placeholder;
 
     public final String getPlainText() {
         return plainTextProperty().get();
@@ -72,12 +84,6 @@ public class MaskField extends TextField {
             plainText = new SimpleStringProperty(this, "plainText", "");
         return plainText;
     }
-
-
-    /**
-     * это сама маска видимая в поле ввода
-     */
-    private StringProperty mask;
 
     public final String getMask() {
         return maskProperty().get();
@@ -96,12 +102,6 @@ public class MaskField extends TextField {
         return mask;
     }
 
-
-    /**
-     * если маска должна отображать символы которые зарезервированы для маски, то задается дополнительная подсказка где символ маски, а где просто символ
-     */
-    private StringProperty whatMask;
-
     public final String getWhatMask() {
         return whatMaskProperty().get();
     }
@@ -119,12 +119,6 @@ public class MaskField extends TextField {
         return whatMask;
     }
 
-
-    /**
-     * это символы замещения
-     */
-    private StringProperty placeholder;
-
     public final String getPlaceholder() {
         return placeholderProperty().get();
     }
@@ -140,39 +134,6 @@ public class MaskField extends TextField {
             placeholder = new SimpleStringProperty(this, "placeholder");
         return placeholder;
     }
-
-
-    private class Position {
-        public char mask;
-        public char whatMask;
-        public char placeholder;
-
-        public Position(char mask, char whatMask, char placeholder) {
-            this.mask = mask;
-            this.placeholder = placeholder;
-            this.whatMask = whatMask;
-        }
-
-        public boolean isPlainCharacter()
-        {
-            return whatMask == WHAT_MASK_CHAR;
-        }
-
-        public boolean isCorrect(char c)
-        {
-            switch (mask)
-            {
-                case MASK_DIGIT:
-                    return Character.isDigit(c);
-                case MASK_CHARACTER:
-                    return Character.isLetter(c);
-                case MASK_DIG_OR_CHAR:
-                    return Character.isLetter(c) || Character.isDigit(c);
-            }
-            return false;
-        }
-    }
-
 
     /**
      * формирует список объектов Position по каждому символу маски
@@ -190,9 +151,7 @@ public class MaskField extends TextField {
                 if (getWhatMask().charAt(i) != WHAT_MASK_CHAR) {
                     w = WHAT_MASK_NO_CHAR;
                 }
-            }
-            else
-            {
+            } else {
                 //так как не указано что за символ - понимаем самостоятельно
                 //и если символ не находится среди символов маски - то это считается простым литералом
                 if (m != MASK_CHARACTER && m != MASK_DIG_OR_CHAR && m != MASK_DIGIT)
@@ -207,13 +166,11 @@ public class MaskField extends TextField {
         }
     }
 
-
     /**
      * функция как бы накладывает просто текст plainText на заданную маску,
      * корректирует позицию каретки
      */
-    private void updateShowingField()
-    {
+    private void updateShowingField() {
         int counterPlainCharInMask = 0;
         int lastPositionPlainCharInMask = 0;
         int firstPlaceholderInMask = -1;
@@ -225,8 +182,7 @@ public class MaskField extends TextField {
                 if (textPlain.length() > counterPlainCharInMask) {
 
                     char c = textPlain.charAt(counterPlainCharInMask);
-                    while (!p.isCorrect(c))
-                    {
+                    while (!p.isCorrect(c)) {
                         //вырезаем то что не подошло
                         textPlain = textPlain.substring(0, counterPlainCharInMask) + textPlain.substring(counterPlainCharInMask + 1);
 
@@ -238,8 +194,7 @@ public class MaskField extends TextField {
 
                     textMask += c;
                     lastPositionPlainCharInMask = i;
-                }
-                else {
+                } else {
                     textMask += p.placeholder;
                     if (firstPlaceholderInMask == -1)
                         firstPlaceholderInMask = i;
@@ -268,10 +223,7 @@ public class MaskField extends TextField {
 
     }
 
-
-
-    private int interpretMaskPositionInPlainPosition(int posMask)
-    {
+    private int interpretMaskPositionInPlainPosition(int posMask) {
         int posPlain = 0;
 
         for (int i = 0; i < objectMask.size() && i < posMask; i++) {
@@ -282,7 +234,6 @@ public class MaskField extends TextField {
 
         return posPlain;
     }
-
 
     @Override
     public void replaceText(int start, int end, String text) {
@@ -307,6 +258,34 @@ public class MaskField extends TextField {
 
         setPlainText(plainText1 + text + plainText2);
 
+    }
+
+    private class Position {
+        public char mask;
+        public char whatMask;
+        public char placeholder;
+
+        public Position(char mask, char whatMask, char placeholder) {
+            this.mask = mask;
+            this.placeholder = placeholder;
+            this.whatMask = whatMask;
+        }
+
+        public boolean isPlainCharacter() {
+            return whatMask == WHAT_MASK_CHAR;
+        }
+
+        public boolean isCorrect(char c) {
+            switch (mask) {
+                case MASK_DIGIT:
+                    return Character.isDigit(c);
+                case MASK_CHARACTER:
+                    return Character.isLetter(c);
+                case MASK_DIG_OR_CHAR:
+                    return Character.isLetter(c) || Character.isDigit(c);
+            }
+            return false;
+        }
     }
 
 

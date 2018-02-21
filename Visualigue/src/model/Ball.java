@@ -6,34 +6,27 @@
 package model;
 
 /**
- *
  * @author emile
  */
-public class Ball extends MobileElement implements java.io.Serializable
-{
-    public Ball(BallDescription desc)
-    {
+public class Ball extends MobileElement implements java.io.Serializable {
+    public Ball(BallDescription desc) {
         super(desc);
         trajectory = new BallTrajectory(description.getSize());
     }
-    
-    public void giveToOwner(double time, Player player)
-    {
-        ((BallTrajectory)trajectory).giveToOwner(time, player);
+
+    public void giveToOwner(double time, Player player) {
+        ((BallTrajectory) trajectory).giveToOwner(time, player);
     }
-    
-    public void takeFromOwner(double time)
-    {
-        ((BallTrajectory)trajectory).takeFromOwner(time);
+
+    public void takeFromOwner(double time) {
+        ((BallTrajectory) trajectory).takeFromOwner(time);
     }
-    
-    public void takeFromLastOwner(double time)
-    {
-        ((BallTrajectory)trajectory).takeFromLastOwner(time);
+
+    public void takeFromLastOwner(double time) {
+        ((BallTrajectory) trajectory).takeFromLastOwner(time);
     }
-    
-    public void deletePlayer(Player player)
-    {
-        ((BallTrajectory)trajectory).deletePlayer(player);
+
+    public void deletePlayer(Player player) {
+        ((BallTrajectory) trajectory).deletePlayer(player);
     }
 }

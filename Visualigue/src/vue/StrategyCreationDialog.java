@@ -1,11 +1,6 @@
 package vue;
 
 import controller.GodController;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,110 +19,93 @@ import model.Sport;
 import model.Strategy;
 import model.ValidationException;
 
-public class StrategyCreationDialog implements Initializable
-{
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class StrategyCreationDialog implements Initializable {
+    BorderPane root;
+    Stage stage;
     @FXML
     private ListView listViewSports;
-    
     @FXML
     private ListView listViewStrategies;
-    
     @FXML
     private Button btnCreateStrategy;
-    
     @FXML
     private Button btnDelete;
-           
     @FXML
-    private VBox vboxAdd;   
-    
+    private VBox vboxAdd;
     @FXML
     private TextField textFieldStrategyName;
-    
     @FXML
     private VBox vboxPreview;
-    
     @FXML
     private ImageView imageViewPreview;
-    
     @FXML
     private Button btnLoadStrategy;
 
-    BorderPane root;
-    Stage stage;
-
-    public StrategyCreationDialog(Stage primaryStage)
-    {
+    public StrategyCreationDialog(Stage primaryStage) {
         this.stage = primaryStage;
 
-        try
-        {
+        try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/StrategyCreationDialog.fxml"));
             fxmlLoader.setController(this);
             root = (BorderPane) fxmlLoader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Chargement d'une stratégie");
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         stage.show();
     }
-    
+
     @Override
-    public void initialize(URL location, ResourceBundle resources)
-    {
-        for(Sport s : GodController.getInstance().getSports())
-        {
+    public void initialize(URL location, ResourceBundle resources) {
+        for (Sport s : GodController.getInstance().getSports()) {
             listViewSports.getItems().add(s.getName());
         }
-        
+
         listViewSports.getSelectionModel().selectedItemProperty().addListener((event) -> {
             onSportSelectionChange();
         });
-        
+
         listViewStrategies.getSelectionModel().selectedItemProperty().addListener((event) -> {
             onStrategySelectionChange();
         });
     }
-    
+
     @FXML
-    private void onActionCreateStrategy(ActionEvent e)
-    {
+    private void onActionCreateStrategy(ActionEvent e) {
         vboxAdd.setVisible(true);
         vboxPreview.setVisible(false);
     }
-    
+
     @FXML
-    private void onActionDelete(ActionEvent e)
-    {
-        GodController.getInstance().deleteStrategy((String)listViewStrategies.getSelectionModel().getSelectedItem());
+    private void onActionDelete(ActionEvent e) {
+        GodController.getInstance().deleteStrategy((String) listViewStrategies.getSelectionModel().getSelectedItem());
         updateStrategyList();
     }
-    
+
     @FXML
-    private void onActionBack(ActionEvent e)
-    {
+    private void onActionBack(ActionEvent e) {
         vboxAdd.setVisible(false);
         vboxPreview.setVisible(true);
     }
-    
+
     @FXML
-    private void onActionSave(ActionEvent e)
-    {
-        try
-        {
-            String sport = (String)listViewSports.getSelectionModel().getSelectedItem();
+    private void onActionSave(ActionEvent e) {
+        try {
+            String sport = (String) listViewSports.getSelectionModel().getSelectedItem();
             String strat = textFieldStrategyName.getText();
             GodController.getInstance().createStrategy(strat, sport);
-            
+
             stage.close();
-        }
-        catch(ValidationException ex)
-        {
+        } catch (ValidationException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
             alert.setHeaderText("Entrée invalide");
@@ -136,56 +114,46 @@ public class StrategyCreationDialog implements Initializable
             alert.showAndWait();
         }
     }
-    
+
     @FXML
-    private void onActionLoadStrategy(ActionEvent e)
-    {
-        String strat = (String)listViewStrategies.getSelectionModel().getSelectedItem();
+    private void onActionLoadStrategy(ActionEvent e) {
+        String strat = (String) listViewStrategies.getSelectionModel().getSelectedItem();
         GodController.getInstance().loadStrategy(strat);
         stage.close();
     }
-        
+
     @FXML
-    private void onSportSelectionChange()
-    {
+    private void onSportSelectionChange() {
         updateStrategyList();
         btnCreateStrategy.setDisable(false);
     }
-    
+
     @FXML
-    private void onStrategySelectionChange()
-    {
+    private void onStrategySelectionChange() {
         btnLoadStrategy.setDisable(false);
-        
-        String strat = (String)listViewStrategies.getSelectionModel().getSelectedItem();
+
+        String strat = (String) listViewStrategies.getSelectionModel().getSelectedItem();
         Strategy strategy = GodController.getInstance().getStrategy(strat);
-        
-        if(strategy != null)
-        {
+
+        if (strategy != null) {
             PreviewGenerator gen = new PreviewGenerator();
             Image img = gen.generatePreview(strategy);
             imageViewPreview.setImage(img);
-            
+
             btnDelete.setDisable(false);
-        }
-        else
-        {
+        } else {
             btnDelete.setDisable(true);
         }
     }
-    
-    private void updateStrategyList()
-    {
+
+    private void updateStrategyList() {
         listViewStrategies.getItems().clear();
-        
-        String currentSport = (String)listViewSports.getSelectionModel().getSelectedItem();
-        
-        if(currentSport != null)
-        {
-            for(Strategy s : GodController.getInstance().getStrategies())
-            {
-                if(s.getSport().getName().equals(currentSport))
-                {
+
+        String currentSport = (String) listViewSports.getSelectionModel().getSelectedItem();
+
+        if (currentSport != null) {
+            for (Strategy s : GodController.getInstance().getStrategies()) {
+                if (s.getSport().getName().equals(currentSport)) {
                     listViewStrategies.getItems().add(s.getName());
                 }
             }

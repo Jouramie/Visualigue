@@ -1,9 +1,7 @@
 package model;
 
-public class ValidationException extends Exception
-{
-    public ValidationException(String what)
-    {
+public class ValidationException extends Exception {
+    public ValidationException(String what) {
         super(what);
     }
 }

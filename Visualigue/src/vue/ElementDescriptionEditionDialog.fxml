@@ -1,112 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<BorderPane styleClass="mainFxmlClass" stylesheets="@ElementDescriptionEditionDialog.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
-   <center>
-      <VBox styleClass="background" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="lblTitre" text="Configuration des ...">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-            </Label>
-            <HBox>
-               <children>
-                  <Label prefWidth="100.0" text="Nom :" />
-                  <TextField fx:id="name" prefWidth="150.0" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox>
-               <children>
-                  <Label prefWidth="100.0" text="Taille :" />
-                  <VBox>
-                     <children>
-                        <HBox>
-                           <children>
-                              <Label prefWidth="60.0" text="Hauteur :" />
-                              <TextField fx:id="height" prefHeight="25.0" prefWidth="90.0" />
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox>
-                           <children>
-                              <Label prefWidth="60.0" text="Largeur :" />
-                              <TextField fx:id="width" prefWidth="90.0" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox>
-               <children>
-                  <Label prefWidth="100.0" text="Image :" />
-                  <VBox>
-                     <children>
-                        <TextField fx:id="image" editable="false" />
-                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                           <VBox.margin>
-                              <Insets top="10.0" />
-                           </VBox.margin>
-                        </ImageView>
-                     </children>
-                  </VBox>
-                  <Button mnemonicParsing="false" onAction="#onActionBrowse" text="Parcourir">
-                     <HBox.margin>
-                        <Insets left="20.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </HBox>
-            <HBox>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-               <children>
-                  <Button mnemonicParsing="false" onAction="#onActionSave" text="Sauvegarder">
-                     <HBox.margin>
-                        <Insets left="100.0" right="10.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onActionCancel" text="Annuler" />
-               </children>
-            </HBox>
-         </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-         <padding>
-            <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
-         </padding>
-         <BorderPane.margin>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </BorderPane.margin>
-      </VBox>
-   </center>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" styleClass="mainFxmlClass"
+            stylesheets="@ElementDescriptionEditionDialog.css" xmlns="http://javafx.com/javafx/8.0.60">
+    <center>
+        <VBox styleClass="background" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="lblTitre" text="Configuration des ...">
+                    <font>
+                        <Font name="System Bold" size="20.0"/>
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="20.0"/>
+                    </VBox.margin>
+                    <opaqueInsets>
+                        <Insets/>
+                    </opaqueInsets>
+                </Label>
+                <HBox>
+                    <children>
+                        <Label prefWidth="100.0" text="Nom :"/>
+                        <TextField fx:id="name" prefWidth="150.0"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label prefWidth="100.0" text="Taille :"/>
+                        <VBox>
+                            <children>
+                                <HBox>
+                                    <children>
+                                        <Label prefWidth="60.0" text="Hauteur :"/>
+                                        <TextField fx:id="height" prefHeight="25.0" prefWidth="90.0"/>
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets bottom="10.0"/>
+                                    </VBox.margin>
+                                </HBox>
+                                <HBox>
+                                    <children>
+                                        <Label prefWidth="60.0" text="Largeur :"/>
+                                        <TextField fx:id="width" prefWidth="90.0"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label prefWidth="100.0" text="Image :"/>
+                        <VBox>
+                            <children>
+                                <TextField fx:id="image" editable="false"/>
+                                <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
+                                           preserveRatio="true">
+                                    <VBox.margin>
+                                        <Insets top="10.0"/>
+                                    </VBox.margin>
+                                </ImageView>
+                            </children>
+                        </VBox>
+                        <Button mnemonicParsing="false" onAction="#onActionBrowse" text="Parcourir">
+                            <HBox.margin>
+                                <Insets left="20.0"/>
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                </HBox>
+                <HBox>
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#onActionSave" text="Sauvegarder">
+                            <HBox.margin>
+                                <Insets left="100.0" right="10.0"/>
+                            </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onActionCancel" text="Annuler"/>
+                    </children>
+                </HBox>
+            </children>
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+            <padding>
+                <Insets bottom="50.0" left="50.0" right="50.0" top="50.0"/>
+            </padding>
+            <BorderPane.margin>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+            </BorderPane.margin>
+        </VBox>
+    </center>
 </BorderPane>

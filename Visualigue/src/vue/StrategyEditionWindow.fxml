@@ -1,223 +1,227 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.input.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import java.lang.String?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.ContextMenu?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.input.KeyCodeCombination?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="850.0" prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <MenuBar styleClass="background">
-        <menus>
-          <Menu mnemonicParsing="false" text="Fichier">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#onActionNewStrategy" text="Nouvelle stratégie" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Ouvrir..." />
-                  <MenuItem mnemonicParsing="false" onAction="#onSave" text="Enregistrer" />
-                  <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Enregistrer sous..." />
-                  <MenuItem mnemonicParsing="false" onAction="#onExportImage" text="Exporter la stratégie en image" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-              <MenuItem mnemonicParsing="false" onAction="#onClose" text="Quitter" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Édition">
-            <items>
-                  <MenuItem mnemonicParsing="false" onAction="#onActionConfigureSport" text="Configurer les sports" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="undoMenu" mnemonicParsing="false" onAction="#onUndo" text="Annuler">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <MenuItem fx:id="redoMenu" mnemonicParsing="false" onAction="#onRedo" text="Rétablir">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Affichage">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#onActionZoomIn" text="Zoom avant" />
-                  <MenuItem mnemonicParsing="false" onAction="#onActionZoomOut" text="Zoom arrière" />
-               </items></Menu>
-          <Menu mnemonicParsing="false" text="Aide">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="À propos" />
-                  <MenuItem mnemonicParsing="false" text="Crédits" />
-               </items></Menu>
-        </menus>
-      </MenuBar>
-   </top>
-   <left>
-      <VBox alignment="TOP_CENTER" styleClass="background">
-         <children>
-            <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onActionMoveTool" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer" />
-            <MenuButton fx:id="playerButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Joueur" textAlignment="CENTER">
-               <items>
-                  <Menu mnemonicParsing="false" text="Unspecified Menu">
+<?import java.lang.String?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="850.0"
+            prefWidth="1400.0" styleClass="background" stylesheets="@StrategyEditionWindow.css"
+            xmlns="http://javafx.com/javafx/8">
+    <top>
+        <MenuBar styleClass="background">
+            <menus>
+                <Menu mnemonicParsing="false" text="Fichier">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
-                      <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                        <MenuItem mnemonicParsing="false" onAction="#onActionNewStrategy" text="Nouvelle stratégie"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Ouvrir..."/>
+                        <MenuItem mnemonicParsing="false" onAction="#onSave" text="Enregistrer"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Enregistrer sous..."/>
+                        <MenuItem mnemonicParsing="false" onAction="#onExportImage"
+                                  text="Exporter la stratégie en image"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onClose" text="Quitter"/>
                     </items>
-                  </Menu>
-               </items>
-            </MenuButton>
-            <MenuButton fx:id="ballButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Ball" textAlignment="CENTER">
-               <contextMenu>
-                  <ContextMenu>
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                     </items>
-                  </ContextMenu>
-               </contextMenu>
-            </MenuButton>
-            <MenuButton fx:id="obstacleButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Obstacle" textAlignment="CENTER">
-               <contextMenu>
-                  <ContextMenu>
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                     </items>
-                  </ContextMenu>
-               </contextMenu>
-            </MenuButton>
-            <Button mnemonicParsing="false" onAction="#onActionZoomIn" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom +" />
-            <Button layoutX="10.0" layoutY="250.0" mnemonicParsing="false" onAction="#onActionZoomOut" prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom -" />
-            <Label text="Nb joueurs&#10;max&#10;" textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <CheckBox fx:id="nbMaxPlayerCheckBox" mnemonicParsing="false" onAction="#onActionNbMaxPlayer" />
-            <Label text="Afficher&#10;étiquettes" textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <CheckBox fx:id="visibleLabelsCheckBox" mnemonicParsing="false" onAction="#onActionVisibleLabels" />
-         </children>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-      </VBox>
-   </left>
-   <right>
-      <VBox alignment="TOP_CENTER" spacing="10.0" styleClass="background" BorderPane.alignment="CENTER">
-         <children>
-            <TextField fx:id="nameTextField" />
-            <HBox>
-               <children>
-                  <Label prefWidth="70.0" text="Rôle:" />
-                  <ChoiceBox fx:id="role" prefWidth="120.0" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox>
-               <children>
-                  <Label prefWidth="70.0" text="Équipe:" />
-                  <ChoiceBox fx:id="team" prefWidth="120.0" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox>
-               <children>
-                  <Label text="Position X: " />
-                  <TextField fx:id="positionX" prefWidth="80.0" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox>
-               <children>
-                  <Label text="Position Y: " />
-                  <TextField fx:id="positionY" prefWidth="80.0" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox>
-               <children>
-                  <Label text="Orientation: " />
-                  <TextField fx:id="orientation" prefWidth="80.0" />
-               </children>
-            </HBox>
-            <Button fx:id="deleteButton" alignment="CENTER" mnemonicParsing="false" onAction="#onActionDelete" text="Supprimer" />
-         </children>
-         <BorderPane.margin>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-         </BorderPane.margin></VBox>
-   </right>
-   <bottom>
-      <VBox styleClass="background" BorderPane.alignment="CENTER">
-         <children>
-            <HBox fx:id="timeButtonHBox" alignment="CENTER">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#onActionStepFrame" styleClass="btnTimeLine" text="↪" />
-                  <TextField fx:id="frameStep" alignment="CENTER" prefHeight="25.0" prefWidth="34.0" text="2" />
-                  <Button mnemonicParsing="false" onAction="#onActionRecord" text="⚫">
-                     <styleClass>
-                        <String fx:value="btnRecord" />
-                        <String fx:value="btnTimeLine" />
-                     </styleClass></Button>
-                  <Button mnemonicParsing="false" onAction="#onActionRestart" styleClass="btnTimeLine" text="⏮" />
-                  <Button mnemonicParsing="false" onAction="#onActionRewind" styleClass="btnTimeLine" text="⏪" />
-                  <Button mnemonicParsing="false" onAction="#onActionPrevFrame" styleClass="btnTimeLine" text="⮜" />
-                  <Button fx:id="playPauseButton" mnemonicParsing="false" onAction="#onActionPlay" styleClass="btnTimeLine" text="▶" />
-                  <Button mnemonicParsing="false" onAction="#onActionStop" styleClass="btnTimeLine" text="■" />
-                  <Button mnemonicParsing="false" onAction="#onActionNextFrame" styleClass="btnTimeLine" text="⮞" />
-                  <Button mnemonicParsing="false" onAction="#onActionFastForward" styleClass="btnTimeLine" text="⏩" />
-                  <Button mnemonicParsing="false" onAction="#onActionGoToEnd" styleClass="btnTimeLine" text="⏭" />
-               </children>
-            </HBox>
-            <Slider fx:id="timeLine" max="10.0" styleClass="sliderTimeLine">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin></Slider>
-            <HBox>
-               <children>
-                  <Label text="X: " />
-                  <Label prefWidth="45.0" text="512" fx:id="xCoordinate" />
-                  <Label alignment="CENTER" text="Y: " />
-                  <Label fx:id="yCoordinate" alignment="CENTER" text="420" />
-               </children>
-            </HBox>
-         </children>
-         <BorderPane.margin>
-            <Insets left="60.0" right="150.0" />
-         </BorderPane.margin>
-      </VBox>
-   </bottom>
-   <center>
-      <ScrollPane fx:id="mainPane" fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER" />
-   </center>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Édition">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onActionConfigureSport"
+                                  text="Configurer les sports"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem fx:id="undoMenu" mnemonicParsing="false" onAction="#onUndo" text="Annuler">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="redoMenu" mnemonicParsing="false" onAction="#onRedo" text="Rétablir">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP"
+                                                    shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Affichage">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onActionZoomIn" text="Zoom avant"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onActionZoomOut" text="Zoom arrière"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Aide">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="À propos"/>
+                        <MenuItem mnemonicParsing="false" text="Crédits"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <left>
+        <VBox alignment="TOP_CENTER" styleClass="background">
+            <children>
+                <Button fx:id="moveButton" mnemonicParsing="false" onAction="#onActionMoveTool" prefHeight="60.0"
+                        prefWidth="60.0" styleClass="btnLeftMenu" text="Déplacer"/>
+                <MenuButton fx:id="playerButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0"
+                            prefWidth="60.0" styleClass="btnLeftMenu" text="Joueur" textAlignment="CENTER">
+                    <items>
+                        <Menu mnemonicParsing="false" text="Unspecified Menu">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Action 1"/>
+                                <MenuItem mnemonicParsing="false" text="Unspecified Action"/>
+                                <MenuItem mnemonicParsing="false" text="Unspecified Action"/>
+                            </items>
+                        </Menu>
+                    </items>
+                </MenuButton>
+                <MenuButton fx:id="ballButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0"
+                            prefWidth="60.0" styleClass="btnLeftMenu" text="Ball" textAlignment="CENTER">
+                    <contextMenu>
+                        <ContextMenu>
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Unspecified Action"/>
+                                <MenuItem mnemonicParsing="false" text="Unspecified Action"/>
+                            </items>
+                        </ContextMenu>
+                    </contextMenu>
+                </MenuButton>
+                <MenuButton fx:id="obstacleButton" alignment="BOTTOM_CENTER" mnemonicParsing="false" prefHeight="60.0"
+                            prefWidth="60.0" styleClass="btnLeftMenu" text="Obstacle" textAlignment="CENTER">
+                    <contextMenu>
+                        <ContextMenu>
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Unspecified Action"/>
+                                <MenuItem mnemonicParsing="false" text="Unspecified Action"/>
+                            </items>
+                        </ContextMenu>
+                    </contextMenu>
+                </MenuButton>
+                <Button mnemonicParsing="false" onAction="#onActionZoomIn" prefHeight="60.0" prefWidth="60.0"
+                        styleClass="btnLeftMenu" text="Zoom +"/>
+                <Button layoutX="10.0" layoutY="250.0" mnemonicParsing="false" onAction="#onActionZoomOut"
+                        prefHeight="60.0" prefWidth="60.0" styleClass="btnLeftMenu" text="Zoom -"/>
+                <Label text="Nb joueurs&#10;max&#10;" textAlignment="CENTER" wrapText="true">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <CheckBox fx:id="nbMaxPlayerCheckBox" mnemonicParsing="false" onAction="#onActionNbMaxPlayer"/>
+                <Label text="Afficher&#10;étiquettes" textAlignment="CENTER" wrapText="true">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <CheckBox fx:id="visibleLabelsCheckBox" mnemonicParsing="false" onAction="#onActionVisibleLabels"/>
+            </children>
+            <BorderPane.margin>
+                <Insets/>
+            </BorderPane.margin>
+        </VBox>
+    </left>
+    <right>
+        <VBox alignment="TOP_CENTER" spacing="10.0" styleClass="background" BorderPane.alignment="CENTER">
+            <children>
+                <TextField fx:id="nameTextField"/>
+                <HBox>
+                    <children>
+                        <Label prefWidth="70.0" text="Rôle:"/>
+                        <ChoiceBox fx:id="role" prefWidth="120.0"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label prefWidth="70.0" text="Équipe:"/>
+                        <ChoiceBox fx:id="team" prefWidth="120.0"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label text="Position X: "/>
+                        <TextField fx:id="positionX" prefWidth="80.0"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label text="Position Y: "/>
+                        <TextField fx:id="positionY" prefWidth="80.0"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label text="Orientation: "/>
+                        <TextField fx:id="orientation" prefWidth="80.0"/>
+                    </children>
+                </HBox>
+                <Button fx:id="deleteButton" alignment="CENTER" mnemonicParsing="false" onAction="#onActionDelete"
+                        text="Supprimer"/>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </BorderPane.margin>
+        </VBox>
+    </right>
+    <bottom>
+        <VBox styleClass="background" BorderPane.alignment="CENTER">
+            <children>
+                <HBox fx:id="timeButtonHBox" alignment="CENTER">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#onActionStepFrame" styleClass="btnTimeLine"
+                                text="↪"/>
+                        <TextField fx:id="frameStep" alignment="CENTER" prefHeight="25.0" prefWidth="34.0" text="2"/>
+                        <Button mnemonicParsing="false" onAction="#onActionRecord" text="⚫">
+                            <styleClass>
+                                <String fx:value="btnRecord"/>
+                                <String fx:value="btnTimeLine"/>
+                            </styleClass>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#onActionRestart" styleClass="btnTimeLine" text="⏮"/>
+                        <Button mnemonicParsing="false" onAction="#onActionRewind" styleClass="btnTimeLine" text="⏪"/>
+                        <Button mnemonicParsing="false" onAction="#onActionPrevFrame" styleClass="btnTimeLine"
+                                text="⮜"/>
+                        <Button fx:id="playPauseButton" mnemonicParsing="false" onAction="#onActionPlay"
+                                styleClass="btnTimeLine" text="▶"/>
+                        <Button mnemonicParsing="false" onAction="#onActionStop" styleClass="btnTimeLine" text="■"/>
+                        <Button mnemonicParsing="false" onAction="#onActionNextFrame" styleClass="btnTimeLine"
+                                text="⮞"/>
+                        <Button mnemonicParsing="false" onAction="#onActionFastForward" styleClass="btnTimeLine"
+                                text="⏩"/>
+                        <Button mnemonicParsing="false" onAction="#onActionGoToEnd" styleClass="btnTimeLine" text="⏭"/>
+                    </children>
+                </HBox>
+                <Slider fx:id="timeLine" max="10.0" styleClass="sliderTimeLine">
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                </Slider>
+                <HBox>
+                    <children>
+                        <Label text="X: "/>
+                        <Label prefWidth="45.0" text="512" fx:id="xCoordinate"/>
+                        <Label alignment="CENTER" text="Y: "/>
+                        <Label fx:id="yCoordinate" alignment="CENTER" text="420"/>
+                    </children>
+                </HBox>
+            </children>
+            <BorderPane.margin>
+                <Insets left="60.0" right="150.0"/>
+            </BorderPane.margin>
+        </VBox>
+    </bottom>
+    <center>
+        <ScrollPane fx:id="mainPane" fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER"/>
+    </center>
 </BorderPane>

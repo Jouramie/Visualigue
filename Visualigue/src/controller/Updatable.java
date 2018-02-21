@@ -11,9 +11,10 @@ import model.Vector2D;
 /**
  * @author JEBOL42
  */
-public interface Updatable
-{
+public interface Updatable {
     public void update();
+
     public Vector2D updateOnRecord(MobileElement mobile);
+
     public void lastUpdate();
 }

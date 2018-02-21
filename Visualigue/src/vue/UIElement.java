@@ -1,6 +1,5 @@
 package vue;
 
-import controller.GodController;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -11,21 +10,17 @@ import javafx.scene.transform.Scale;
 import model.Element;
 import model.Player;
 
-public class UIElement extends UIGeneralElement
-{
+public class UIElement extends UIGeneralElement {
 
     private static final String PATH_IMAGE_ROTATION = "/res/orientation.png";
-    
-    private final ImageView orientationArrow;
-    private boolean isRotating;
 
+    private final ImageView orientationArrow;
     private final Label elementName;
     private final Scale elementNameScale;
-
+    private boolean isRotating;
     private UIGhostElement ghost;
 
-    public UIElement(Element element, double elementNameScaleFactor)
-    {
+    public UIElement(Element element, double elementNameScaleFactor) {
         super(element);
         isRotating = false;
 
@@ -42,81 +37,67 @@ public class UIElement extends UIGeneralElement
 
         elementNameScale = new Scale(elementNameScaleFactor, elementNameScaleFactor, 0, 0);
         elementName.getTransforms().add(elementNameScale);
-        if (element instanceof Player)
-        {
+        if (element instanceof Player) {
             ghost = new UIGhostElement(element);
         }
     }
 
     @Override
-    public void refreshNode()
-    {
+    public void refreshNode() {
         super.refreshNode();
-        
+
         orientationArrow.setImage(ImageLoader.getImage(PATH_IMAGE_ROTATION));
         orientationArrow.setFitWidth(4 * element.getElementDescription().getSize().getX());
         orientationArrow.setFitHeight(4 * element.getElementDescription().getSize().getY());
         orientationArrow.setTranslateX(-1.5 * element.getElementDescription().getSize().getX());
         orientationArrow.setTranslateY(-1.5 * element.getElementDescription().getSize().getY());
-        
+
         elementName.setTranslateY(element.getElementDescription().getSize().getY());
 
         setElementName(elementName.getText());
-        if (ghost != null)
-        {
+        if (ghost != null) {
             ghost.refreshNode();
         }
     }
 
     @Override
-    public void update(double time)
-    {
+    public void update(double time) {
         super.update(time);
-        if (element instanceof Player)
-        {
+        if (element instanceof Player) {
             setElementName(element.getElementDescription().getName() + "\n" + ((Player) element).getName());
         }
-        if (ghost != null)
-        {
+        if (ghost != null) {
             ghost.update(time);
         }
     }
 
     @Override
-    public void addGlowEffect()
-    {
+    public void addGlowEffect() {
         super.addGlowEffect();
-        if (ghost != null)
-        {
+        if (ghost != null) {
             ghost.addGlowEffect();
         }
     }
 
     @Override
-    public void removeGlowEffect()
-    {
+    public void removeGlowEffect() {
         super.removeGlowEffect();
-        if (ghost != null)
-        {
+        if (ghost != null) {
             ghost.removeGlowEffect();
         }
     }
 
-    public Node getGroupName()
-    {
+    public Node getGroupName() {
         return globalGroup;
     }
 
-    public void setElementName(String name)
-    {
+    public void setElementName(String name) {
         elementName.setText(name);
         double maxWidth = 0;
 
-        for (String line : name.split("\n"))
-        {
+        for (String line : name.split("\n")) {
             Text text = new Text(name);
-            if (text.getLayoutBounds().getWidth() * elementNameScale.getX() > maxWidth)
-            {
+            if (text.getLayoutBounds().getWidth() * elementNameScale.getX() > maxWidth) {
                 maxWidth = text.getLayoutBounds().getWidth() * elementNameScale.getX();
             }
         }
@@ -124,41 +105,33 @@ public class UIElement extends UIGeneralElement
         elementName.setTextAlignment(TextAlignment.CENTER);
     }
 
-    public void setRotating(boolean value)
-    {
+    public void setRotating(boolean value) {
         isRotating = value;
     }
 
-    public void showOrientationArrow()
-    {
+    public void showOrientationArrow() {
         orientationArrow.setVisible(true);
     }
 
-    public void hideOrientationArrow()
-    {
-        if (!isRotating)
-        {
+    public void hideOrientationArrow() {
+        if (!isRotating) {
             orientationArrow.setVisible(false);
         }
     }
 
-    public Node getOrientationArrow()
-    {
+    public Node getOrientationArrow() {
         return orientationArrow;
     }
 
-    public boolean isElementNameVisible()
-    {
+    public boolean isElementNameVisible() {
         return elementName.isVisible();
     }
 
-    public void setElementNameVisible(boolean visible)
-    {
+    public void setElementNameVisible(boolean visible) {
         elementName.setVisible(visible);
     }
 
-    public void setElementNameZoomFactor(double factor)
-    {
+    public void setElementNameZoomFactor(double factor) {
         elementNameScale.setX(factor);
         elementNameScale.setY(factor);
         setElementName(elementName.getText());

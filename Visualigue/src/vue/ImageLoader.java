@@ -1,20 +1,18 @@
 package vue;
 
-import java.util.HashMap;
 import javafx.scene.image.Image;
+
+import java.util.HashMap;
 
 /**
  * @author Jérémie Bolduc
  */
-public class ImageLoader
-{
+public class ImageLoader {
     static private HashMap<String, Image> images = new HashMap();
 
-    static public Image getImage(String image)
-    {
+    static public Image getImage(String image) {
         Image result = images.get(image);
-        if (result == null)
-        {
+        if (result == null) {
             result = new Image(image);
             images.put(image, result);
         }
