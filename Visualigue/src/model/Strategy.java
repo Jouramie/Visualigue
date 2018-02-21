@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Strategy implements java.io.Serializable {
     private final String name;
+    private final List<Element> elements;
+    private final Sport sport;
     private int nbPlayer;
-    private List<Element> elements;
-    private Sport sport;
 
     public Strategy(String name, Sport sport) throws ValidationException {
         if (name == null || name.isEmpty()) {
@@ -25,28 +25,23 @@ public class Strategy implements java.io.Serializable {
 
     public ObstacleElement createObstacle(ObstacleDescription desc) {
         ObstacleElement elem = new ObstacleElement(desc);
-        elements.add(elem);
+        this.elements.add(elem);
         return elem;
     }
 
     public Ball createBall(BallDescription desc) {
         Ball elem = new Ball(desc);
-        elements.add(elem);
+        this.elements.add(elem);
         return elem;
     }
 
-    public Player createPlayer(PlayerDescription desc) throws Exception {
+    public Player createPlayer(PlayerDescription desc) {
         return createPlayer(desc, 0);
     }
 
-    public Player createPlayer(PlayerDescription desc, int team) throws Exception {
-         /*if(this.nbPlayer >= this.sport.getMaxPlayer())
-        {
-            throw new Exception("Votre sport ne peut pas contenir plus de " + this.sport.getMaxPlayer() + " joueurs.");
-        }*/
-
+    public Player createPlayer(PlayerDescription desc, int team) {
         Player elem = new Player(desc, team);
-        elements.add(elem);
+        this.elements.add(elem);
         this.nbPlayer++;
         return elem;
 

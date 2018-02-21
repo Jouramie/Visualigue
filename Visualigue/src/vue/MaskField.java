@@ -80,9 +80,10 @@ public class MaskField extends TextField {
     }
 
     public final StringProperty plainTextProperty() {
-        if (plainText == null)
-            plainText = new SimpleStringProperty(this, "plainText", "");
-        return plainText;
+        if (this.plainText == null) {
+            this.plainText = new SimpleStringProperty(this, "plainText", "");
+        }
+        return this.plainText;
     }
 
     public final String getMask() {
@@ -96,10 +97,11 @@ public class MaskField extends TextField {
     }
 
     public final StringProperty maskProperty() {
-        if (mask == null)
-            mask = new SimpleStringProperty(this, "mask");
+        if (this.mask == null) {
+            this.mask = new SimpleStringProperty(this, "mask");
+        }
 
-        return mask;
+        return this.mask;
     }
 
     public final String getWhatMask() {
@@ -113,10 +115,10 @@ public class MaskField extends TextField {
     }
 
     public final StringProperty whatMaskProperty() {
-        if (whatMask == null) {
-            whatMask = new SimpleStringProperty(this, "whatMask");
+        if (this.whatMask == null) {
+            this.whatMask = new SimpleStringProperty(this, "whatMask");
         }
-        return whatMask;
+        return this.whatMask;
     }
 
     public final String getPlaceholder() {
@@ -130,16 +132,17 @@ public class MaskField extends TextField {
     }
 
     public final StringProperty placeholderProperty() {
-        if (placeholder == null)
-            placeholder = new SimpleStringProperty(this, "placeholder");
-        return placeholder;
+        if (this.placeholder == null) {
+            this.placeholder = new SimpleStringProperty(this, "placeholder");
+        }
+        return this.placeholder;
     }
 
     /**
      * формирует список объектов Position по каждому символу маски
      */
     private void rebuildObjectMask() {
-        objectMask = new ArrayList<>();
+        this.objectMask = new ArrayList<>();
 
         for (int i = 0; i < getMask().length(); i++) {
             char m = getMask().charAt(i);
@@ -154,15 +157,17 @@ public class MaskField extends TextField {
             } else {
                 //так как не указано что за символ - понимаем самостоятельно
                 //и если символ не находится среди символов маски - то это считается простым литералом
-                if (m != MASK_CHARACTER && m != MASK_DIG_OR_CHAR && m != MASK_DIGIT)
+                if (m != MASK_CHARACTER && m != MASK_DIG_OR_CHAR && m != MASK_DIGIT) {
                     w = WHAT_MASK_NO_CHAR;
+                }
 
             }
 
-            if (getPlaceholder() != null && i < getPlaceholder().length())
+            if (getPlaceholder() != null && i < getPlaceholder().length()) {
                 p = getPlaceholder().charAt(i);
+            }
 
-            objectMask.add(new Position(m, w, p));
+            this.objectMask.add(new Position(m, w, p));
         }
     }
 
@@ -176,8 +181,8 @@ public class MaskField extends TextField {
         int firstPlaceholderInMask = -1;
         String textMask = "";
         String textPlain = getPlainText();
-        for (int i = 0; i < objectMask.size(); i++) {
-            Position p = objectMask.get(i);
+        for (int i = 0; i < this.objectMask.size(); i++) {
+            Position p = this.objectMask.get(i);
             if (p.isPlainCharacter()) {
                 if (textPlain.length() > counterPlainCharInMask) {
 
@@ -186,18 +191,20 @@ public class MaskField extends TextField {
                         //вырезаем то что не подошло
                         textPlain = textPlain.substring(0, counterPlainCharInMask) + textPlain.substring(counterPlainCharInMask + 1);
 
-                        if (textPlain.length() > counterPlainCharInMask)
+                        if (textPlain.length() > counterPlainCharInMask) {
                             c = textPlain.charAt(counterPlainCharInMask);
-                        else
+                        } else {
                             break;
+                        }
                     }
 
                     textMask += c;
                     lastPositionPlainCharInMask = i;
                 } else {
                     textMask += p.placeholder;
-                    if (firstPlaceholderInMask == -1)
+                    if (firstPlaceholderInMask == -1) {
                         firstPlaceholderInMask = i;
+                    }
                 }
 
                 counterPlainCharInMask++;
@@ -209,27 +216,31 @@ public class MaskField extends TextField {
 
         setText(textMask);
 
-        if (firstPlaceholderInMask == -1)
+        if (firstPlaceholderInMask == -1) {
             firstPlaceholderInMask = 0;
+        }
 
         int caretPosition = (textPlain.length() > 0 ? lastPositionPlainCharInMask + 1 : firstPlaceholderInMask);
         selectRange(caretPosition, caretPosition);
 
-        if (textPlain.length() > counterPlainCharInMask)
+        if (textPlain.length() > counterPlainCharInMask) {
             textPlain = textPlain.substring(0, counterPlainCharInMask);
+        }
 
-        if (!textPlain.equals(getPlainText()))
+        if (!textPlain.equals(getPlainText())) {
             setPlainText(textPlain);
+        }
 
     }
 
     private int interpretMaskPositionInPlainPosition(int posMask) {
         int posPlain = 0;
 
-        for (int i = 0; i < objectMask.size() && i < posMask; i++) {
-            Position p = objectMask.get(i);
-            if (p.isPlainCharacter())
+        for (int i = 0; i < this.objectMask.size() && i < posMask; i++) {
+            Position p = this.objectMask.get(i);
+            if (p.isPlainCharacter()) {
                 posPlain++;
+            }
         }
 
         return posPlain;
@@ -243,17 +254,19 @@ public class MaskField extends TextField {
         int plainEnd = interpretMaskPositionInPlainPosition(end);
 
         String plainText1 = "";
-        if (getPlainText().length() > plainStart)
+        if (getPlainText().length() > plainStart) {
             plainText1 = getPlainText().substring(0, plainStart);
-        else
+        } else {
             plainText1 = getPlainText();
+        }
 
 
         String plainText2 = "";
-        if (getPlainText().length() > plainEnd)
+        if (getPlainText().length() > plainEnd) {
             plainText2 = getPlainText().substring(plainEnd);
-        else
+        } else {
             plainText2 = "";
+        }
 
 
         setPlainText(plainText1 + text + plainText2);
@@ -272,11 +285,11 @@ public class MaskField extends TextField {
         }
 
         public boolean isPlainCharacter() {
-            return whatMask == WHAT_MASK_CHAR;
+            return this.whatMask == WHAT_MASK_CHAR;
         }
 
         public boolean isCorrect(char c) {
-            switch (mask) {
+            switch (this.mask) {
                 case MASK_DIGIT:
                     return Character.isDigit(c);
                 case MASK_CHARACTER:

@@ -53,58 +53,58 @@ public class StrategyCreationDialog implements Initializable {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/StrategyCreationDialog.fxml"));
             fxmlLoader.setController(this);
-            root = (BorderPane) fxmlLoader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Chargement d'une stratégie");
+            this.root = (BorderPane) fxmlLoader.load();
+            Scene scene = new Scene(this.root);
+            this.stage.setScene(scene);
+            this.stage.setTitle("Chargement d'une stratégie");
         } catch (IOException ex) {
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        stage.show();
+        this.stage.show();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         for (Sport s : GodController.getInstance().getSports()) {
-            listViewSports.getItems().add(s.getName());
+            this.listViewSports.getItems().add(s.getName());
         }
 
-        listViewSports.getSelectionModel().selectedItemProperty().addListener((event) -> {
+        this.listViewSports.getSelectionModel().selectedItemProperty().addListener((event) -> {
             onSportSelectionChange();
         });
 
-        listViewStrategies.getSelectionModel().selectedItemProperty().addListener((event) -> {
+        this.listViewStrategies.getSelectionModel().selectedItemProperty().addListener((event) -> {
             onStrategySelectionChange();
         });
     }
 
     @FXML
     private void onActionCreateStrategy(ActionEvent e) {
-        vboxAdd.setVisible(true);
-        vboxPreview.setVisible(false);
+        this.vboxAdd.setVisible(true);
+        this.vboxPreview.setVisible(false);
     }
 
     @FXML
     private void onActionDelete(ActionEvent e) {
-        GodController.getInstance().deleteStrategy((String) listViewStrategies.getSelectionModel().getSelectedItem());
+        GodController.getInstance().deleteStrategy((String) this.listViewStrategies.getSelectionModel().getSelectedItem());
         updateStrategyList();
     }
 
     @FXML
     private void onActionBack(ActionEvent e) {
-        vboxAdd.setVisible(false);
-        vboxPreview.setVisible(true);
+        this.vboxAdd.setVisible(false);
+        this.vboxPreview.setVisible(true);
     }
 
     @FXML
     private void onActionSave(ActionEvent e) {
         try {
-            String sport = (String) listViewSports.getSelectionModel().getSelectedItem();
-            String strat = textFieldStrategyName.getText();
+            String sport = (String) this.listViewSports.getSelectionModel().getSelectedItem();
+            String strat = this.textFieldStrategyName.getText();
             GodController.getInstance().createStrategy(strat, sport);
 
-            stage.close();
+            this.stage.close();
         } catch (ValidationException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -117,44 +117,44 @@ public class StrategyCreationDialog implements Initializable {
 
     @FXML
     private void onActionLoadStrategy(ActionEvent e) {
-        String strat = (String) listViewStrategies.getSelectionModel().getSelectedItem();
+        String strat = (String) this.listViewStrategies.getSelectionModel().getSelectedItem();
         GodController.getInstance().loadStrategy(strat);
-        stage.close();
+        this.stage.close();
     }
 
     @FXML
     private void onSportSelectionChange() {
         updateStrategyList();
-        btnCreateStrategy.setDisable(false);
+        this.btnCreateStrategy.setDisable(false);
     }
 
     @FXML
     private void onStrategySelectionChange() {
-        btnLoadStrategy.setDisable(false);
+        this.btnLoadStrategy.setDisable(false);
 
-        String strat = (String) listViewStrategies.getSelectionModel().getSelectedItem();
+        String strat = (String) this.listViewStrategies.getSelectionModel().getSelectedItem();
         Strategy strategy = GodController.getInstance().getStrategy(strat);
 
         if (strategy != null) {
             PreviewGenerator gen = new PreviewGenerator();
             Image img = gen.generatePreview(strategy);
-            imageViewPreview.setImage(img);
+            this.imageViewPreview.setImage(img);
 
-            btnDelete.setDisable(false);
+            this.btnDelete.setDisable(false);
         } else {
-            btnDelete.setDisable(true);
+            this.btnDelete.setDisable(true);
         }
     }
 
     private void updateStrategyList() {
-        listViewStrategies.getItems().clear();
+        this.listViewStrategies.getItems().clear();
 
-        String currentSport = (String) listViewSports.getSelectionModel().getSelectedItem();
+        String currentSport = (String) this.listViewSports.getSelectionModel().getSelectedItem();
 
         if (currentSport != null) {
             for (Strategy s : GodController.getInstance().getStrategies()) {
                 if (s.getSport().getName().equals(currentSport)) {
-                    listViewStrategies.getItems().add(s.getName());
+                    this.listViewStrategies.getItems().add(s.getName());
                 }
             }
         }

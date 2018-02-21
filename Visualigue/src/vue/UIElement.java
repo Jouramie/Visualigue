@@ -22,23 +22,23 @@ public class UIElement extends UIGeneralElement {
 
     public UIElement(Element element, double elementNameScaleFactor) {
         super(element);
-        isRotating = false;
+        this.isRotating = false;
 
-        orientationArrow = new ImageView();
-        orientationArrow.setVisible(false);
+        this.orientationArrow = new ImageView();
+        this.orientationArrow.setVisible(false);
 
-        rotationGroup.getChildren().add(orientationArrow);
+        this.rotationGroup.getChildren().add(this.orientationArrow);
 
-        elementName = new Label();
+        this.elementName = new Label();
 
-        globalGroup = new Group();
-        globalGroup.getChildren().add(elementName);
-        globalGroup.getChildren().add(rotationGroup);
+        this.globalGroup = new Group();
+        this.globalGroup.getChildren().add(this.elementName);
+        this.globalGroup.getChildren().add(this.rotationGroup);
 
-        elementNameScale = new Scale(elementNameScaleFactor, elementNameScaleFactor, 0, 0);
-        elementName.getTransforms().add(elementNameScale);
+        this.elementNameScale = new Scale(elementNameScaleFactor, elementNameScaleFactor, 0, 0);
+        this.elementName.getTransforms().add(this.elementNameScale);
         if (element instanceof Player) {
-            ghost = new UIGhostElement(element);
+            this.ghost = new UIGhostElement(element);
         }
     }
 
@@ -46,98 +46,98 @@ public class UIElement extends UIGeneralElement {
     public void refreshNode() {
         super.refreshNode();
 
-        orientationArrow.setImage(ImageLoader.getImage(PATH_IMAGE_ROTATION));
-        orientationArrow.setFitWidth(4 * element.getElementDescription().getSize().getX());
-        orientationArrow.setFitHeight(4 * element.getElementDescription().getSize().getY());
-        orientationArrow.setTranslateX(-1.5 * element.getElementDescription().getSize().getX());
-        orientationArrow.setTranslateY(-1.5 * element.getElementDescription().getSize().getY());
+        this.orientationArrow.setImage(ImageLoader.getImage(PATH_IMAGE_ROTATION));
+        this.orientationArrow.setFitWidth(4 * this.element.getElementDescription().getSize().getX());
+        this.orientationArrow.setFitHeight(4 * this.element.getElementDescription().getSize().getY());
+        this.orientationArrow.setTranslateX(-1.5 * this.element.getElementDescription().getSize().getX());
+        this.orientationArrow.setTranslateY(-1.5 * this.element.getElementDescription().getSize().getY());
 
-        elementName.setTranslateY(element.getElementDescription().getSize().getY());
+        this.elementName.setTranslateY(this.element.getElementDescription().getSize().getY());
 
-        setElementName(elementName.getText());
-        if (ghost != null) {
-            ghost.refreshNode();
+        setElementName(this.elementName.getText());
+        if (this.ghost != null) {
+            this.ghost.refreshNode();
         }
     }
 
     @Override
     public void update(double time) {
         super.update(time);
-        if (element instanceof Player) {
-            setElementName(element.getElementDescription().getName() + "\n" + ((Player) element).getName());
+        if (this.element instanceof Player) {
+            setElementName(this.element.getElementDescription().getName() + "\n" + ((Player) this.element).getName());
         }
-        if (ghost != null) {
-            ghost.update(time);
+        if (this.ghost != null) {
+            this.ghost.update(time);
         }
     }
 
     @Override
     public void addGlowEffect() {
         super.addGlowEffect();
-        if (ghost != null) {
-            ghost.addGlowEffect();
+        if (this.ghost != null) {
+            this.ghost.addGlowEffect();
         }
     }
 
     @Override
     public void removeGlowEffect() {
         super.removeGlowEffect();
-        if (ghost != null) {
-            ghost.removeGlowEffect();
+        if (this.ghost != null) {
+            this.ghost.removeGlowEffect();
         }
     }
 
     public Node getGroupName() {
-        return globalGroup;
+        return this.globalGroup;
     }
 
     public void setElementName(String name) {
-        elementName.setText(name);
+        this.elementName.setText(name);
         double maxWidth = 0;
 
         for (String line : name.split("\n")) {
             Text text = new Text(name);
-            if (text.getLayoutBounds().getWidth() * elementNameScale.getX() > maxWidth) {
-                maxWidth = text.getLayoutBounds().getWidth() * elementNameScale.getX();
+            if (text.getLayoutBounds().getWidth() * this.elementNameScale.getX() > maxWidth) {
+                maxWidth = text.getLayoutBounds().getWidth() * this.elementNameScale.getX();
             }
         }
-        elementName.setTranslateX(element.getElementDescription().getSize().getX() / 2 - maxWidth / 2);
-        elementName.setTextAlignment(TextAlignment.CENTER);
+        this.elementName.setTranslateX(this.element.getElementDescription().getSize().getX() / 2 - maxWidth / 2);
+        this.elementName.setTextAlignment(TextAlignment.CENTER);
     }
 
     public void setRotating(boolean value) {
-        isRotating = value;
+        this.isRotating = value;
     }
 
     public void showOrientationArrow() {
-        orientationArrow.setVisible(true);
+        this.orientationArrow.setVisible(true);
     }
 
     public void hideOrientationArrow() {
-        if (!isRotating) {
-            orientationArrow.setVisible(false);
+        if (!this.isRotating) {
+            this.orientationArrow.setVisible(false);
         }
     }
 
     public Node getOrientationArrow() {
-        return orientationArrow;
+        return this.orientationArrow;
     }
 
     public boolean isElementNameVisible() {
-        return elementName.isVisible();
+        return this.elementName.isVisible();
     }
 
     public void setElementNameVisible(boolean visible) {
-        elementName.setVisible(visible);
+        this.elementName.setVisible(visible);
     }
 
     public void setElementNameZoomFactor(double factor) {
-        elementNameScale.setX(factor);
-        elementNameScale.setY(factor);
-        setElementName(elementName.getText());
+        this.elementNameScale.setX(factor);
+        this.elementNameScale.setY(factor);
+        setElementName(this.elementName.getText());
     }
 
     public Node getGhostNode() {
-        return ghost == null ? null : ghost.getNode();
+        return this.ghost == null ? null : this.ghost.getNode();
     }
 }

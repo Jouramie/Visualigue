@@ -19,7 +19,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         GodController.load("visualigue.ser");
 
-        stage = primaryStage;
+        this.stage = primaryStage;
         StrategyEditionWindow mainWindow = new StrategyEditionWindow(primaryStage);
         GodController.getInstance().setWindow(mainWindow);
     }

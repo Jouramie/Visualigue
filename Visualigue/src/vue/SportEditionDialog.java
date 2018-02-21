@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package vue;
 
 import controller.GodController;
@@ -69,15 +64,15 @@ public class SportEditionDialog implements Initializable {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/SportEditionDialog.fxml"));
             fxmlLoader.setController(this);
-            root = (BorderPane) fxmlLoader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Configuration des sports");
+            this.root = (BorderPane) fxmlLoader.load();
+            Scene scene = new Scene(this.root);
+            this.stage.setScene(scene);
+            this.stage.setTitle("Configuration des sports");
         } catch (IOException ex) {
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        stage.show();
+        this.stage.show();
     }
 
     public static boolean checkPositiveDouble(String str) {
@@ -107,18 +102,18 @@ public class SportEditionDialog implements Initializable {
         updateSportsList();
         updateCurrentSport();
 
-        sports.getSelectionModel().selectedItemProperty().addListener((event) -> {
+        this.sports.getSelectionModel().selectedItemProperty().addListener((event) -> {
             this.updateCurrentSport();
         });
 
-        elementDescriptions.getSelectionModel().selectedItemProperty().addListener((event) -> {
+        this.elementDescriptions.getSelectionModel().selectedItemProperty().addListener((event) -> {
             this.updateCurrentDescription();
         });
     }
 
     @FXML
     private void onActionAddSport(ActionEvent e) {
-        sports.getSelectionModel().clearSelection();
+        this.sports.getSelectionModel().clearSelection();
         updateCurrentSport();
     }
 
@@ -128,17 +123,17 @@ public class SportEditionDialog implements Initializable {
             return;
         }
 
-        double height = Double.parseDouble(courtHeight.getText());
-        double width = Double.parseDouble(courtWidth.getText());
-        int numPlayer = Integer.parseInt(playerNumber.getText());
-        int teams = Integer.parseInt(numTeams.getText());
+        double height = Double.parseDouble(this.courtHeight.getText());
+        double width = Double.parseDouble(this.courtWidth.getText());
+        int numPlayer = Integer.parseInt(this.playerNumber.getText());
+        int teams = Integer.parseInt(this.numTeams.getText());
 
-        String sport = (String) sports.getSelectionModel().getSelectedItem();
+        String sport = (String) this.sports.getSelectionModel().getSelectedItem();
 
         try {
-            GodController.getInstance().saveSport(sport, sportName.getText(), courtImage.getText(), height, width, numPlayer, teams);
+            GodController.getInstance().saveSport(sport, this.sportName.getText(), this.courtImage.getText(), height, width, numPlayer, teams);
             updateSportsList();
-            sports.getSelectionModel().select(sportName.getText());
+            this.sports.getSelectionModel().select(this.sportName.getText());
         } catch (ValidationException ex) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -151,7 +146,7 @@ public class SportEditionDialog implements Initializable {
 
     @FXML
     private void onActionDelete(ActionEvent e) {
-        String sportN = (String) sports.getSelectionModel().getSelectedItem();
+        String sportN = (String) this.sports.getSelectionModel().getSelectedItem();
         if (sportN != null) {
             GodController.getInstance().deleteSport(sportN);
             updateSportsList();
@@ -162,22 +157,22 @@ public class SportEditionDialog implements Initializable {
     private void onActionBrowse(ActionEvent e) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Image de terrain");
-        File file = fileChooser.showOpenDialog(stage);
+        File file = fileChooser.showOpenDialog(this.stage);
 
         if (file != null) {
-            courtImage.setText("file:" + file.getPath());
-            loadImage(courtImage.getText());
+            this.courtImage.setText("file:" + file.getPath());
+            loadImage(this.courtImage.getText());
         }
     }
 
     private Sport getCurrentSport() {
-        String currentName = (String) sports.getSelectionModel().getSelectedItem();
+        String currentName = (String) this.sports.getSelectionModel().getSelectedItem();
         return GodController.getInstance().getSport(currentName);
     }
 
     @FXML
     private void onActionCancel(ActionEvent e) {
-        stage.close();
+        this.stage.close();
     }
 
     @FXML
@@ -197,12 +192,12 @@ public class SportEditionDialog implements Initializable {
 
     @FXML
     private void onActionModifyElement(ActionEvent e) {
-        if (!elementDescriptions.getSelectionModel().isEmpty()) {
+        if (!this.elementDescriptions.getSelectionModel().isEmpty()) {
             ElementDescription.TypeDescription type = ElementDescription.TypeDescription.Ball;
             ElementDescription desc = null;
 
-            String sportN = (String) sports.getSelectionModel().getSelectedItem();
-            TreeItem<String> treeItem = (TreeItem<String>) elementDescriptions.getSelectionModel().getSelectedItem();
+            String sportN = (String) this.sports.getSelectionModel().getSelectedItem();
+            TreeItem<String> treeItem = (TreeItem<String>) this.elementDescriptions.getSelectionModel().getSelectedItem();
             switch (treeItem.getParent().getValue()) {
                 case "Balles":
                     type = ElementDescription.TypeDescription.Ball;
@@ -224,9 +219,9 @@ public class SportEditionDialog implements Initializable {
 
     @FXML
     private void onActionDeleteElement(ActionEvent e) {
-        if (!elementDescriptions.getSelectionModel().isEmpty()) {
-            String sportN = (String) sports.getSelectionModel().getSelectedItem();
-            TreeItem<String> treeItem = (TreeItem<String>) elementDescriptions.getSelectionModel().getSelectedItem();
+        if (!this.elementDescriptions.getSelectionModel().isEmpty()) {
+            String sportN = (String) this.sports.getSelectionModel().getSelectedItem();
+            TreeItem<String> treeItem = (TreeItem<String>) this.elementDescriptions.getSelectionModel().getSelectedItem();
 
             switch (treeItem.getParent().getValue()) {
                 case "Balles":
@@ -247,42 +242,42 @@ public class SportEditionDialog implements Initializable {
     private void updateSportsList() {
         List<Sport> allSports = GodController.getInstance().getSports();
 
-        String oldSelection = (String) sports.getSelectionModel().getSelectedItem();
+        String oldSelection = (String) this.sports.getSelectionModel().getSelectedItem();
 
-        sports.getItems().clear();
+        this.sports.getItems().clear();
         for (Sport sport : allSports) {
-            sports.getItems().add(sport.getName());
+            this.sports.getItems().add(sport.getName());
         }
 
         if (oldSelection != null) {
-            sports.getSelectionModel().select(oldSelection);
+            this.sports.getSelectionModel().select(oldSelection);
         }
     }
 
     private void updateCurrentSport() {
         Sport currentSport = getCurrentSport();
         if (currentSport != null) {
-            sportName.setText(currentSport.getName());
-            courtImage.setText(currentSport.getCourtImage());
-            courtHeight.setText("" + currentSport.getCourtSize().getY());
-            courtWidth.setText("" + currentSport.getCourtSize().getX());
-            playerNumber.setText("" + currentSport.getMaxPlayer());
-            numTeams.setText("" + currentSport.getMaxTeam());
-            elementsSection.setVisible(true);
-            deleteSportBtn.setDisable(false);
+            this.sportName.setText(currentSport.getName());
+            this.courtImage.setText(currentSport.getCourtImage());
+            this.courtHeight.setText("" + currentSport.getCourtSize().getY());
+            this.courtWidth.setText("" + currentSport.getCourtSize().getX());
+            this.playerNumber.setText("" + currentSport.getMaxPlayer());
+            this.numTeams.setText("" + currentSport.getMaxTeam());
+            this.elementsSection.setVisible(true);
+            this.deleteSportBtn.setDisable(false);
         } else {
-            sportName.setText("Nouveau sport");
-            courtImage.setText("");
-            courtHeight.setText("0.0");
-            courtWidth.setText("0.0");
-            playerNumber.setText("0");
-            numTeams.setText("0");
-            elementsSection.setVisible(false);
-            deleteSportBtn.setDisable(true);
+            this.sportName.setText("Nouveau sport");
+            this.courtImage.setText("");
+            this.courtHeight.setText("0.0");
+            this.courtWidth.setText("0.0");
+            this.playerNumber.setText("0");
+            this.numTeams.setText("0");
+            this.elementsSection.setVisible(false);
+            this.deleteSportBtn.setDisable(true);
         }
 
         updateDescriptions();
-        loadImage(courtImage.getText());
+        loadImage(this.courtImage.getText());
     }
 
     private void updateDescriptions() {
@@ -331,22 +326,22 @@ public class SportEditionDialog implements Initializable {
             }
             treeRoot.getChildren().add(obstacles);
 
-            elementDescriptions.setRoot(treeRoot);
+            this.elementDescriptions.setRoot(treeRoot);
         }
     }
 
     private void updateCurrentDescription() {
-        if (!elementDescriptions.getSelectionModel().isEmpty()) {
-            TreeItem<String> item = (TreeItem<String>) elementDescriptions.getSelectionModel().getSelectedItem();
+        if (!this.elementDescriptions.getSelectionModel().isEmpty()) {
+            TreeItem<String> item = (TreeItem<String>) this.elementDescriptions.getSelectionModel().getSelectedItem();
             if (!item.getParent().getValue().equals("root")) {
-                modifyElementBtn.setDisable(false);
-                deleteElementBtn.setDisable(false);
+                this.modifyElementBtn.setDisable(false);
+                this.deleteElementBtn.setDisable(false);
                 return;
             }
         }
 
-        modifyElementBtn.setDisable(true);
-        deleteElementBtn.setDisable(true);
+        this.modifyElementBtn.setDisable(true);
+        this.deleteElementBtn.setDisable(true);
     }
 
     private boolean loadImage(String path) {
@@ -355,16 +350,16 @@ public class SportEditionDialog implements Initializable {
         try {
             img = new Image(path);
         } catch (Exception e) {
-            court.setImage(null);
+            this.court.setImage(null);
             return false;
         }
 
         if (img.isError()) {
-            court.setImage(null);
+            this.court.setImage(null);
             return false;
         }
 
-        court.setImage(img);
+        this.court.setImage(img);
         return true;
     }
 
@@ -372,9 +367,9 @@ public class SportEditionDialog implements Initializable {
         Stage dialog = new Stage(StageStyle.TRANSPARENT);
         dialog.initStyle(StageStyle.DECORATED);
         dialog.initModality(Modality.WINDOW_MODAL);
-        dialog.initOwner(stage);
+        dialog.initOwner(this.stage);
 
-        String sportN = (String) sports.getSelectionModel().getSelectedItem();
+        String sportN = (String) this.sports.getSelectionModel().getSelectedItem();
         ElementDescriptionEditionDialog elementEdition = new ElementDescriptionEditionDialog(dialog, sportN, type, desc);
         dialog.setOnHidden((event) -> {
             updateDescriptions();
@@ -383,19 +378,19 @@ public class SportEditionDialog implements Initializable {
 
     private boolean validateInputs() {
         String errorMsg = "";
-        if (!checkPositiveDouble(courtHeight.getText())) {
+        if (!checkPositiveDouble(this.courtHeight.getText())) {
             errorMsg += "Hauteur invalide.\n";
         }
 
-        if (!checkPositiveDouble(courtWidth.getText())) {
+        if (!checkPositiveDouble(this.courtWidth.getText())) {
             errorMsg += "Longueur invalide.\n";
         }
 
-        if (!checkPositiveInteger(playerNumber.getText())) {
+        if (!checkPositiveInteger(this.playerNumber.getText())) {
             errorMsg += "Nombre de joueurs invalide.\n";
         }
 
-        if (!checkPositiveInteger(numTeams.getText())) {
+        if (!checkPositiveInteger(this.numTeams.getText())) {
             errorMsg += "Nombre de joueurs par équipe invalide.\n";
         }
 

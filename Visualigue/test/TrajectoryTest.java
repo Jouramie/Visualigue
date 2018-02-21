@@ -8,11 +8,11 @@ public class TrajectoryTest {
 
     @Before
     public void beforePlaneteDoubleVecteur() {
-        t1 = new Trajectory();
+        this.t1 = new Trajectory();
     }
 
     @Test
     public void testSetPosition() {
-        t1.setPosition(0.0, 0, new Vector2D(14.0, 12.0));
+        this.t1.setPosition(0.0, 0, new Vector2D(14.0, 12.0));
     }
 }

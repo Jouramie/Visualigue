@@ -4,11 +4,8 @@ import javafx.scene.image.Image;
 
 import java.util.HashMap;
 
-/**
- * @author Jérémie Bolduc
- */
 public class ImageLoader {
-    static private HashMap<String, Image> images = new HashMap();
+    static private final HashMap<String, Image> images = new HashMap<>();
 
     static public Image getImage(String image) {
         Image result = images.get(image);

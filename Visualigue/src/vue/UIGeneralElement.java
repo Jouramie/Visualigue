@@ -31,14 +31,14 @@ public abstract class UIGeneralElement {
     public UIGeneralElement(Element element) {
         this.element = element;
 
-        image = new ImageView();
+        this.image = new ImageView();
 
-        rotationGroup = new Group();
-        rotationGroup.getChildren().add(image);
+        this.rotationGroup = new Group();
+        this.rotationGroup.getChildren().add(this.image);
 
-        isSelected = false;
+        this.isSelected = false;
 
-        globalGroup = rotationGroup;
+        this.globalGroup = this.rotationGroup;
     }
 
     private static void initColors() {
@@ -65,48 +65,48 @@ public abstract class UIGeneralElement {
     }
 
     public void refreshNode() {
-        image.setImage(ImageLoader.getImage(element.getElementDescription().getImage()));
-        image.setFitWidth(element.getElementDescription().getSize().getX());
-        image.setFitHeight(element.getElementDescription().getSize().getY());
+        this.image.setImage(ImageLoader.getImage(this.element.getElementDescription().getImage()));
+        this.image.setFitWidth(this.element.getElementDescription().getSize().getX());
+        this.image.setFitHeight(this.element.getElementDescription().getSize().getY());
 
-        if (element instanceof Player) {
-            Player player = (Player) element;
-            InnerShadow innerShadow = new InnerShadow((double) player.getElementDescription().getSize().getX() / 1.8, getColor(player.getTeam()));
-            image.setEffect(innerShadow);
-            if (isSelected) {
-                isSelected = false;
+        if (this.element instanceof Player) {
+            Player player = (Player) this.element;
+            InnerShadow innerShadow = new InnerShadow(player.getElementDescription().getSize().getX() / 1.8, getColor(player.getTeam()));
+            this.image.setEffect(innerShadow);
+            if (this.isSelected) {
+                this.isSelected = false;
                 addGlowEffect();
             }
         }
     }
 
     public Node getNode() {
-        return globalGroup;
+        return this.globalGroup;
     }
 
     public Element getElement() {
-        return element;
+        return this.element;
     }
 
     public void move(double x, double y) {
-        globalGroup.setTranslateX(x - element.getElementDescription().getSize().getX() / 2);
-        globalGroup.setTranslateY(y - element.getElementDescription().getSize().getY() / 2);
+        this.globalGroup.setTranslateX(x - this.element.getElementDescription().getSize().getX() / 2);
+        this.globalGroup.setTranslateY(y - this.element.getElementDescription().getSize().getY() / 2);
     }
 
     public Vector2D getPosition() {
-        double x = globalGroup.getTranslateX() + element.getElementDescription().getSize().getX() / 2;
-        double y = globalGroup.getTranslateY() + element.getElementDescription().getSize().getY() / 2;
+        double x = this.globalGroup.getTranslateX() + this.element.getElementDescription().getSize().getX() / 2;
+        double y = this.globalGroup.getTranslateY() + this.element.getElementDescription().getSize().getY() / 2;
         return new Vector2D(x, y);
     }
 
     public void update(double time) {
-        move(element.getPosition(time).getX(), element.getPosition(time).getY());
-        rotationGroup.setRotate(Math.toDegrees(element.getOrientation(time).getAngle()));
+        move(this.element.getPosition(time).getX(), this.element.getPosition(time).getY());
+        this.rotationGroup.setRotate(Math.toDegrees(this.element.getOrientation(time).getAngle()));
     }
 
     public void addGlowEffect() {
-        if (!isSelected) {
-            Effect eff = image.getEffect();
+        if (!this.isSelected) {
+            Effect eff = this.image.getEffect();
             DropShadow glow = new DropShadow();
             glow.setOffsetY(0f);
             glow.setOffsetX(0f);
@@ -114,27 +114,27 @@ public abstract class UIGeneralElement {
             glow.setWidth(70);
             glow.setHeight(70);
             glow.setInput(eff);
-            image.setEffect(glow);
-            isSelected = true;
+            this.image.setEffect(glow);
+            this.isSelected = true;
         }
     }
 
     public void removeGlowEffect() {
-        if (isSelected) {
-            if (image.getEffect() instanceof DropShadow) {
-                DropShadow glow = (DropShadow) image.getEffect();
+        if (this.isSelected) {
+            if (this.image.getEffect() instanceof DropShadow) {
+                DropShadow glow = (DropShadow) this.image.getEffect();
                 Effect input = glow.getInput();
-                image.setEffect(input);
+                this.image.setEffect(input);
             }
-            isSelected = false;
+            this.isSelected = false;
         }
     }
 
     public Node getElementImage() {
-        return image;
+        return this.image;
     }
 
     public Node getGroupRotation() {
-        return rotationGroup;
+        return this.rotationGroup;
     }
 }

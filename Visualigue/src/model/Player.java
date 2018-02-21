@@ -5,17 +5,12 @@
  */
 package model;
 
-import java.util.Iterator;
-import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * @author emile
- */
 public class Player extends MobileElement implements java.io.Serializable {
+    private final TreeMap<Double, Ball> balls;
     private String name;
     private int team;
-    private TreeMap<Double, Ball> balls;
 
     public Player(PlayerDescription desc) {
         this(desc, 0);
@@ -23,9 +18,9 @@ public class Player extends MobileElement implements java.io.Serializable {
 
     public Player(PlayerDescription desc, int team) {
         super(desc);
-        name = "PlayerName";
+        this.name = "PlayerName";
         this.team = team;
-        this.balls = new TreeMap();
+        this.balls = new TreeMap<>();
     }
 
     public void setPlayerDescription(PlayerDescription description) {
@@ -33,7 +28,7 @@ public class Player extends MobileElement implements java.io.Serializable {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String newName) {
@@ -79,11 +74,6 @@ public class Player extends MobileElement implements java.io.Serializable {
     }
 
     public void deleteBall(Ball ball) {
-        for (Iterator<Map.Entry<Double, Ball>> it = balls.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<Double, Ball> entry = it.next();
-            if (entry.getValue() == ball) {
-                it.remove();
-            }
-        }
+        this.balls.entrySet().removeIf(entry -> entry.getValue() == ball);
     }
 }

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sport implements java.io.Serializable {
+    private final List<ObstacleDescription> obstacleDescriptions;
+    private final List<BallDescription> ballDescriptions;
+    private final List<PlayerDescription> playerDescriptions;
     private String name;
     private int maxPlayer;
     private int maxTeam;
     private String courtImage;
     private Vector2D courtSize;
-    private List<ObstacleDescription> obstacleDescriptions;
-    private List<BallDescription> ballDescriptions;
-    private List<PlayerDescription> playerDescriptions;
 
     public Sport(String name, String courtImage, double courtHeight, double courtWidth, int maxPlayer, int maxTeam) throws ValidationException {
         setName(name);
@@ -20,9 +20,9 @@ public class Sport implements java.io.Serializable {
         setMaxPlayer(maxPlayer);
         setMaxTeam(maxTeam);
 
-        this.obstacleDescriptions = new ArrayList();
-        this.ballDescriptions = new ArrayList();
-        this.playerDescriptions = new ArrayList();
+        this.obstacleDescriptions = new ArrayList<>();
+        this.ballDescriptions = new ArrayList<>();
+        this.playerDescriptions = new ArrayList<>();
     }
 
     public String getName() {
@@ -81,7 +81,7 @@ public class Sport implements java.io.Serializable {
     }
 
     public void addBallDescription(BallDescription desc) {
-        ballDescriptions.add(desc);
+        this.ballDescriptions.add(desc);
     }
 
     public BallDescription getBallDescription(String name) {
@@ -89,7 +89,7 @@ public class Sport implements java.io.Serializable {
             return null;
         }
 
-        for (BallDescription desc : ballDescriptions) {
+        for (BallDescription desc : this.ballDescriptions) {
             if (desc.getName().equals(name)) {
                 return desc;
             }
@@ -98,11 +98,11 @@ public class Sport implements java.io.Serializable {
     }
 
     public List<BallDescription> getAllBallDescriptions() {
-        return ballDescriptions;
+        return this.ballDescriptions;
     }
 
     public void addPlayerDescription(PlayerDescription desc) {
-        playerDescriptions.add(desc);
+        this.playerDescriptions.add(desc);
     }
 
     public PlayerDescription getPlayerDescription(String name) {
@@ -110,7 +110,7 @@ public class Sport implements java.io.Serializable {
             return null;
         }
 
-        for (PlayerDescription desc : playerDescriptions) {
+        for (PlayerDescription desc : this.playerDescriptions) {
             if (desc.getName().equals(name)) {
                 return desc;
             }
@@ -119,11 +119,11 @@ public class Sport implements java.io.Serializable {
     }
 
     public List<PlayerDescription> getAllPlayerDescriptions() {
-        return playerDescriptions;
+        return this.playerDescriptions;
     }
 
     public void addObstacleDescription(ObstacleDescription desc) {
-        obstacleDescriptions.add(desc);
+        this.obstacleDescriptions.add(desc);
     }
 
     public ObstacleDescription getObstacleDescription(String name) {
@@ -131,7 +131,7 @@ public class Sport implements java.io.Serializable {
             return null;
         }
 
-        for (ObstacleDescription desc : obstacleDescriptions) {
+        for (ObstacleDescription desc : this.obstacleDescriptions) {
             if (desc.getName().equals(name)) {
                 return desc;
             }
@@ -140,19 +140,19 @@ public class Sport implements java.io.Serializable {
     }
 
     public List<ObstacleDescription> getAllObstacleDescriptions() {
-        return obstacleDescriptions;
+        return this.obstacleDescriptions;
     }
 
     public void deleteElementDescription(ElementDescription desc) {
         switch (desc.getType()) {
             case Ball:
-                ballDescriptions.remove(desc);
+                this.ballDescriptions.remove(desc);
                 break;
             case Player:
-                playerDescriptions.remove(desc);
+                this.playerDescriptions.remove(desc);
                 break;
             case Obstacle:
-                obstacleDescriptions.remove(desc);
+                this.obstacleDescriptions.remove(desc);
                 break;
         }
     }

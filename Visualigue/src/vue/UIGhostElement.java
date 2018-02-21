@@ -3,9 +3,6 @@ package vue;
 import model.Element;
 import model.MobileElement;
 
-/**
- * @author Jérémie Bolduc
- */
 public class UIGhostElement extends UIGeneralElement {
 
     public UIGhostElement(Element element) {
@@ -15,14 +12,14 @@ public class UIGhostElement extends UIGeneralElement {
     @Override
     public void refreshNode() {
         super.refreshNode();
-        globalGroup.setOpacity(0.5);
+        this.globalGroup.setOpacity(0.5);
     }
 
     @Override
     public void update(double time) {
         double previousTime = time;
-        if (element instanceof MobileElement) {
-            previousTime = ((MobileElement) element).getPreviousKeyFrame(time);
+        if (this.element instanceof MobileElement) {
+            previousTime = ((MobileElement) this.element).getPreviousKeyFrame(time);
         }
         super.update(previousTime);
     }

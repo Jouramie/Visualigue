@@ -8,13 +8,10 @@ package controller;
 import model.MobileElement;
 import model.Vector2D;
 
-/**
- * @author JEBOL42
- */
 public interface Updatable {
-    public void update();
+    void update();
 
-    public Vector2D updateOnRecord(MobileElement mobile);
+    Vector2D updateOnRecord(MobileElement mobile);
 
-    public void lastUpdate();
+    void lastUpdate();
 }

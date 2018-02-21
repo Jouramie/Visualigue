@@ -46,7 +46,7 @@ public class ElementDescriptionEditionDialog implements Initializable {
     private ImageView imageView;
 
     public ElementDescriptionEditionDialog(Stage primaryStage, String sportName, ElementDescription.TypeDescription type, ElementDescription desc) {
-        stage = primaryStage;
+        this.stage = primaryStage;
         this.sportName = sportName;
         this.type = type;
         this.desc = desc;
@@ -54,60 +54,60 @@ public class ElementDescriptionEditionDialog implements Initializable {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/vue/ElementDescriptionEditionDialog.fxml"));
             fxmlLoader.setController(this);
-            root = (BorderPane) fxmlLoader.load();
-            stage = primaryStage;
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Configuration des " + type + "s");
-            lblTitre.setText("Configuration des " + type + "s");
+            this.root = (BorderPane) fxmlLoader.load();
+            this.stage = primaryStage;
+            Scene scene = new Scene(this.root);
+            this.stage.setScene(scene);
+            this.stage.setTitle("Configuration des " + type + "s");
+            this.lblTitre.setText("Configuration des " + type + "s");
         } catch (IOException ex) {
             Logger.getLogger(StrategyEditionWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        stage.show();
+        this.stage.show();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (desc != null) {
-            name.setText(desc.getName());
-            width.setText("" + desc.getSize().getX());
-            height.setText("" + desc.getSize().getY());
-            image.setText(desc.getImage());
-            loadImage(desc.getImage());
+        if (this.desc != null) {
+            this.name.setText(this.desc.getName());
+            this.width.setText("" + this.desc.getSize().getX());
+            this.height.setText("" + this.desc.getSize().getY());
+            this.image.setText(this.desc.getImage());
+            loadImage(this.desc.getImage());
         }
     }
 
     @FXML
     private void onActionCancel(ActionEvent e) {
-        stage.close();
+        this.stage.close();
     }
 
     @FXML
     private void onActionSave(ActionEvent e) {
         if (validateInputs()) {
             String oldName = "";
-            if (desc != null) {
-                oldName = desc.getName();
+            if (this.desc != null) {
+                oldName = this.desc.getName();
             }
 
-            double h = Double.parseDouble(height.getText());
-            double w = Double.parseDouble(width.getText());
+            double h = Double.parseDouble(this.height.getText());
+            double w = Double.parseDouble(this.width.getText());
 
             try {
-                switch (type) {
+                switch (this.type) {
                     case Ball:
-                        GodController.getInstance().saveBallDescription(sportName, oldName, name.getText(), image.getText(), h, w);
+                        GodController.getInstance().saveBallDescription(this.sportName, oldName, this.name.getText(), this.image.getText(), h, w);
                         break;
                     case Player:
-                        GodController.getInstance().savePlayerDescription(sportName, oldName, name.getText(), image.getText(), h, w);
+                        GodController.getInstance().savePlayerDescription(this.sportName, oldName, this.name.getText(), this.image.getText(), h, w);
                         break;
                     case Obstacle:
-                        GodController.getInstance().saveObstacleDescription(sportName, oldName, name.getText(), image.getText(), h, w);
+                        GodController.getInstance().saveObstacleDescription(this.sportName, oldName, this.name.getText(), this.image.getText(), h, w);
                         break;
                 }
 
-                stage.close();
+                this.stage.close();
             } catch (ValidationException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur");
@@ -123,11 +123,11 @@ public class ElementDescriptionEditionDialog implements Initializable {
     private void onActionBrowse(ActionEvent e) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Image de terrain");
-        File file = fileChooser.showOpenDialog(stage);
+        File file = fileChooser.showOpenDialog(this.stage);
 
         if (file != null) {
-            image.setText("file:" + file.getPath());
-            loadImage(image.getText());
+            this.image.setText("file:" + file.getPath());
+            loadImage(this.image.getText());
         }
     }
 
@@ -137,31 +137,31 @@ public class ElementDescriptionEditionDialog implements Initializable {
         try {
             img = new Image(path);
         } catch (Exception e) {
-            imageView.setImage(null);
+            this.imageView.setImage(null);
             return false;
         }
 
         if (img.isError()) {
-            imageView.setImage(null);
+            this.imageView.setImage(null);
             return false;
         }
 
-        imageView.setImage(img);
+        this.imageView.setImage(img);
         return true;
     }
 
     private boolean validateInputs() {
         String errorMsg = "";
 
-        if (!checkPositiveDouble(height.getText())) {
+        if (!checkPositiveDouble(this.height.getText())) {
             errorMsg += "Hauteur invalide.\n";
         }
 
-        if (!checkPositiveDouble(width.getText())) {
+        if (!checkPositiveDouble(this.width.getText())) {
             errorMsg += "Longueur invalide.\n";
         }
 
-        if (!loadImage(image.getText())) {
+        if (!loadImage(this.image.getText())) {
             errorMsg += "Image invalide.\n";
         }
 

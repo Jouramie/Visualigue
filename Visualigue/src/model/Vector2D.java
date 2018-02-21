@@ -43,11 +43,11 @@ public class Vector2D implements Cloneable, java.io.Serializable {
             resultat = 3 * Math.PI / 2;
         }
 
-        if (x < 0.0 && y < 0.0) {
+        if (this.x < 0.0 && this.y < 0.0) {
             resultat += Math.PI;
-        } else if (y < 0.0 && x > 0.0) {
+        } else if (this.y < 0.0 && this.x > 0.0) {
             resultat += Math.PI * 2;
-        } else if (x < 0.0) {
+        } else if (this.x < 0.0) {
             resultat += Math.PI;
         }
         while (resultat > 2 * Math.PI) {
@@ -58,9 +58,9 @@ public class Vector2D implements Cloneable, java.io.Serializable {
     }
 
     public void setAngle(double a) {
-        double norme = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        x = Math.cos(a) * norme;
-        y = Math.sin(a) * norme;
+        double norme = Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+        this.x = Math.cos(a) * norme;
+        this.y = Math.sin(a) * norme;
     }
 
     public double getLength() {
@@ -116,17 +116,18 @@ public class Vector2D implements Cloneable, java.io.Serializable {
         return resultat;
     }
 
+    @Override
     public Vector2D clone() {
-        return new Vector2D(x, y);
+        return new Vector2D(this.x, this.y);
 
     }
 
     public boolean equals(Vector2D v) {
-        return x == v.x && y == v.y;
+        return this.x == v.x && this.y == v.y;
     }
 
     @Override
     public String toString() {
-        return "[" + x + ", " + y + "]";
+        return "[" + this.x + ", " + this.y + "]";
     }
 }

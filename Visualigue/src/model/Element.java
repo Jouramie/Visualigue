@@ -25,7 +25,7 @@ public abstract class Element implements java.io.Serializable {
     }
 
     public ElementDescription getElementDescription() {
-        return description;
+        return this.description;
     }
 
     protected void setElementDescription(ElementDescription description) {
@@ -33,6 +33,6 @@ public abstract class Element implements java.io.Serializable {
     }
 
     public boolean isChanged() {
-        return changed;
+        return this.changed;
     }
 }

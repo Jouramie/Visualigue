@@ -4,6 +4,7 @@ public abstract class ElementDescription implements java.io.Serializable {
     private String name;
     private Vector2D size;
     private String image;
+
     public ElementDescription(String name, Vector2D size, String image) throws ValidationException {
         setName(name);
         setSize(size);
